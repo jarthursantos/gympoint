@@ -1,10 +1,10 @@
 import request from 'supertest';
 import bcrypt from 'bcryptjs';
 
-import app from '../../src/app';
-import truncate from '../util/truncate';
+import app from '../../../src/app';
+import truncate from '../../util/truncate';
 
-import User from '../../src/app/models/User';
+import User from '../../../src/app/models/User';
 
 describe('Users', () => {
   beforeEach(async () => {
