@@ -7,6 +7,3 @@ tmp/*
 dist
 
 yarn.lock
-
-__tests__/coverage
-__tests__/database.sqlite

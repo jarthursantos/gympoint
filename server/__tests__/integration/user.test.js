@@ -23,6 +23,39 @@ describe('Users', () => {
     expect(response.body).toHaveProperty('id');
   });
 
+  it('should not be able to register without name', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({
+        email: 'arthur@gympoint.com',
+        password: 'password',
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register without email', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({
+        name: 'Arthur Santos',
+        password: 'password',
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register without password', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gympoint.com',
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should not be able to register with duplicated email', async () => {
     const user = {
       name: 'Arthur Santos',
