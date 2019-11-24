@@ -1,35 +1,36 @@
 import request from 'supertest';
-import bcrypt from 'bcryptjs';
 import createAdminUser from '../../util/createAdminUser';
 
 import app from '../../../src/app';
 import truncate from '../../util/truncate';
 
-import User from '../../../src/app/models/User';
-
-describe('Users', () => {
+describe('Students', () => {
   beforeEach(async () => {
     await truncate();
     await createAdminUser();
   });
 
+  const credentials = {
+    email: 'admin@gympoint.com',
+    password: 'password',
+  };
+
   it('should be able to register', async () => {
     const authResponse = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send(credentials);
 
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
+        email: 'arthur@gmail.com',
+        age: 22,
+        height: 1.75,
+        weight: 83.3,
       });
 
     expect(response.body).toHaveProperty('id');
@@ -37,27 +38,13 @@ describe('Users', () => {
 
   it('should not be able to register without authenticate', async () => {
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .send({
         name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
-      });
-
-    expect(response.status).toBe(401);
-  });
-
-  it('should not be able to register with invalid authentication token', async () => {
-    const response = await request(app)
-      .post('/users')
-      .set(
-        'Authorization',
-        `Bearer e yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTc0NjM4NzEyfQ.LjZcrXrGE3Tn1MplKvxuM_ouURFgGZEr68BKgjCq42s`
-      )
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
+        email: 'arthuro@gmail.com',
+        age: 22,
+        height: 1.75,
+        weight: 83.3,
       });
 
     expect(response.status).toBe(401);
@@ -66,19 +53,18 @@ describe('Users', () => {
   it('should not be able to register without name', async () => {
     const authResponse = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send(credentials);
 
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        email: 'arthur@gympoint.com',
-        password: 'password',
+        email: 'arthur@gmail.com',
+        age: 22,
+        height: 1.75,
+        weight: 83.3,
       });
 
     expect(response.status).toBe(400);
@@ -87,40 +73,78 @@ describe('Users', () => {
   it('should not be able to register without email', async () => {
     const authResponse = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send(credentials);
 
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Arthur Santos',
-        password: 'password',
+        age: 22,
+        height: 1.75,
+        weight: 83.3,
       });
 
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without password', async () => {
+  it('should not be able to register without age', async () => {
     const authResponse = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send(credentials);
 
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
+        email: 'arthur@gmail.com',
+        height: 1.75,
+        weight: 83.3,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register without height', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gmail.com',
+        age: 22,
+        weight: 83.3,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register without weight', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gmail.com',
+        age: 22,
+        height: 1.75,
       });
 
     expect(response.status).toBe(400);
@@ -129,41 +153,28 @@ describe('Users', () => {
   it('should not be able to register with duplicated email', async () => {
     const authResponse = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send(credentials);
 
     const { token } = authResponse.body;
 
     const user = {
       name: 'Arthur Santos',
-      email: 'arthur@gympoint.com',
-      password: 'password',
+      email: 'arthur@gmail.com',
+      age: 22,
+      height: 1.75,
+      weight: 83.3,
     };
 
     await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send(user);
 
     const response = await request(app)
-      .post('/users')
+      .post('/students')
       .set('Authorization', `Bearer ${token}`)
       .send(user);
 
     expect(response.status).toBe(400);
-  });
-
-  it('should encrypt user password when new user created', async () => {
-    const user = await User.create({
-      name: 'Arthur Santos',
-      email: 'arthur@gympoint.com',
-      password: 'password',
-    });
-
-    const compareHash = await bcrypt.compare(user.password, user.password_hash);
-
-    expect(compareHash).toBe(true);
   });
 });

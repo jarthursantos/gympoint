@@ -1,4 +1,4 @@
-import { Model, STRING, VIRTUAL } from 'sequelize';
+import { Model, STRING, VIRTUAL, DATE } from 'sequelize';
 import bcrypt from 'bcryptjs';
 
 class User extends Model {
@@ -9,6 +9,8 @@ class User extends Model {
         email: STRING,
         password: VIRTUAL,
         password_hash: STRING,
+        created_at: DATE,
+        updated_at: DATE,
       },
       {
         sequelize,

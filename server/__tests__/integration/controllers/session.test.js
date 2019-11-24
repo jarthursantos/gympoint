@@ -60,7 +60,7 @@ describe('Session', () => {
       .post('/sessions')
       .send({
         email: 'admin@gympoint.com',
-        password: 'foobars',
+        password: 'foobar',
       });
 
     expect(response.status).toBe(400);
