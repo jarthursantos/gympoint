@@ -1,4 +1,5 @@
-import * as Yup from 'yup';
+const Yup = require('yup');
+// import * as Yup from 'yup';
 
 export default async (req, res, next) => {
   try {
