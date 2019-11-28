@@ -22,9 +22,11 @@ class StudentController {
       return res.status(400).json({ error: "student don't exists" });
     }
 
-    if (req.body.email) {
+    const { email } = req.body;
+
+    if (email) {
       const emailInUse = await Student.findOne({
-        where: { email: req.body.email },
+        where: { email },
       });
 
       if (emailInUse) {

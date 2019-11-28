@@ -4,7 +4,39 @@ import createAdminUser from '../../util/createAdminUser';
 import app from '../../../src/app';
 import truncate from '../../util/truncate';
 
-describe('Plans', () => {
+describe('Plans/Index', () => {
+  beforeEach(async () => {
+    await truncate();
+    await createAdminUser();
+  });
+
+  const credentials = {
+    email: 'admin@gympoint.com',
+    password: 'password',
+  };
+
+  it('should be able to show a list of plans', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .get(`/plans`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it('should not be able to show a list of plans without autentication', async () => {
+    const response = await request(app).get(`/plans`);
+
+    expect(response.status).toBe(401);
+  });
+});
+
+describe('Plans/Store', () => {
   beforeEach(async () => {
     await truncate();
     await createAdminUser();
@@ -143,25 +175,84 @@ describe('Plans', () => {
 
     const { token } = authResponse.body;
 
-    const plan = {
-      name: 'Arthur Santos',
-      email: 'arthur@gmail.com',
-      age: 22,
-      height: 1.75,
-      weight: 83.3,
-    };
-
     await request(app)
       .post('/plans')
       .set('Authorization', `Bearer ${token}`)
-      .send(plan);
+      .send(defaultPlanData);
 
     const response = await request(app)
       .post('/plans')
       .set('Authorization', `Bearer ${token}`)
-      .send(plan);
+      .send(defaultPlanData);
 
     expect(response.status).toBe(400);
+  });
+});
+
+describe('Plans/Update', () => {
+  beforeEach(async () => {
+    await truncate();
+    await createAdminUser();
+  });
+
+  const credentials = {
+    email: 'admin@gympoint.com',
+    password: 'password',
+  };
+
+  const defaultPlanData = {
+    title: 'Start',
+    duration: 1,
+    price: 129,
+  };
+
+  it('should be able to update', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const planResponse = await request(app)
+      .post('/plans')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultPlanData);
+
+    const { id } = planResponse.body;
+
+    const response = await request(app)
+      .put(`/plans/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'Gold',
+      });
+
+    expect(response.body).toHaveProperty('id');
+  });
+
+  it('should not be able to update without authenticate', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const planResponse = await request(app)
+      .post('/plans')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultPlanData);
+
+    const { id } = planResponse.body;
+
+    const response = await request(app)
+      .post(`/plans/${id}`)
+      .send({
+        title: 'Gold',
+        duration: 3,
+        price: 109,
+      });
+
+    expect(response.status).toBe(401);
   });
 
   it('should not be able to update invalid plan', async () => {
@@ -204,6 +295,30 @@ describe('Plans', () => {
 
     expect(response.body).toHaveProperty('title');
     expect(response.body.title).toBe('Gold');
+  });
+
+  it('should not be able to update plan title with a already registered title', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const studentResponse = await request(app)
+      .post('/plans')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultPlanData);
+
+    const { id } = studentResponse.body;
+
+    const response = await request(app)
+      .put(`/plans/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: defaultPlanData.title,
+      });
+
+    expect(response.status).toBe(400);
   });
 
   it('should be able to update plan duration', async () => {
@@ -303,8 +418,26 @@ describe('Plans', () => {
 
     expect(response.status).toBe(400);
   });
+});
 
-  it('should not be able to update student email with a already registered email', async () => {
+describe('Plans/Destroy', () => {
+  beforeEach(async () => {
+    await truncate();
+    await createAdminUser();
+  });
+
+  const credentials = {
+    email: 'admin@gympoint.com',
+    password: 'password',
+  };
+
+  const defaultPlanData = {
+    title: 'Start',
+    duration: 1,
+    price: 129,
+  };
+
+  it('should be able to delete specific plan', async () => {
     const authResponse = await request(app)
       .post('/sessions')
       .send(credentials);
@@ -319,11 +452,41 @@ describe('Plans', () => {
     const { id } = planResponse.body;
 
     const response = await request(app)
-      .put(`/plans/${id}`)
+      .delete(`/plans/${id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should not be able to delete a plan without authenticate', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const planResponse = await request(app)
+      .post('/plans')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        email: defaultPlanData.email,
-      });
+      .send(defaultPlanData);
+
+    const { id } = planResponse.body;
+
+    const response = await request(app).delete(`/plans/${id}`);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should not be able to delete a invalid plan', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .delete('/plans/0')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(400);
   });

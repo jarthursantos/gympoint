@@ -15,7 +15,7 @@ describe('Students', () => {
     password: 'password',
   };
 
-  const defaultUserData = {
+  const defaultStudentData = {
     name: 'Arthur Santos',
     email: 'arthur@gmail.com',
     age: 22,
@@ -33,7 +33,7 @@ describe('Students', () => {
     const response = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     expect(response.body).toHaveProperty('id');
   });
@@ -41,7 +41,7 @@ describe('Students', () => {
   it('should not be able to register without authenticate', async () => {
     const response = await request(app)
       .post('/students')
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     expect(response.status).toBe(401);
   });
@@ -237,6 +237,53 @@ describe('Students', () => {
     expect(response.status).toBe(400);
   });
 
+  it('should be able to update', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const planResponse = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultStudentData);
+
+    const { id } = planResponse.body;
+
+    const response = await request(app)
+      .put(`/students/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Silva José',
+      });
+
+    expect(response.body).toHaveProperty('id');
+  });
+
+  it('should not be able to update without authenticate', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const studentResponse = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultStudentData);
+
+    const { id } = studentResponse.body;
+
+    const response = await request(app)
+      .post(`/students/${id}`)
+      .send({
+        name: 'Silva José',
+      });
+
+    expect(response.status).toBe(401);
+  });
+
   it('should not be able to update invalid student', async () => {
     const authResponse = await request(app)
       .post('/sessions')
@@ -264,7 +311,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -289,7 +336,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -314,7 +361,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -339,7 +386,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -363,7 +410,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -388,7 +435,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -412,7 +459,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -437,7 +484,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -461,7 +508,7 @@ describe('Students', () => {
     const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', `Bearer ${token}`)
-      .send(defaultUserData);
+      .send(defaultStudentData);
 
     const { id } = studentResponse.body;
 
@@ -469,7 +516,7 @@ describe('Students', () => {
       .put(`/students/${id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        email: defaultUserData.email,
+        email: defaultStudentData.email,
       });
 
     expect(response.status).toBe(400);

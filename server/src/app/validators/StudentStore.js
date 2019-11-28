@@ -9,9 +9,14 @@ export default async (req, res, next) => {
         .required(),
       age: Yup.number()
         .integer()
+        .min(1)
         .required(),
-      height: Yup.number().required(),
-      weight: Yup.number().required(),
+      height: Yup.number()
+        .min(0.1)
+        .required(),
+      weight: Yup.number()
+        .min(0.1)
+        .required(),
     });
 
     await schema.validate(req.body, { abortEarly: false });
