@@ -41,13 +41,7 @@ describe('Students', () => {
   it('should not be able to register without authenticate', async () => {
     const response = await request(app)
       .post('/students')
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthuro@gmail.com',
-        age: 22,
-        height: 1.75,
-        weight: 83.3,
-      });
+      .send(defaultUserData);
 
     expect(response.status).toBe(401);
   });
@@ -112,6 +106,27 @@ describe('Students', () => {
     expect(response.status).toBe(400);
   });
 
+  it('should not be able to register with invalid age', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gmail.com',
+        age: 0,
+        height: 1.75,
+        weight: 83.3,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should not be able to register without height', async () => {
     const authResponse = await request(app)
       .post('/sessions')
@@ -126,6 +141,27 @@ describe('Students', () => {
         name: 'Arthur Santos',
         email: 'arthur@gmail.com',
         age: 22,
+        weight: 83.3,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register with invalid height', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gmail.com',
+        age: 22,
+        height: 0,
         weight: 83.3,
       });
 
@@ -147,6 +183,27 @@ describe('Students', () => {
         email: 'arthur@gmail.com',
         age: 22,
         height: 1.75,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to register with invalid weight', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Arthur Santos',
+        email: 'arthur@gmail.com',
+        age: 22,
+        height: 1.75,
+        weight: 0,
       });
 
     expect(response.status).toBe(400);
@@ -272,6 +329,30 @@ describe('Students', () => {
     expect(response.body.age).toBe(23);
   });
 
+  it('should not be able to update student with invalid age', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const studentResponse = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultUserData);
+
+    const { id } = studentResponse.body;
+
+    const response = await request(app)
+      .put(`/students/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        age: 0,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should be able to update student height', async () => {
     const authResponse = await request(app)
       .post('/sessions')
@@ -297,6 +378,30 @@ describe('Students', () => {
     expect(response.body.height).toBe(1.7);
   });
 
+  it('should not be able to update student with invalid height', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const studentResponse = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultUserData);
+
+    const { id } = studentResponse.body;
+
+    const response = await request(app)
+      .put(`/students/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        height: 0,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should be able to update student weight', async () => {
     const authResponse = await request(app)
       .post('/sessions')
@@ -320,6 +425,30 @@ describe('Students', () => {
 
     expect(response.body).toHaveProperty('weight');
     expect(response.body.weight).toBe(80.0);
+  });
+
+  it('should not be able to update student with invalid weight', async () => {
+    const authResponse = await request(app)
+      .post('/sessions')
+      .send(credentials);
+
+    const { token } = authResponse.body;
+
+    const studentResponse = await request(app)
+      .post('/students')
+      .set('Authorization', `Bearer ${token}`)
+      .send(defaultUserData);
+
+    const { id } = studentResponse.body;
+
+    const response = await request(app)
+      .put(`/students/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        weight: 0,
+      });
+
+    expect(response.status).toBe(400);
   });
 
   it('should not be able to update student email with a already registered email', async () => {
