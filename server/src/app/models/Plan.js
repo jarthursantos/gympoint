@@ -1,4 +1,4 @@
-import { Model, DOUBLE, INTEGER, STRING, DATE } from 'sequelize';
+import { Model, DOUBLE, INTEGER, STRING } from 'sequelize';
 
 class Plan extends Model {
   static init(sequelize) {
@@ -7,8 +7,6 @@ class Plan extends Model {
         title: STRING,
         duration: INTEGER,
         price: DOUBLE,
-        created_at: DATE,
-        updated_at: DATE,
       },
       {
         sequelize,

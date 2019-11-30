@@ -1,53 +1,50 @@
 import request from 'supertest';
 
 import app from '../../../src/app';
+import factory from '../../factories';
 import truncate from '../../util/truncate';
-import createAdminUser from '../../util/createAdminUser';
 
 describe('Session', () => {
   beforeEach(async () => {
     await truncate();
-    await createAdminUser();
   });
 
   it('should be able to authenticate the credentials', async () => {
+    const { email, password } = await factory.create('User');
+
     const response = await request(app)
       .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+      .send({ email, password });
 
     expect(response.body).toHaveProperty('token');
   });
 
   it('should not be able to authenticate credentials without email', async () => {
+    const { password } = await factory.create('User');
+
     const response = await request(app)
       .post('/sessions')
-      .send({
-        password: 'password',
-      });
+      .send({ password });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to authenticate credentials without password', async () => {
+    const { email } = await factory.create('User');
+
     const response = await request(app)
       .post('/sessions')
-      .send({
-        email: 'arthur@gympoint.com',
-      });
+      .send({ email });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to authenticate invalid credentials email', async () => {
+    const user = await factory.attrs('User');
+
     const response = await request(app)
       .post('/sessions')
-      .send({
-        email: 'foo@bar.com',
-        password: 'password',
-      });
+      .send(user);
 
     expect(response.status).toBe(400);
 
@@ -56,11 +53,13 @@ describe('Session', () => {
   });
 
   it('should not be able to authenticate invalid credentials password', async () => {
+    const { email, password } = await factory.create('User');
+
     const response = await request(app)
       .post('/sessions')
       .send({
-        email: 'admin@gympoint.com',
-        password: 'foobar',
+        email,
+        password: `${password}0`,
       });
 
     expect(response.status).toBe(400);

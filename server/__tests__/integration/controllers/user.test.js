@@ -1,169 +1,88 @@
 import request from 'supertest';
-import bcrypt from 'bcryptjs';
-import createAdminUser from '../../util/createAdminUser';
 
 import app from '../../../src/app';
+import factory from '../../factories';
 import truncate from '../../util/truncate';
-
-import User from '../../../src/app/models/User';
+import token from '../../util/authToken';
 
 describe('Users', () => {
   beforeEach(async () => {
     await truncate();
-    await createAdminUser();
   });
 
   it('should be able to register', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
-
-    const { token } = authResponse.body;
+    const user = await factory.attrs('User');
 
     const response = await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
-      });
+      .set('Authorization', token)
+      .send(user);
 
     expect(response.body).toHaveProperty('id');
   });
 
   it('should not be able to register without authenticate', async () => {
+    const user = await factory.attrs('User');
+
     const response = await request(app)
       .post('/users')
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
-      });
-
-    expect(response.status).toBe(401);
-  });
-
-  it('should not be able to register with invalid authentication token', async () => {
-    const response = await request(app)
-      .post('/users')
-      .set(
-        'Authorization',
-        `Bearer e yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTc0NjM4NzEyfQ.LjZcrXrGE3Tn1MplKvxuM_ouURFgGZEr68BKgjCq42s`
-      )
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-        password: 'password',
-      });
+      .send(user);
 
     expect(response.status).toBe(401);
   });
 
   it('should not be able to register without name', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+    const user = await factory.attrs('User');
 
-    const { token } = authResponse.body;
+    delete user.name;
 
     const response = await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        email: 'arthur@gympoint.com',
-        password: 'password',
-      });
+      .set('Authorization', token)
+      .send(user);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+    const user = await factory.attrs('User');
 
-    const { token } = authResponse.body;
+    delete user.email;
 
     const response = await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        password: 'password',
-      });
+      .set('Authorization', token)
+      .send(user);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without password', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
+    const user = await factory.attrs('User');
 
-    const { token } = authResponse.body;
+    delete user.password;
 
     const response = await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gympoint.com',
-      });
+      .set('Authorization', token)
+      .send(user);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register with duplicated email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send({
-        email: 'admin@gympoint.com',
-        password: 'password',
-      });
-
-    const { token } = authResponse.body;
-
-    const user = {
-      name: 'Arthur Santos',
-      email: 'arthur@gympoint.com',
-      password: 'password',
-    };
+    const user = await factory.attrs('User');
 
     await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send(user);
 
     const response = await request(app)
       .post('/users')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send(user);
 
     expect(response.status).toBe(400);
-  });
-
-  it('should encrypt user password when new user created', async () => {
-    const user = await User.create({
-      name: 'Arthur Santos',
-      email: 'arthur@gympoint.com',
-      password: 'password',
-    });
-
-    const compareHash = await bcrypt.compare(user.password, user.password_hash);
-
-    expect(compareHash).toBe(true);
   });
 });

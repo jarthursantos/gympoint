@@ -1,259 +1,164 @@
 import request from 'supertest';
-import createAdminUser from '../../util/createAdminUser';
 
 import app from '../../../src/app';
+import factory from '../../factories';
 import truncate from '../../util/truncate';
+import token from '../../util/authToken';
 
 describe('Students', () => {
   beforeEach(async () => {
     await truncate();
-    await createAdminUser();
   });
 
-  const credentials = {
-    email: 'admin@gympoint.com',
-    password: 'password',
-  };
-
-  const defaultStudentData = {
-    name: 'Arthur Santos',
-    email: 'arthur@gmail.com',
-    age: 22,
-    height: 1.75,
-    weight: 83.3,
-  };
-
   it('should be able to register', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.body).toHaveProperty('id');
   });
 
   it('should not be able to register without authenticate', async () => {
+    const student = await factory.attrs('Student');
+
     const response = await request(app)
       .post('/students')
-      .send(defaultStudentData);
+      .send(student);
 
     expect(response.status).toBe(401);
   });
 
   it('should not be able to register without name', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
+    delete student.name;
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        email: 'arthur@gmail.com',
-        age: 22,
-        height: 1.75,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
+    delete student.email;
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        age: 22,
-        height: 1.75,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without age', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
+    delete student.age;
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        height: 1.75,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register with invalid age', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student', {
+      age: 0,
+    });
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        age: 0,
-        height: 1.75,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without height', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
+    delete student.height;
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        age: 22,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register with invalid height', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student', {
+      height: 0,
+    });
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        age: 22,
-        height: 0,
-        weight: 83.3,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register without weight', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
+    delete student.weight;
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        age: 22,
-        height: 1.75,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register with invalid weight', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student', {
+      weight: 0,
+    });
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Arthur Santos',
-        email: 'arthur@gmail.com',
-        age: 22,
-        height: 1.75,
-        weight: 0,
-      });
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to register with duplicated email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const user = {
-      name: 'Arthur Santos',
-      email: 'arthur@gmail.com',
-      age: 22,
-      height: 1.75,
-      weight: 83.3,
-    };
+    const student = await factory.attrs('Student');
 
     await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(user);
+      .set('Authorization', token)
+      .send(student);
 
     const response = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(user);
+      .set('Authorization', token)
+      .send(student);
 
     expect(response.status).toBe(400);
   });
 
   it('should be able to update', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
 
     const planResponse = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
+      .set('Authorization', token)
+      .send(student);
 
     const { id } = planResponse.body;
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         name: 'Silva José',
       });
@@ -262,16 +167,12 @@ describe('Students', () => {
   });
 
   it('should not be able to update without authenticate', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
 
     const studentResponse = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
+      .set('Authorization', token)
+      .send(student);
 
     const { id } = studentResponse.body;
 
@@ -285,15 +186,9 @@ describe('Students', () => {
   });
 
   it('should not be able to update invalid student', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
     const response = await request(app)
       .put(`/students/0`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         name: 'José Silva',
       });
@@ -302,22 +197,18 @@ describe('Students', () => {
   });
 
   it('should be able to update student name', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
+    const student = await factory.attrs('Student');
 
     const studentResponse = await request(app)
       .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
+      .set('Authorization', token)
+      .send(student);
 
     const { id } = studentResponse.body;
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         name: 'José Silva',
       });
@@ -327,22 +218,11 @@ describe('Students', () => {
   });
 
   it('should be able to update student email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         email: 'silva@gmail.com',
       });
@@ -352,22 +232,11 @@ describe('Students', () => {
   });
 
   it('should be able to update student age', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         age: 23,
       });
@@ -377,22 +246,11 @@ describe('Students', () => {
   });
 
   it('should not be able to update student with invalid age', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         age: 0,
       });
@@ -401,22 +259,11 @@ describe('Students', () => {
   });
 
   it('should be able to update student height', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         height: 1.7,
       });
@@ -426,22 +273,11 @@ describe('Students', () => {
   });
 
   it('should not be able to update student with invalid height', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         height: 0,
       });
@@ -450,22 +286,11 @@ describe('Students', () => {
   });
 
   it('should be able to update student weight', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         weight: 80.0,
       });
@@ -475,22 +300,11 @@ describe('Students', () => {
   });
 
   it('should not be able to update student with invalid weight', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         weight: 0,
       });
@@ -499,25 +313,12 @@ describe('Students', () => {
   });
 
   it('should not be able to update student email with a already registered email', async () => {
-    const authResponse = await request(app)
-      .post('/sessions')
-      .send(credentials);
-
-    const { token } = authResponse.body;
-
-    const studentResponse = await request(app)
-      .post('/students')
-      .set('Authorization', `Bearer ${token}`)
-      .send(defaultStudentData);
-
-    const { id } = studentResponse.body;
+    const { id, email } = await factory.create('Student');
 
     const response = await request(app)
       .put(`/students/${id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        email: defaultStudentData.email,
-      });
+      .set('Authorization', token)
+      .send({ email });
 
     expect(response.status).toBe(400);
   });

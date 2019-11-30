@@ -1,4 +1,4 @@
-import { Model, DOUBLE, INTEGER, STRING, DATE } from 'sequelize';
+import { Model, DOUBLE, INTEGER, STRING } from 'sequelize';
 
 class Student extends Model {
   static init(sequelize) {
@@ -9,8 +9,6 @@ class Student extends Model {
         age: INTEGER,
         height: DOUBLE,
         weight: DOUBLE,
-        created_at: DATE,
-        updated_at: DATE,
       },
       {
         sequelize,
