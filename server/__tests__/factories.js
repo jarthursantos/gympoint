@@ -4,6 +4,7 @@ import { factory } from 'factory-girl';
 import User from '../src/app/models/User';
 import Plan from '../src/app/models/Plan';
 import Student from '../src/app/models/Student';
+import Registration from '../src/app/models/Registration';
 
 factory.define('User', User, {
   name: faker.name.findName(),
@@ -23,6 +24,12 @@ factory.define('Plan', Plan, {
   title: faker.name.findName(),
   duration: faker.random.number(),
   price: faker.random.number({ precision: 0.1 }),
+});
+
+factory.define('Registration', Registration, {
+  student_id: faker.random.number(),
+  plan_id: faker.random.number(),
+  start_date: faker.date.future(),
 });
 
 export default factory;
