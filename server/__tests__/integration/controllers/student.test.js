@@ -5,7 +5,27 @@ import factory from '../../factories';
 import truncate from '../../util/truncate';
 import token from '../../util/authToken';
 
-describe('Students', () => {
+describe('Students/Index', () => {
+  beforeEach(async () => {
+    await truncate();
+  });
+
+  it('should be able to show a list of students', async () => {
+    const response = await request(app)
+      .get(`/students`)
+      .set('Authorization', token);
+
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it('should not be able to show a list of students without autentication', async () => {
+    const response = await request(app).get(`/students`);
+
+    expect(response.status).toBe(401);
+  });
+});
+
+describe('Students/Store', () => {
   beforeEach(async () => {
     await truncate();
   });
@@ -144,6 +164,12 @@ describe('Students', () => {
       .send(student);
 
     expect(response.status).toBe(400);
+  });
+});
+
+describe('Students/Update', () => {
+  beforeEach(async () => {
+    await truncate();
   });
 
   it('should be able to update', async () => {
@@ -313,12 +339,24 @@ describe('Students', () => {
   });
 
   it('should not be able to update student email with a already registered email', async () => {
-    const { id, email } = await factory.create('Student');
+    const student = await factory.attrs('Student');
+
+    await request(app)
+      .post('/students')
+      .set('Authorization', token)
+      .send(student);
+
+    const {
+      body: { id },
+    } = await request(app)
+      .post('/students')
+      .set('Authorization', token)
+      .send({ ...student, email: `0${student.email}` });
 
     const response = await request(app)
       .put(`/students/${id}`)
       .set('Authorization', token)
-      .send({ email });
+      .send({ email: student.email });
 
     expect(response.status).toBe(400);
   });

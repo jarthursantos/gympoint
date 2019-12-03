@@ -30,6 +30,8 @@ factory.define('Registration', Registration, {
   student_id: faker.random.number(),
   plan_id: faker.random.number(),
   start_date: faker.date.future(),
+  end_date: faker.date.future(),
+  price: faker.random.number({ precision: 0.1 }),
 });
 
 export default factory;

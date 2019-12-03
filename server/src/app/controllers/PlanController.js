@@ -2,7 +2,9 @@ import Plan from '../models/Plan';
 
 class PlanController {
   async index(_req, res) {
-    const plans = await Plan.findAll();
+    const plans = await Plan.findAll({
+      attributes: ['id', 'title', 'duration', 'price'],
+    });
     return res.json(plans);
   }
 
@@ -15,9 +17,9 @@ class PlanController {
       return res.status(400).json({ error: 'title already in use' });
     }
 
-    const student = await Plan.create(req.body);
+    const { id, title, duration, price } = await Plan.create(req.body);
 
-    return res.json(student);
+    return res.json({ id, title, duration, price });
   }
 
   async update(req, res) {
@@ -29,7 +31,7 @@ class PlanController {
 
     const { title } = req.body;
 
-    if (title) {
+    if (title && title !== plan.title) {
       const titleInUse = await Plan.findOne({
         where: { title },
       });
@@ -39,9 +41,13 @@ class PlanController {
       }
     }
 
-    plan.update(req.body);
+    await plan.update(req.body);
 
-    return res.json(plan);
+    const { id, title: current_title, duration, price } = await Plan.findByPk(
+      req.params.id
+    );
+
+    return res.json({ id, title: current_title, price, duration });
   }
 
   async destroy(req, res) {
@@ -53,7 +59,7 @@ class PlanController {
 
     plan.destroy();
 
-    return res.json(plan);
+    return res.json();
   }
 }
 

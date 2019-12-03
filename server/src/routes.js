@@ -19,6 +19,7 @@ import validatePlanStore from './app/validators/PlanStore';
 import validatePlanUpdate from './app/validators/PlanUpdate';
 
 import validateRegistrationStore from './app/validators/RegistrationStore';
+import validateRegistrationUpdate from './app/validators/RegistrationUpdate';
 
 const routes = new Router();
 
@@ -28,6 +29,7 @@ routes.use(authMiddleware);
 
 routes.post('/users', validateUserStore, UserController.store);
 
+routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);
 routes.put('/students/:id', validateStudentUpdate, StudentController.update);
 
@@ -42,11 +44,11 @@ routes.post(
   validateRegistrationStore,
   RegistrationController.store
 );
-// routes.put(
-//   '/registrations/:id',
-//   validatePlanUpdate,
-//   RegistrationController.update
-// );
-// routes.delete('/registrations/:id', RegistrationController.destroy);
+routes.put(
+  '/registrations/:id',
+  validateRegistrationUpdate,
+  RegistrationController.update
+);
+routes.delete('/registrations/:id', RegistrationController.destroy);
 
 export default routes;

@@ -5,7 +5,7 @@ import factory from '../../factories';
 import truncate from '../../util/truncate';
 import token from '../../util/authToken';
 
-describe('Users', () => {
+describe('Users/Store', () => {
   beforeEach(async () => {
     await truncate();
   });
@@ -26,6 +26,17 @@ describe('Users', () => {
 
     const response = await request(app)
       .post('/users')
+      .send(user);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should not be able to register with invalid authenticate token', async () => {
+    const user = await factory.attrs('User');
+
+    const response = await request(app)
+      .post('/users')
+      .set('Authorization', 'Bearer this dont is a valid token')
       .send(user);
 
     expect(response.status).toBe(401);

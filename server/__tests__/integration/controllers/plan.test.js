@@ -184,13 +184,25 @@ describe('Plans/Update', () => {
 
   it('should not be able to update plan title with a already registered title', async () => {
     const { id, title } = await factory.create('Plan');
+    await factory.create('Plan', { title: `${title} 2` });
+
+    const response = await request(app)
+      .put(`/plans/${id}`)
+      .set('Authorization', token)
+      .send({ title: `${title} 2` });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should be able to request plan update with the same title', async () => {
+    const { id, title } = await factory.create('Plan');
 
     const response = await request(app)
       .put(`/plans/${id}`)
       .set('Authorization', token)
       .send({ title });
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(200);
   });
 
   it('should be able to update plan duration', async () => {

@@ -1,18 +1,27 @@
 import Student from '../models/Student';
 
 class StudentController {
+  async index(_req, res) {
+    const students = await Student.findAll({
+      attributes: ['id', 'name', 'email', 'age', 'height', 'weight'],
+    });
+    return res.json(students);
+  }
+
   async store(req, res) {
-    const studentExists = await Student.findOne({
+    const emailAlreadyExists = await Student.findOne({
       where: { email: req.body.email },
     });
 
-    if (studentExists) {
+    if (emailAlreadyExists) {
       return res.status(400).json({ error: 'email already in use' });
     }
 
-    const student = await Student.create(req.body);
+    const { id, name, email, age, height, weight } = await Student.create(
+      req.body
+    );
 
-    return res.json(student);
+    return res.json({ id, name, email, age, height, weight });
   }
 
   async update(req, res) {
@@ -24,7 +33,7 @@ class StudentController {
 
     const { email } = req.body;
 
-    if (email) {
+    if (email && email !== student.email) {
       const emailInUse = await Student.findOne({
         where: { email },
       });
@@ -34,9 +43,18 @@ class StudentController {
       }
     }
 
-    student.update(req.body);
+    await student.update(req.body);
 
-    return res.json(student);
+    const {
+      id,
+      name,
+      email: currentEmail,
+      age,
+      height,
+      weight,
+    } = await Student.findByPk(req.params.id);
+
+    return res.json({ id, name, email: currentEmail, age, height, weight });
   }
 }
 

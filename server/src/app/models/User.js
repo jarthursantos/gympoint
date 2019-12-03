@@ -1,6 +1,7 @@
 import { Model, STRING, VIRTUAL } from 'sequelize';
 
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 
 class User extends Model {
   static init(sequelize) {
