@@ -3,6 +3,7 @@ import { factory } from 'factory-girl';
 
 import User from '../src/app/models/User';
 import Plan from '../src/app/models/Plan';
+import Checkin from '../src/app/models/Checkin';
 import Student from '../src/app/models/Student';
 import Registration from '../src/app/models/Registration';
 
@@ -32,6 +33,10 @@ factory.define('Registration', Registration, {
   start_date: faker.date.future(),
   end_date: faker.date.future(),
   price: faker.random.number({ precision: 0.1 }),
+});
+
+factory.define('Checkin', Checkin, {
+  student_id: faker.random.number(),
 });
 
 export default factory;
