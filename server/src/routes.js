@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
-import UserController from './app/controllers/UserController';
+import AnswerController from './app/controllers/AnswerController';
+import CheckinController from './app/controllers/CheckinController';
+import HelpOrderController from './app/controllers/HelpOrderController';
+import PlanController from './app/controllers/PlanController';
+import RegistrationController from './app/controllers/RegistrationController';
 import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
-import PlanController from './app/controllers/PlanController';
-import CheckinController from './app/controllers/CheckinController';
-import RegistrationController from './app/controllers/RegistrationController';
+import UserController from './app/controllers/UserController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -15,6 +17,10 @@ import validateSessionStore from './app/validators/SessionStore';
 
 import validateStudentStore from './app/validators/StudentStore';
 import validateStudentUpdate from './app/validators/StudentUpdate';
+
+import validateHelpOrderStore from './app/validators/HelpOrderStore';
+
+import validateAnswerStore from './app/validators/AnswerStore';
 
 import validatePlanStore from './app/validators/PlanStore';
 import validatePlanUpdate from './app/validators/PlanUpdate';
@@ -29,6 +35,13 @@ routes.use('/sessions', validateSessionStore, SessionController.store);
 routes.get('/students/:id/checkins', CheckinController.index);
 routes.post('/students/:id/checkins', CheckinController.store);
 
+routes.get('/students/:id/help-orders', HelpOrderController.index);
+routes.post(
+  '/students/:id/help-orders',
+  validateHelpOrderStore,
+  HelpOrderController.store
+);
+
 routes.use(authMiddleware);
 
 routes.post('/users', validateUserStore, UserController.store);
@@ -36,6 +49,12 @@ routes.post('/users', validateUserStore, UserController.store);
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);
 routes.put('/students/:id', validateStudentUpdate, StudentController.update);
+
+routes.post(
+  '/help-orders/:id/answer',
+  validateAnswerStore,
+  AnswerController.store
+);
 
 routes.get('/plans', PlanController.index);
 routes.post('/plans', validatePlanStore, PlanController.store);

@@ -4,6 +4,7 @@ import { factory } from 'factory-girl';
 import User from '../src/app/models/User';
 import Plan from '../src/app/models/Plan';
 import Checkin from '../src/app/models/Checkin';
+import HelpOrder from '../src/app/models/HelpOrder';
 import Student from '../src/app/models/Student';
 import Registration from '../src/app/models/Registration';
 
@@ -37,6 +38,15 @@ factory.define('Registration', Registration, {
 
 factory.define('Checkin', Checkin, {
   student_id: faker.random.number(),
+});
+
+factory.define('HelpOrder', HelpOrder, {
+  student_id: faker.random.number(),
+  question: faker.lorem.paragraph(1),
+});
+
+factory.define('Answer', HelpOrder, {
+  answer: faker.lorem.paragraph(1),
 });
 
 export default factory;
