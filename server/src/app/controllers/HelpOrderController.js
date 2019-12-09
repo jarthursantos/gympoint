@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 
+import User from '../models/User';
 import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
 import Registration from '../models/Registration';
@@ -18,6 +19,19 @@ class HelpOrderController {
       where: {
         student_id,
       },
+      include: [
+        {
+          model: User,
+          as: 'replier',
+          attributes: ['name'],
+        },
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name', 'email', 'alternative_id'],
+        },
+      ],
+      attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
     });
 
     return res.json(helpOrders);
@@ -47,12 +61,28 @@ class HelpOrderController {
         .json({ error: "student don't have active registration" });
     }
 
-    const helpORder = await HelpOrder.create({
+    const { id } = await HelpOrder.create({
       ...req.body,
       student_id,
     });
 
-    return res.json(helpORder);
+    const help_order = await HelpOrder.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'replier',
+          attributes: ['name'],
+        },
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name', 'email', 'alternative_id'],
+        },
+      ],
+      attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
+    });
+
+    return res.json(help_order);
   }
 }
 

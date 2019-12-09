@@ -25,6 +25,10 @@ class Student extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'created_by', as: 'creator' });
+  }
 }
 
 export default Student;

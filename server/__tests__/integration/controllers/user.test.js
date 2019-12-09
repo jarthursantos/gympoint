@@ -3,15 +3,22 @@ import request from 'supertest';
 import app from '../../../src/app';
 import factory from '../../factories';
 import truncate from '../../util/truncate';
-import token from '../../util/authToken';
+import generateToken from '../../util/authToken';
 
-describe('Users/Store', () => {
+describe('Users', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  it('should be able to register', async () => {
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('store: should be able to register', async () => {
     const user = await factory.attrs('User');
+
+    const { token } = await generateToken();
 
     const response = await request(app)
       .post('/users')
@@ -21,7 +28,7 @@ describe('Users/Store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to register without authenticate', async () => {
+  it('store: should not be able to register without authenticate', async () => {
     const user = await factory.attrs('User');
 
     const response = await request(app)
@@ -31,7 +38,7 @@ describe('Users/Store', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to register with invalid authenticate token', async () => {
+  it('store: should not be able to register with invalid authenticate token', async () => {
     const user = await factory.attrs('User');
 
     const response = await request(app)
@@ -42,11 +49,13 @@ describe('Users/Store', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to register without name', async () => {
+  it('store: should not be able to register without name', async () => {
     const user = await factory.attrs('User');
 
     delete user.name;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/users')
       .set('Authorization', token)
@@ -55,11 +64,13 @@ describe('Users/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without email', async () => {
+  it('store: should not be able to register without email', async () => {
     const user = await factory.attrs('User');
 
     delete user.email;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/users')
       .set('Authorization', token)
@@ -68,11 +79,13 @@ describe('Users/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without password', async () => {
+  it('store: should not be able to register without password', async () => {
     const user = await factory.attrs('User');
 
     delete user.password;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/users')
       .set('Authorization', token)
@@ -81,8 +94,10 @@ describe('Users/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with duplicated email', async () => {
+  it('store: should not be able to register with duplicated email', async () => {
     const user = await factory.attrs('User');
+
+    const { token } = await generateToken();
 
     await request(app)
       .post('/users')

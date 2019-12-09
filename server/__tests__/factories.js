@@ -20,12 +20,14 @@ factory.define('Student', Student, {
   age: faker.random.number(),
   height: faker.random.number({ precision: 0.1 }),
   weight: faker.random.number({ precision: 0.1 }),
+  created_by: faker.random.number(),
 });
 
 factory.define('Plan', Plan, {
   title: faker.name.findName(),
   duration: faker.random.number(),
   price: faker.random.number({ precision: 0.1 }),
+  created_by: faker.random.number(),
 });
 
 factory.define('Registration', Registration, {
@@ -47,6 +49,7 @@ factory.define('HelpOrder', HelpOrder, {
 
 factory.define('Answer', HelpOrder, {
   answer: faker.lorem.paragraph(1),
+  replier_by: faker.random.number(),
 });
 
 export default factory;

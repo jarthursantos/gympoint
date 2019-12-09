@@ -17,9 +17,10 @@ class StudentController {
       return res.status(400).json({ error: 'email already in use' });
     }
 
-    const { id, name, email, age, height, weight } = await Student.create(
-      req.body
-    );
+    const { id, name, email, age, height, weight } = await Student.create({
+      ...req.body,
+      created_by: req.user_id,
+    });
 
     return res.json({ id, name, email, age, height, weight });
   }

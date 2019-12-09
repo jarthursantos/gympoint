@@ -4,6 +4,9 @@ import Student from '../models/Student';
 import Plan from '../models/Plan';
 import Registration from '../models/Registration';
 
+import NewRegistrationJob from '../jobs/NewRegistrationMail';
+import Queue from '../../lib/Queue';
+
 class RegistrationController {
   async index(_req, res) {
     const registrations = await Registration.findAll({
@@ -24,7 +27,6 @@ class RegistrationController {
     return res.json(registrations);
   }
 
-  // TODO: send mail to student notifying the registration
   async store(req, res) {
     const { student_id, plan_id, start_date: start_date_raw } = req.body;
 
@@ -68,7 +70,15 @@ class RegistrationController {
         {
           model: Student,
           as: 'student',
-          attributes: ['id', 'name', 'email', 'age', 'height', 'weight'],
+          attributes: [
+            'id',
+            'name',
+            'email',
+            'age',
+            'height',
+            'weight',
+            'alternative_id',
+          ],
         },
         {
           model: Plan,
@@ -79,10 +89,13 @@ class RegistrationController {
       attributes: ['id', 'price', 'start_date', 'end_date'],
     });
 
+    await Queue.add(NewRegistrationJob.key, {
+      registration,
+    });
+
     return res.json(registration);
   }
 
-  // TODO: send mail to student notifying the registration update
   async update(req, res) {
     const registration = await Registration.findByPk(req.params.id);
 
@@ -119,7 +132,15 @@ class RegistrationController {
         {
           model: Student,
           as: 'student',
-          attributes: ['id', 'name', 'email', 'age', 'height', 'weight'],
+          attributes: [
+            'id',
+            'name',
+            'email',
+            'age',
+            'height',
+            'weight',
+            'alternative_id',
+          ],
         },
         {
           model: Plan,
@@ -128,6 +149,10 @@ class RegistrationController {
         },
       ],
       attributes: ['id', 'price', 'start_date', 'end_date'],
+    });
+
+    await Queue.add(NewRegistrationJob.key, {
+      registration: updatedRegistration,
     });
 
     return res.json(updatedRegistration);

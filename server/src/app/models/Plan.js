@@ -1,4 +1,4 @@
-import { Model, DOUBLE, INTEGER, STRING } from 'sequelize';
+import { Model, DOUBLE, INTEGER, STRING, DATE, VIRTUAL } from 'sequelize';
 
 class Plan extends Model {
   static init(sequelize) {
@@ -7,6 +7,13 @@ class Plan extends Model {
         title: STRING,
         duration: INTEGER,
         price: DOUBLE,
+        deprecated_at: DATE,
+        deprecated: {
+          type: VIRTUAL,
+          get() {
+            return !!this.deprecated_at;
+          },
+        },
       },
       {
         sequelize,
@@ -14,6 +21,10 @@ class Plan extends Model {
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'created_by', as: 'creator' });
   }
 }
 

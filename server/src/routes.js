@@ -1,7 +1,11 @@
 import { Router } from 'express';
 
+import multer from 'multer';
+import multerConfig from './config/multer';
+
 import AnswerController from './app/controllers/AnswerController';
 import CheckinController from './app/controllers/CheckinController';
+import AvatarController from './app/controllers/AvatarController';
 import HelpOrderController from './app/controllers/HelpOrderController';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
@@ -29,6 +33,7 @@ import validateRegistrationStore from './app/validators/RegistrationStore';
 import validateRegistrationUpdate from './app/validators/RegistrationUpdate';
 
 const routes = new Router();
+const upload = multer(multerConfig);
 
 routes.use('/sessions', validateSessionStore, SessionController.store);
 
@@ -73,5 +78,7 @@ routes.put(
   RegistrationController.update
 );
 routes.delete('/registrations/:id', RegistrationController.destroy);
+
+routes.post('/avatars', upload.single('file'), AvatarController.store);
 
 export default routes;

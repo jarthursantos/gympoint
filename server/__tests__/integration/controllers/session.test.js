@@ -9,7 +9,12 @@ describe('Session', () => {
     await truncate();
   });
 
-  it('should be able to authenticate the credentials', async () => {
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('store: should be able to authenticate the credentials', async () => {
     const { email, password } = await factory.create('User');
 
     const response = await request(app)
@@ -19,7 +24,7 @@ describe('Session', () => {
     expect(response.body).toHaveProperty('token');
   });
 
-  it('should not be able to authenticate credentials without email', async () => {
+  it('store: should not be able to authenticate credentials without email', async () => {
     const { password } = await factory.create('User');
 
     const response = await request(app)
@@ -29,7 +34,7 @@ describe('Session', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to authenticate credentials without password', async () => {
+  it('store: should not be able to authenticate credentials without password', async () => {
     const { email } = await factory.create('User');
 
     const response = await request(app)
@@ -39,7 +44,7 @@ describe('Session', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to authenticate invalid credentials email', async () => {
+  it('store: should not be able to authenticate invalid credentials email', async () => {
     const user = await factory.attrs('User');
 
     const response = await request(app)
@@ -52,7 +57,7 @@ describe('Session', () => {
     expect(response.body.error).toBe('user not found');
   });
 
-  it('should not be able to authenticate invalid credentials password', async () => {
+  it('store: should not be able to authenticate invalid credentials password', async () => {
     const { email, password } = await factory.create('User');
 
     const response = await request(app)

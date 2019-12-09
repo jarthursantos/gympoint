@@ -3,14 +3,21 @@ import request from 'supertest';
 import app from '../../../src/app';
 import factory from '../../factories';
 import truncate from '../../util/truncate';
-import token from '../../util/authToken';
+import generateToken from '../../util/authToken';
 
-describe('Students/Index', () => {
+describe('Students', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  it('should be able to show a list of students', async () => {
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('index: should be able to show a list of students', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .get(`/students`)
       .set('Authorization', token);
@@ -18,20 +25,16 @@ describe('Students/Index', () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it('should not be able to show a list of students without autentication', async () => {
+  it('index: should not be able to show a list of students without autentication', async () => {
     const response = await request(app).get(`/students`);
 
     expect(response.status).toBe(401);
   });
-});
 
-describe('Students/Store', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
-
-  it('should be able to register', async () => {
+  it('store: should be able to register', async () => {
     const student = await factory.attrs('Student');
+
+    const { token } = await generateToken();
 
     const response = await request(app)
       .post('/students')
@@ -41,7 +44,7 @@ describe('Students/Store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to register without authenticate', async () => {
+  it('store: should not be able to register without authenticate', async () => {
     const student = await factory.attrs('Student');
 
     const response = await request(app)
@@ -51,10 +54,12 @@ describe('Students/Store', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to register without name', async () => {
+  it('store: should not be able to register without name', async () => {
     const student = await factory.attrs('Student');
     delete student.name;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -63,10 +68,12 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without email', async () => {
+  it('store: should not be able to register without email', async () => {
     const student = await factory.attrs('Student');
     delete student.email;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -75,10 +82,12 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without age', async () => {
+  it('store: should not be able to register without age', async () => {
     const student = await factory.attrs('Student');
     delete student.age;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -87,11 +96,13 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid age', async () => {
+  it('store: should not be able to register with invalid age', async () => {
     const student = await factory.attrs('Student', {
       age: 0,
     });
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -100,10 +111,12 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without height', async () => {
+  it('store: should not be able to register without height', async () => {
     const student = await factory.attrs('Student');
     delete student.height;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -112,11 +125,13 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid height', async () => {
+  it('store: should not be able to register with invalid height', async () => {
     const student = await factory.attrs('Student', {
       height: 0,
     });
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -125,10 +140,12 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without weight', async () => {
+  it('store: should not be able to register without weight', async () => {
     const student = await factory.attrs('Student');
     delete student.weight;
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -137,11 +154,13 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid weight', async () => {
+  it('store: should not be able to register with invalid weight', async () => {
     const student = await factory.attrs('Student', {
       weight: 0,
     });
 
+    const { token } = await generateToken();
+
     const response = await request(app)
       .post('/students')
       .set('Authorization', token)
@@ -150,8 +169,10 @@ describe('Students/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with duplicated email', async () => {
+  it('store: should not be able to register with duplicated email', async () => {
     const student = await factory.attrs('Student');
+
+    const { token } = await generateToken();
 
     await request(app)
       .post('/students')
@@ -165,22 +186,18 @@ describe('Students/Store', () => {
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Students/Update', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
-
-  it('should be able to update', async () => {
+  it('update: should be able to update', async () => {
     const student = await factory.attrs('Student');
 
-    const planResponse = await request(app)
+    const { token } = await generateToken();
+
+    const studentResponse = await request(app)
       .post('/students')
       .set('Authorization', token)
       .send(student);
 
-    const { id } = planResponse.body;
+    const { id } = studentResponse.body;
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -192,8 +209,10 @@ describe('Students/Update', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to update without authenticate', async () => {
+  it('update: should not be able to update without authenticate', async () => {
     const student = await factory.attrs('Student');
+
+    const { token } = await generateToken();
 
     const studentResponse = await request(app)
       .post('/students')
@@ -211,7 +230,9 @@ describe('Students/Update', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to update invalid student', async () => {
+  it('update: should not be able to update invalid student', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .put(`/students/0`)
       .set('Authorization', token)
@@ -222,8 +243,10 @@ describe('Students/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update student name', async () => {
+  it('update: should be able to update student name', async () => {
     const student = await factory.attrs('Student');
+
+    const { token } = await generateToken();
 
     const studentResponse = await request(app)
       .post('/students')
@@ -243,8 +266,12 @@ describe('Students/Update', () => {
     expect(response.body.name).toBe('José Silva');
   });
 
-  it('should be able to update student email', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should be able to update student email', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -257,8 +284,12 @@ describe('Students/Update', () => {
     expect(response.body.email).toBe('silva@gmail.com');
   });
 
-  it('should be able to update student age', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should be able to update student age', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -271,8 +302,12 @@ describe('Students/Update', () => {
     expect(response.body.age).toBe(23);
   });
 
-  it('should not be able to update student with invalid age', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should not be able to update student with invalid age', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -284,8 +319,12 @@ describe('Students/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update student height', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should be able to update student height', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -298,8 +337,12 @@ describe('Students/Update', () => {
     expect(response.body.height).toBe(1.7);
   });
 
-  it('should not be able to update student with invalid height', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should not be able to update student with invalid height', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -311,8 +354,12 @@ describe('Students/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update student weight', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should be able to update student weight', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -325,8 +372,12 @@ describe('Students/Update', () => {
     expect(response.body.weight).toBe(80.0);
   });
 
-  it('should not be able to update student with invalid weight', async () => {
-    const { id } = await factory.create('Student');
+  it('update: should not be able to update student with invalid weight', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/students/${id}`)
@@ -338,8 +389,10 @@ describe('Students/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to update student email with a already registered email', async () => {
+  it('update: should not be able to update student email with a already registered email', async () => {
     const student = await factory.attrs('Student');
+
+    const { token } = await generateToken();
 
     await request(app)
       .post('/students')

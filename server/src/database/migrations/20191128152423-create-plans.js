@@ -10,7 +10,6 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       duration: {
         type: Sequelize.INTEGER,
@@ -20,6 +19,13 @@ module.exports = {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
+      created_by: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -27,6 +33,10 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
+      },
+      deprecated_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
     });
   },

@@ -4,14 +4,21 @@ import { format } from 'date-fns';
 import app from '../../../src/app';
 import factory from '../../factories';
 import truncate from '../../util/truncate';
-import token from '../../util/authToken';
+import generateToken from '../../util/authToken';
 
-describe('Registration/Index', () => {
+describe('Registration', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  it('should be able to show a list of registrations', async () => {
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('index: should be able to show a list of registrations', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .get(`/registrations`)
       .set('Authorization', token);
@@ -19,21 +26,21 @@ describe('Registration/Index', () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it('should not be able to show a list of registrations without autentication', async () => {
+  it('index: should not be able to show a list of registrations without autentication', async () => {
     const response = await request(app).get(`/registrations`);
 
     expect(response.status).toBe(401);
   });
-});
 
-describe('Registration/Store', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('store: should be able to register', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to register', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -48,9 +55,15 @@ describe('Registration/Store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to register without authenticate', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('store: should not be able to register without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -64,9 +77,15 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to register with a student that is already registered', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('store: should not be able to register with a student that is already registered', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -86,8 +105,12 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without student', async () => {
-    const { id: plan_id } = await factory.create('Plan');
+  it('store: should not be able to register without student', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       plan_id,
@@ -103,8 +126,12 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without plan', async () => {
-    const { id: student_id } = await factory.create('Student');
+  it('store: should not be able to register without plan', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -120,9 +147,15 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without start date', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('store: should not be able to register without start date', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -139,8 +172,12 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid student', async () => {
-    const { id: plan_id } = await factory.create('Plan');
+  it('store: should not be able to register with invalid student', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       plan_id,
@@ -154,8 +191,12 @@ describe('Registration/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid plan', async () => {
-    const { id: student_id } = await factory.create('Student');
+  it('store: should not be able to register with invalid plan', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const registration = await factory.attrs('Registration', {
       student_id,
@@ -168,16 +209,16 @@ describe('Registration/Store', () => {
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Registration/Update', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('update: should be able to update', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to update', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -194,9 +235,15 @@ describe('Registration/Update', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to update without authenticate', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('update: should not be able to update without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -212,7 +259,9 @@ describe('Registration/Update', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to update invalid registration', async () => {
+  it('update: should not be able to update invalid registration', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .put(`/registrations/0`)
       .set('Authorization', token)
@@ -221,9 +270,15 @@ describe('Registration/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update registration start date', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('update: should be able to update registration start date', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -240,9 +295,15 @@ describe('Registration/Update', () => {
     expect(response.status).toBe(200);
   });
 
-  it('should not be able to update registration with invalid start date', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('update: should not be able to update registration with invalid start date', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -259,16 +320,23 @@ describe('Registration/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update registration plan', async () => {
-    const { id: student_id } = await factory.create('Student');
+  it('update: should be able to update registration plan', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
     const { id: plan_id, duration, price } = await factory.create('Plan', {
+      created_by: admin_id,
       title: 'Silver',
     });
+
     const {
       id: plan_id_to_update,
       duration: new_duration,
       price: new_price,
     } = await factory.create('Plan', {
+      created_by: admin_id,
       title: 'Gold',
       duration: duration * 2,
       price: price * 0.75,
@@ -291,9 +359,15 @@ describe('Registration/Update', () => {
     expect(response.body.price).toBe(value);
   });
 
-  it('should not be able to update with invalid plan', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('update: should not be able to update with invalid plan', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -313,16 +387,16 @@ describe('Registration/Update', () => {
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Registration/Destroy', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('destroy: should be able to delete specific plan', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to delete specific plan', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -336,9 +410,15 @@ describe('Registration/Destroy', () => {
     expect(response.status).toBe(200);
   });
 
-  it('should not be able to delete a plan without authenticate', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  it('destroy: should not be able to delete a plan without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const { id } = await factory.create('Registration', {
       student_id,
@@ -350,7 +430,9 @@ describe('Registration/Destroy', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to delete a invalid plan', async () => {
+  it('destroy: should not be able to delete a invalid plan', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .delete('/registrations/0')
       .set('Authorization', token);

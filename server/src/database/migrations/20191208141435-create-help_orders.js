@@ -22,6 +22,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      replier_by: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
+      },
       answer_at: {
         type: Sequelize.DATE,
         allowNull: true,

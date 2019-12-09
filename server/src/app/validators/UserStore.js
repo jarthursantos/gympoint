@@ -9,6 +9,7 @@ export default async (req, res, next) => {
         .email()
         .required(),
       password: Yup.string().required(),
+      avatar_id: Yup.number().integer(),
     });
 
     await schema.validate(req.body, { abortEarly: false });

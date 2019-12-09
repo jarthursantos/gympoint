@@ -5,15 +5,27 @@ import { subYears } from 'date-fns';
 import app from '../../../src/app';
 import factory from '../../factories';
 import truncate from '../../util/truncate';
+import generateToken from '../../util/authToken';
 
-describe('Checkin/Index', () => {
+describe('Checkin', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  it('should be able to show a list of checkins from student', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('index: should be able to show a list of checkins from student', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     await factory.create('Registration', {
       student_id,
@@ -25,21 +37,21 @@ describe('Checkin/Index', () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it('should not be able to show a list of checkins from a invalid student', async () => {
+  it('index: should not be able to show a list of checkins from a invalid student', async () => {
     const response = await request(app).get(`/students/0/checkins`);
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Checkin/Store', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('store: should be able to store', async () => {
+    const { id: admin_id } = await generateToken();
 
-  it('should be able to store', async () => {
-    const { id: student_id } = await factory.create('Student');
-    const { id: plan_id } = await factory.create('Plan');
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
+    const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     await factory.create('Registration', {
       student_id,
@@ -53,14 +65,18 @@ describe('Checkin/Store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to store with invalid student', async () => {
+  it('store: should not be able to store with invalid student', async () => {
     const response = await request(app).post('/students/0/checkins');
 
     expect(response.status).toBe(400);
   });
 
   it("should not be able to store with don't registered student", async () => {
-    const { id: student_id } = await factory.create('Student');
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
 
     const response = await request(app).post(
       `/students/${student_id}/checkins`
@@ -69,9 +85,14 @@ describe('Checkin/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to store with expired register', async () => {
-    const { id: student_id } = await factory.create('Student');
+  it('store: should not be able to store with expired register', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
     const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
       duration: 1,
     });
 
@@ -89,9 +110,14 @@ describe('Checkin/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to store with student quota exceded', async () => {
-    const { id: student_id } = await factory.create('Student');
+  it('store: should not be able to store with student quota exceded', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id: student_id } = await factory.create('Student', {
+      created_by: admin_id,
+    });
     const { id: plan_id } = await factory.create('Plan', {
+      created_by: admin_id,
       duration: 12,
     });
 

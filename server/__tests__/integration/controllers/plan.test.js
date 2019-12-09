@@ -3,14 +3,21 @@ import request from 'supertest';
 import app from '../../../src/app';
 import factory from '../../factories';
 import truncate from '../../util/truncate';
-import token from '../../util/authToken';
+import generateToken from '../../util/authToken';
 
-describe('Plans/Index', () => {
+describe('Plans', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  it('should be able to show a list of plans', async () => {
+  afterAll(async done => {
+    await truncate();
+    done();
+  });
+
+  it('index: should be able to show a list of plans', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .get(`/plans`)
       .set('Authorization', token);
@@ -18,20 +25,19 @@ describe('Plans/Index', () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it('should not be able to show a list of plans without autentication', async () => {
+  it('index: should not be able to show a list of plans without autentication', async () => {
     const response = await request(app).get(`/plans`);
 
     expect(response.status).toBe(401);
   });
-});
 
-describe('Plans/Store', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('store: should be able to register', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to register', async () => {
-    const plan = await factory.attrs('Plan');
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
+
     const response = await request(app)
       .post('/plans')
       .set('Authorization', token)
@@ -40,8 +46,12 @@ describe('Plans/Store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to register without authenticate', async () => {
-    const plan = await factory.attrs('Plan');
+  it('store: should not be able to register without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .post('/plans')
@@ -50,8 +60,12 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to register without title', async () => {
-    const plan = await factory.attrs('Plan');
+  it('store: should not be able to register without title', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
     delete plan.title;
 
     const response = await request(app)
@@ -62,8 +76,12 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without duration', async () => {
-    const plan = await factory.attrs('Plan');
+  it('store: should not be able to register without duration', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
     delete plan.duration;
 
     const response = await request(app)
@@ -74,8 +92,13 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid duration', async () => {
-    const plan = await factory.attrs('Plan', { duration: 0 });
+  it('store: should not be able to register with invalid duration', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      duration: 0,
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .post('/plans')
@@ -85,8 +108,13 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register without price', async () => {
-    const plan = await factory.attrs('Plan');
+  it('store: should not be able to register without price', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
+
     delete plan.price;
 
     const response = await request(app)
@@ -97,8 +125,13 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with invalid price', async () => {
-    const plan = await factory.attrs('Plan', { price: 0 });
+  it('store: should not be able to register with invalid price', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      price: 0,
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .post('/plans')
@@ -108,8 +141,12 @@ describe('Plans/Store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to register with duplicated title', async () => {
-    const plan = await factory.attrs('Plan');
+  it('store: should not be able to register with duplicated title', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const plan = await factory.attrs('Plan', {
+      created_by: admin_id,
+    });
 
     await request(app)
       .post('/plans')
@@ -123,15 +160,13 @@ describe('Plans/Store', () => {
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Plans/Update', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('update: should be able to update', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to update', async () => {
-    const { id } = await factory.create('Plan');
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -143,8 +178,12 @@ describe('Plans/Update', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should not be able to update without authenticate', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should not be able to update without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .post(`/plans/${id}`)
@@ -157,7 +196,9 @@ describe('Plans/Update', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to update invalid plan', async () => {
+  it('update: should not be able to update invalid plan', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .put(`/plans/0`)
       .set('Authorization', token)
@@ -168,8 +209,12 @@ describe('Plans/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update plan title', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should be able to update plan title', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -182,9 +227,14 @@ describe('Plans/Update', () => {
     expect(response.body.title).toBe('Gold');
   });
 
-  it('should not be able to update plan title with a already registered title', async () => {
-    const { id, title } = await factory.create('Plan');
-    await factory.create('Plan', { title: `${title} 2` });
+  it('update: should not be able to update plan title with a already registered title', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id, title } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
+
+    await factory.create('Plan', { title: `${title} 2`, created_by: admin_id });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -194,8 +244,12 @@ describe('Plans/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to request plan update with the same title', async () => {
-    const { id, title } = await factory.create('Plan');
+  it('update: should be able to request plan update with the same title', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id, title } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -205,8 +259,12 @@ describe('Plans/Update', () => {
     expect(response.status).toBe(200);
   });
 
-  it('should be able to update plan duration', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should be able to update plan duration', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -217,8 +275,12 @@ describe('Plans/Update', () => {
     expect(response.body.duration).toBe(3);
   });
 
-  it('should not be able to update plan with invalid duration', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should not be able to update plan with invalid duration', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -228,8 +290,12 @@ describe('Plans/Update', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to update plan price', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should be able to update plan price', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -240,8 +306,12 @@ describe('Plans/Update', () => {
     expect(response.body.price).toBe(109.0);
   });
 
-  it('should not be able to update plan with invalid price', async () => {
-    const { id } = await factory.create('Plan');
+  it('update: should not be able to update plan with invalid price', async () => {
+    const { id: admin_id, token } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .put(`/plans/${id}`)
@@ -250,15 +320,13 @@ describe('Plans/Update', () => {
 
     expect(response.status).toBe(400);
   });
-});
 
-describe('Plans/Destroy', () => {
-  beforeEach(async () => {
-    await truncate();
-  });
+  it('destroy: should be able to delete specific plan', async () => {
+    const { id: admin_id, token } = await generateToken();
 
-  it('should be able to delete specific plan', async () => {
-    const { id } = await factory.create('Plan');
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app)
       .delete(`/plans/${id}`)
@@ -267,15 +335,21 @@ describe('Plans/Destroy', () => {
     expect(response.status).toBe(200);
   });
 
-  it('should not be able to delete a plan without authenticate', async () => {
-    const { id } = await factory.create('Plan');
+  it('destroy: should not be able to delete a plan without authenticate', async () => {
+    const { id: admin_id } = await generateToken();
+
+    const { id } = await factory.create('Plan', {
+      created_by: admin_id,
+    });
 
     const response = await request(app).delete(`/plans/${id}`);
 
     expect(response.status).toBe(401);
   });
 
-  it('should not be able to delete a invalid plan', async () => {
+  it('destroy: should not be able to delete a invalid plan', async () => {
+    const { token } = await generateToken();
+
     const response = await request(app)
       .delete('/plans/0')
       .set('Authorization', token);
