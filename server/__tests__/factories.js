@@ -1,6 +1,7 @@
 import faker from 'faker';
 import { factory } from 'factory-girl';
 
+import Avatar from '../src/app/models/Avatar';
 import User from '../src/app/models/User';
 import Plan from '../src/app/models/Plan';
 import Checkin from '../src/app/models/Checkin';
@@ -17,7 +18,7 @@ factory.define('User', User, {
 factory.define('Student', Student, {
   name: faker.name.findName(),
   email: faker.internet.email(),
-  age: faker.random.number(),
+  birthdate: faker.date.past(),
   height: faker.random.number({ precision: 0.1 }),
   weight: faker.random.number({ precision: 0.1 }),
   created_by: faker.random.number(),
@@ -50,6 +51,11 @@ factory.define('HelpOrder', HelpOrder, {
 factory.define('Answer', HelpOrder, {
   answer: faker.lorem.paragraph(1),
   replier_by: faker.random.number(),
+});
+
+factory.define('Avatar', Avatar, {
+  name: faker.lorem.word(),
+  path: faker.lorem.word(),
 });
 
 export default factory;

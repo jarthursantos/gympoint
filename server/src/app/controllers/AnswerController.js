@@ -3,6 +3,8 @@ import HelpOrder from '../models/HelpOrder';
 import User from '../models/User';
 import Student from '../models/Student';
 
+import AnsweredNotification from '../schemas/AnsweredNotification';
+
 import HelpOrderAnsweredJob from '../jobs/HelpOrderAnsweredMail';
 import Queue from '../../lib/Queue';
 
@@ -46,7 +48,7 @@ class AnswerController {
         {
           model: Student,
           as: 'student',
-          attributes: ['name', 'email', 'alternative_id'],
+          attributes: ['id', 'name', 'email', 'alternative_id'],
         },
       ],
       attributes: ['id', 'question', 'answer', 'answer_at', 'createdAt'],
@@ -64,10 +66,21 @@ class AnswerController {
 
     await Queue.add(HelpOrderAnsweredJob.key, { help_order });
 
+    const short_question = question.substr(0, 50);
+    const overflow_limit = short_question.length >= 50;
+
+    AnsweredNotification.create({
+      student: student.id,
+      answer: id,
+      message: `Seu pedido de ajuda "${short_question}${
+        overflow_limit ? '...' : ''
+      }" obteve uma resposta.`,
+    });
+
     return res.json(help_order);
   }
 }
 
 export default new AnswerController();
 
-// TODO: student like a answer
+// TODO: student avaliate a answer

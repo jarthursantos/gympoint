@@ -8,10 +8,7 @@ export default async (req, res, next) => {
       email: Yup.string()
         .email()
         .required(),
-      age: Yup.number()
-        .integer()
-        .min(1)
-        .required(),
+      birthdate: Yup.date().required(),
       height: Yup.number()
         .min(0.1)
         .required(),

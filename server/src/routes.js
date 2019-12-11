@@ -7,15 +7,18 @@ import AnswerController from './app/controllers/AnswerController';
 import CheckinController from './app/controllers/CheckinController';
 import AvatarController from './app/controllers/AvatarController';
 import HelpOrderController from './app/controllers/HelpOrderController';
+import HelpOrderNotificationController from './app/controllers/HelpOrderNotificationController';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
 import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
+import StudentNotificationController from './app/controllers/StudentNotificationController';
 import UserController from './app/controllers/UserController';
 
 import authMiddleware from './app/middlewares/auth';
 
 import validateUserStore from './app/validators/UserStore';
+import validateUserUpdate from './app/validators/UserUpdate';
 
 import validateSessionStore from './app/validators/SessionStore';
 
@@ -40,6 +43,15 @@ routes.use('/sessions', validateSessionStore, SessionController.store);
 routes.get('/students/:id/checkins', CheckinController.index);
 routes.post('/students/:id/checkins', CheckinController.store);
 
+routes.get(
+  '/students/:student_id/notifications',
+  StudentNotificationController.index
+);
+routes.put(
+  '/students/:student_id/notifications/:id',
+  StudentNotificationController.update
+);
+
 routes.get('/students/:id/help-orders', HelpOrderController.index);
 routes.post(
   '/students/:id/help-orders',
@@ -50,6 +62,10 @@ routes.post(
 routes.use(authMiddleware);
 
 routes.post('/users', validateUserStore, UserController.store);
+routes.put('/users', validateUserUpdate, UserController.update);
+
+routes.get('/notifications', HelpOrderNotificationController.index);
+routes.put('/notifications/:id', HelpOrderNotificationController.update);
 
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);

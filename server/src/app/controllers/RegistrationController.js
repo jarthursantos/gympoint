@@ -14,7 +14,7 @@ class RegistrationController {
         {
           model: Student,
           as: 'student',
-          attributes: ['id', 'name', 'email', 'age', 'height', 'weight'],
+          attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],
         },
         {
           model: Plan,
@@ -74,7 +74,7 @@ class RegistrationController {
             'id',
             'name',
             'email',
-            'age',
+            'birthdate',
             'height',
             'weight',
             'alternative_id',
@@ -136,7 +136,7 @@ class RegistrationController {
             'id',
             'name',
             'email',
-            'age',
+            'birthdate',
             'height',
             'weight',
             'alternative_id',

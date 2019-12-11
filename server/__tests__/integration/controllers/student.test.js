@@ -82,9 +82,9 @@ describe('Students', () => {
     expect(response.status).toBe(400);
   });
 
-  it('store: should not be able to register without age', async () => {
+  it('store: should not be able to register without birthdate', async () => {
     const student = await factory.attrs('Student');
-    delete student.age;
+    delete student.birthdate;
 
     const { token } = await generateToken();
 
@@ -96,9 +96,9 @@ describe('Students', () => {
     expect(response.status).toBe(400);
   });
 
-  it('store: should not be able to register with invalid age', async () => {
+  it('store: should not be able to register with invalid birthdate', async () => {
     const student = await factory.attrs('Student', {
-      age: 0,
+      birthdate: 'this is a invalid date',
     });
 
     const { token } = await generateToken();
@@ -284,7 +284,7 @@ describe('Students', () => {
     expect(response.body.email).toBe('silva@gmail.com');
   });
 
-  it('update: should be able to update student age', async () => {
+  it('update: should be able to update student birthdate', async () => {
     const { id: admin_id, token } = await generateToken();
 
     const { id } = await factory.create('Student', {
@@ -295,14 +295,13 @@ describe('Students', () => {
       .put(`/students/${id}`)
       .set('Authorization', token)
       .send({
-        age: 23,
+        birthdate: '2000-01-01',
       });
 
-    expect(response.body).toHaveProperty('age');
-    expect(response.body.age).toBe(23);
+    expect(response.body).toHaveProperty('birthdate');
   });
 
-  it('update: should not be able to update student with invalid age', async () => {
+  it('update: should not be able to update student with invalid birthdate', async () => {
     const { id: admin_id, token } = await generateToken();
 
     const { id } = await factory.create('Student', {
@@ -313,7 +312,7 @@ describe('Students', () => {
       .put(`/students/${id}`)
       .set('Authorization', token)
       .send({
-        age: 0,
+        birthdate: 'this is a invalid date',
       });
 
     expect(response.status).toBe(400);

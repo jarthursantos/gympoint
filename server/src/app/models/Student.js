@@ -1,4 +1,4 @@
-import { Model, DOUBLE, INTEGER, STRING } from 'sequelize';
+import { Model, DOUBLE, DATE, STRING } from 'sequelize';
 
 // import shortid from 'shortid';
 const shortid = require('shortid');
@@ -9,7 +9,7 @@ class Student extends Model {
       {
         name: STRING,
         email: STRING,
-        age: INTEGER,
+        birthdate: DATE,
         height: DOUBLE,
         weight: DOUBLE,
         alternative_id: STRING,

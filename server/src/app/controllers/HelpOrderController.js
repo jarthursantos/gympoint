@@ -5,6 +5,8 @@ import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
 import Registration from '../models/Registration';
 
+import HelpOrderNotification from '../schemas/HelpOrderNotification';
+
 class HelpOrderController {
   async index(req, res) {
     const { id: student_id } = req.params;
@@ -80,6 +82,15 @@ class HelpOrderController {
         },
       ],
       attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
+    });
+
+    const short_question = help_order.question.substr(0, 50);
+    const overflow_limit = short_question.length >= 50;
+
+    HelpOrderNotification.create({
+      help_order: id,
+      title: `${help_order.student.name} solicitou ajuda`,
+      message: `"${short_question}${overflow_limit ? '...' : ''}"`,
     });
 
     return res.json(help_order);

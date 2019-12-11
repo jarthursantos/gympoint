@@ -3,7 +3,7 @@ import Student from '../models/Student';
 class StudentController {
   async index(_req, res) {
     const students = await Student.findAll({
-      attributes: ['id', 'name', 'email', 'age', 'height', 'weight'],
+      attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],
     });
     return res.json(students);
   }
@@ -17,12 +17,14 @@ class StudentController {
       return res.status(400).json({ error: 'email already in use' });
     }
 
-    const { id, name, email, age, height, weight } = await Student.create({
-      ...req.body,
-      created_by: req.user_id,
-    });
+    const { id, name, email, birthdate, height, weight } = await Student.create(
+      {
+        ...req.body,
+        created_by: req.user_id,
+      }
+    );
 
-    return res.json({ id, name, email, age, height, weight });
+    return res.json({ id, name, email, birthdate, height, weight });
   }
 
   async update(req, res) {
@@ -50,12 +52,19 @@ class StudentController {
       id,
       name,
       email: currentEmail,
-      age,
+      birthdate,
       height,
       weight,
     } = await Student.findByPk(req.params.id);
 
-    return res.json({ id, name, email: currentEmail, age, height, weight });
+    return res.json({
+      id,
+      name,
+      email: currentEmail,
+      birthdate,
+      height,
+      weight,
+    });
   }
 }
 

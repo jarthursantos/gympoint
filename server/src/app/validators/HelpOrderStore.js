@@ -4,7 +4,9 @@ const Yup = require('yup');
 export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
-      question: Yup.string().required(),
+      question: Yup.string()
+        .max(255)
+        .required(),
     });
 
     await schema.validate(req.body, { abortEarly: false });
