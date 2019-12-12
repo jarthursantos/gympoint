@@ -28,18 +28,18 @@ export default function routes() {
       <Route path="/students/register" component={StudentRegister} isPrivate />
       <Route path="/students/:id/edit" component={StudentEditor} isPrivate />
 
-      <Route path="/plan" component={PlanList} isPrivate />
-      <Route path="/plan/register" component={PlanRegister} isPrivate />
-      <Route path="/plan/:id/edit" component={PlanEditor} isPrivate />
+      <Route path="/plans" component={PlanList} isPrivate />
+      <Route path="/plans/register" component={PlanRegister} isPrivate />
+      <Route path="/plans/:id/edit" component={PlanEditor} isPrivate />
 
-      <Route path="/registration" component={RegistrationList} isPrivate />
+      <Route path="/registrations" component={RegistrationList} isPrivate />
       <Route
-        path="/registration/register"
+        path="/registrations/register"
         component={RegistrationRegister}
         isPrivate
       />
       <Route
-        path="/registration/:id/edit"
+        path="/registrations/:id/edit"
         component={RegistrationEditor}
         isPrivate
       />

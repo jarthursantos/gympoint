@@ -19,9 +19,9 @@ export const Content = styled.div`
     align-items: center;
 
     img {
-      margin-right: 20px;
-      padding-right: 20px;
-      border-right: 1px solid #eee;
+      margin-right: 30px;
+      padding-right: 30px;
+      border-right: 1px solid #ddd;
     }
 
     a {
@@ -62,8 +62,10 @@ export const Profile = styled.div`
       color: #666;
     }
 
-    a {
+    button {
       display: block;
+      border: none;
+      background: none;
       margin-top: 2px;
       font-size: 14px;
       color: #de3b3b;

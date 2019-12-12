@@ -1,26 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { signOut } from '~/store/modules/auth/actions';
 import { Container, Content, Profile } from './styles';
 import Notifications from '../Notifications';
 
 import logo from '~/assets/small-logo.svg';
 
 export default function Header() {
+  const dispatch = useDispatch();
+
+  function handleSignOut() {
+    dispatch(signOut());
+  }
+
   const { avatar, name } = useSelector(state => state.user.profile);
+  const { activeTab } = useSelector(state => state.navigation);
 
   return (
     <Container>
       <Content>
         <nav>
           <img src={logo} alt="GoBarber" />
-          <Link to="/dashboard" className="active">
+          <Link
+            to="/students"
+            className={activeTab === 'students' ? 'active' : ''}
+          >
             ALUNOS
           </Link>
-          <Link to="/dashboard">PLANOS</Link>
-          <Link to="/dashboard">MATRÍCULAS</Link>
-          <Link to="/dashboard">PEDIDOS DE AUXÍLIO</Link>
+          <Link to="/plans" className={activeTab === 'plans' ? 'active' : ''}>
+            PLANOS
+          </Link>
+          <Link
+            to="/registrations"
+            className={activeTab === 'registrations' ? 'active' : ''}
+          >
+            MATRÍCULAS
+          </Link>
+          <Link
+            to="/helpOrders"
+            className={activeTab === 'helpOrders' ? 'active' : ''}
+          >
+            PEDIDOS DE AUXÍLIO
+          </Link>
         </nav>
 
         <aside>
@@ -28,7 +51,9 @@ export default function Header() {
           <Profile>
             <div>
               <strong>{name}</strong>
-              <Link to="/profile">sair do sistema</Link>
+              <button type="button" onClick={handleSignOut}>
+                sair do sistema
+              </button>
             </div>
             <img
               src={
@@ -44,3 +69,5 @@ export default function Header() {
     </Container>
   );
 }
+
+// TODO: log out action

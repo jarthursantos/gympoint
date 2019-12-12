@@ -14,7 +14,7 @@ import {
 } from './styles';
 
 export default function Notifications() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   const hasNotification = useMemo(() => notifications.length, [notifications]);
