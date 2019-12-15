@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MdArrowBack, MdSave } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 
-import api from '~/services/api';
 import { navigate } from '~/store/modules/navigation/actions';
 
 import TopBar from '~/components/TopBar';

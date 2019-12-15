@@ -19,33 +19,8 @@ export const Container = styled.header`
     display: flex;
     align-items: center;
 
-    a,
-    button {
-      display: flex;
-      align-items: center;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 4px;
-      border: none;
-      text-transform: uppercase;
-      color: #fff;
-      margin-right: 16px;
-
-      svg {
-        margin-right: 8px;
-      }
-
-      &.primary {
-        background: #ee4d64;
-      }
-
-      &.secondary {
-        background: #cccccc;
-      }
-    }
-
     div {
+      margin-left: 16px;
       display: flex;
       border: 1px solid #ddd;
       border-radius: 4px;

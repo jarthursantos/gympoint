@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MdAdd, MdSearch } from 'react-icons/md';
+import { MdSearch } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { differenceInYears, parseISO } from 'date-fns';
 
@@ -10,6 +10,7 @@ import { navigate } from '~/store/modules/navigation/actions';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import LoadingState from '~/components/States/Loading';
+import RegisterButton from '~/components/RegisterButton';
 import { Wrapper, Container } from './styles';
 
 export default function StudentList() {
@@ -90,10 +91,8 @@ export default function StudentList() {
     <Wrapper>
       <Container>
         <TopBar title="Gerenciando alunos">
-          <Link to="/students/register" className="primary">
-            <MdAdd size={20} color="#fff" />
-            Cadastrar
-          </Link>
+          <RegisterButton to="/students/register" />
+
           <div>
             <MdSearch size={20} color="#999" />
             <input

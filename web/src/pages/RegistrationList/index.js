@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MdAdd } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -11,6 +10,7 @@ import { navigate } from '~/store/modules/navigation/actions';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import LoadingState from '~/components/States/Loading';
+import RegisterButton from '~/components/RegisterButton';
 import { Wrapper, Container } from './styles';
 
 export default function PlanList() {
@@ -93,10 +93,7 @@ export default function PlanList() {
     <Wrapper>
       <Container>
         <TopBar title="Gerenciando matrículas">
-          <Link to="/registrations/register" className="primary">
-            <MdAdd size={20} color="#fff" />
-            Cadastrar
-          </Link>
+          <RegisterButton to="/registrations/register" />
         </TopBar>
 
         {loading ? <LoadingState /> : <RegistrationTable />}

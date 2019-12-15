@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MdAdd } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 
 import api from '~/services/api';
@@ -11,6 +10,7 @@ import { formatPrice } from '~/util/format';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import LoadingState from '~/components/States/Loading';
+import RegisterButton from '~/components/RegisterButton';
 import { Wrapper, Container } from './styles';
 
 export default function PlanList() {
@@ -32,7 +32,9 @@ export default function PlanList() {
     })();
   }, []);
 
-  function handleDelete({ id, title }) {}
+  function handleDelete({ id, title }) {
+    console.tron.log(id, title);
+  }
 
   function PlanTable() {
     return (
@@ -74,10 +76,7 @@ export default function PlanList() {
     <Wrapper>
       <Container>
         <TopBar title="Gerenciando planos">
-          <Link to="/plans/register" className="primary">
-            <MdAdd size={20} color="#fff" />
-            Cadastrar
-          </Link>
+          <RegisterButton to="/plans/register" />
         </TopBar>
         {loading ? <LoadingState /> : <PlanTable />}
       </Container>
