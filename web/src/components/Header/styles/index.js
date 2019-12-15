@@ -3,11 +3,13 @@ import styled from 'styled-components';
 export const Container = styled.div`
   background: #fff;
   border-bottom: 1px solid #ddd;
+  width: 100%;
 `;
 
 export const Content = styled.div`
   height: 64px;
-  max-width: 980px;
+  padding: 0 30px;
+  max-width: 1200px;
   margin: 0 auto;
 
   display: flex;
@@ -25,6 +27,9 @@ export const Content = styled.div`
     }
 
     a {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-transform: uppercase;
       font-size: 15px;
       font-weight: bold;
@@ -53,6 +58,9 @@ export const Profile = styled.div`
   border-left: 1px solid #eee;
 
   div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: right;
     margin-right: 10px;
 

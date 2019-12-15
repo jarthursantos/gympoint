@@ -22,7 +22,7 @@ class RegistrationController {
           attributes: ['id', 'title', 'duration', 'price'],
         },
       ],
-      attributes: ['id', 'price', 'start_date', 'end_date'],
+      attributes: ['id', 'price', 'start_date', 'end_date', 'active'],
     });
     return res.json(registrations);
   }

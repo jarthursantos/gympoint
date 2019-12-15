@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdNotifications } from 'react-icons/md';
 import { parseISO, formatDistance } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import pt from 'date-fns/locale/pt-BR';
 
 import api from '~/services/api';
 
@@ -79,3 +79,4 @@ export default function Notifications() {
 }
 
 // TODO: notification action
+// TODO: loading state

@@ -23,12 +23,26 @@ export default function SignIn() {
 
   return (
     <>
-      <img src={logo} alt="GoBarber" />
+      <img src={logo} alt="Gympoint" />
       <Form schema={schema} onSubmit={handleSubmit}>
-        <strong>SEU E-MAIL</strong>
-        <Input name="email" type="email" placeholder="exemplo@email.com" />
-        <strong>SUA SENHA</strong>
-        <Input name="password" type="password" placeholder="*************" />
+        <label htmlFor="email">
+          SEU E-MAIL
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="exemplo@email.com"
+          />
+        </label>
+        <label htmlFor="password">
+          SUA SENHA
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="*************"
+          />
+        </label>
         <button type="submit">
           {loading ? 'Carregando...' : 'Entrar no Sistema'}
         </button>

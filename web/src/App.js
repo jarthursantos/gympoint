@@ -27,4 +27,6 @@ function App() {
   );
 }
 
+// TODO: add a wrapper to create dialogs, to answer helpOrders in any pages
+
 export default App;

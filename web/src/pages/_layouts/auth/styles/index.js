@@ -23,26 +23,29 @@ export const Content = styled.div`
     flex-direction: column;
     margin-top: 10px;
 
-    strong {
+    label {
+      text-align: start;
+      display: flex;
+      flex-direction: column;
       margin-top: 20px;
-      align-self: flex-start;
       font-size: 14px;
       color: #444;
-      margin-bottom: 8px;
-    }
+      font-weight: bold;
 
-    input {
-      background: #fff;
-      border: 1px solid #dddddd;
-      border-radius: 4px;
-      color: #666;
-      font-weight: 16px;
-      height: 44px;
-      padding: 0 15px;
-
-      &::placeholder {
-        color: #999;
+      input {
+        margin-top: 8px;
+        background: #fff;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
+        color: #666;
         font-weight: 16px;
+        height: 44px;
+        padding: 0 15px;
+
+        &::placeholder {
+          color: #999;
+          font-weight: 16px;
+        }
       }
     }
 

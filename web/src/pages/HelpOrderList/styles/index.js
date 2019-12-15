@@ -1,3 +1,20 @@
 import styled from 'styled-components';
 
-export const Container = styled.div``;
+export const Wrapper = styled.div`
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const Container = styled.div`
+  width: 100%;
+  max-width: 1060px;
+
+  table {
+    th,
+    td {
+      width: 70%;
+    }
+  }
+`;

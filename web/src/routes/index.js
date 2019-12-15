@@ -24,15 +24,20 @@ export default function routes() {
     <Switch>
       <Route path="/" exact component={SignIn} />
 
-      <Route path="/students" component={StudentList} isPrivate />
+      <Route path="/students" exact component={StudentList} isPrivate />
       <Route path="/students/register" component={StudentRegister} isPrivate />
       <Route path="/students/:id/edit" component={StudentEditor} isPrivate />
 
-      <Route path="/plans" component={PlanList} isPrivate />
+      <Route path="/plans" exact component={PlanList} isPrivate />
       <Route path="/plans/register" component={PlanRegister} isPrivate />
       <Route path="/plans/:id/edit" component={PlanEditor} isPrivate />
 
-      <Route path="/registrations" component={RegistrationList} isPrivate />
+      <Route
+        path="/registrations"
+        exact
+        component={RegistrationList}
+        isPrivate
+      />
       <Route
         path="/registrations/register"
         component={RegistrationRegister}
@@ -44,7 +49,7 @@ export default function routes() {
         isPrivate
       />
 
-      <Route path="/helpOrders" component={HelpOrderList} isPrivate />
+      <Route path="/helpOrders" exact component={HelpOrderList} isPrivate />
       <Route
         path="/helpOrders/:id/answer"
         component={HelpOrderAnswer}

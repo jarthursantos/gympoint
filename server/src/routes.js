@@ -11,6 +11,7 @@ import HelpOrderNotificationController from './app/controllers/HelpOrderNotifica
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
 import SessionController from './app/controllers/SessionController';
+import StudentAskController from './app/controllers/StudentAskController';
 import StudentController from './app/controllers/StudentController';
 import StudentNotificationController from './app/controllers/StudentNotificationController';
 import UserController from './app/controllers/UserController';
@@ -52,17 +53,19 @@ routes.put(
   StudentNotificationController.update
 );
 
-routes.get('/students/:id/help-orders', HelpOrderController.index);
+routes.get('/students/:id/help-orders', StudentAskController.index);
 routes.post(
   '/students/:id/help-orders',
   validateHelpOrderStore,
-  HelpOrderController.store
+  StudentAskController.store
 );
 
 routes.use(authMiddleware);
 
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users', validateUserUpdate, UserController.update);
+
+routes.get('/help-orders', HelpOrderController.index);
 
 routes.get('/notifications', HelpOrderNotificationController.index);
 routes.put('/notifications/:id', HelpOrderNotificationController.update);

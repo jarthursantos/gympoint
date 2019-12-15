@@ -22,7 +22,7 @@ export default function Header() {
     <Container>
       <Content>
         <nav>
-          <img src={logo} alt="GoBarber" />
+          <img src={logo} alt="Gympoint" />
           <Link
             to="/students"
             className={activeTab === 'students' ? 'active' : ''}
@@ -69,5 +69,3 @@ export default function Header() {
     </Container>
   );
 }
-
-// TODO: log out action

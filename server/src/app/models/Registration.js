@@ -1,4 +1,5 @@
-import { Model, DOUBLE, DATE } from 'sequelize';
+import { Model, DOUBLE, DATE, VIRTUAL } from 'sequelize';
+import { isBefore } from 'date-fns';
 
 class Registration extends Model {
   static init(sequelize) {
@@ -7,6 +8,12 @@ class Registration extends Model {
         price: DOUBLE,
         start_date: DATE,
         end_date: DATE,
+        active: {
+          type: VIRTUAL,
+          get() {
+            return isBefore(new Date(), this.end_date);
+          },
+        },
       },
       {
         sequelize,
