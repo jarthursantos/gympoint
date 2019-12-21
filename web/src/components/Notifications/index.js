@@ -100,3 +100,4 @@ export default function Notifications() {
 }
 
 // TODO: other notification type: asnwer avaliated
+// TODO: add redux to notifications and help orders

@@ -25,7 +25,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const { email, oldPassword, avatar_id } = req.body;
+    const { name, email, oldPassword, password, avatar_id } = req.body;
 
     const user = await User.findByPk(req.user_id);
 
@@ -49,9 +49,25 @@ class UserController {
       }
     }
 
-    const { id, name } = await user.update(req.body);
+    await user.update({
+      name,
+      email,
+      avatar_id,
+      password,
+    });
 
-    return res.json({ id, name, email });
+    const updatedUser = await User.findByPk(req.user_id, {
+      include: [
+        {
+          model: Avatar,
+          as: 'avatar',
+          attributes: ['id', 'name', 'path', 'url'],
+        },
+      ],
+      attributes: ['id', 'name', 'email'],
+    });
+
+    return res.json(updatedUser);
   }
 }
 

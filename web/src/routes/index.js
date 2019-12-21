@@ -3,6 +3,7 @@ import { Switch } from 'react-router-dom';
 import Route from './Route';
 
 import SignIn from '../pages/SignIn';
+import Profile from '../pages/Profile';
 
 import StudentList from '../pages/StudentList';
 import StudentRegister from '../pages/StudentRegister';
@@ -49,6 +50,7 @@ export default function routes() {
       />
 
       <Route path="/helpOrders" exact component={HelpOrderList} isPrivate />
+      <Route path="/profile" exact component={Profile} isPrivate />
     </Switch>
   );
 }

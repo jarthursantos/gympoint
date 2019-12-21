@@ -4,6 +4,7 @@ import User from '../models/User';
 import Student from '../models/Student';
 
 import AnsweredNotification from '../schemas/AnsweredNotification';
+import HelpOrderNotification from '../schemas/HelpOrderNotification';
 
 import HelpOrderAnsweredJob from '../jobs/HelpOrderAnsweredMail';
 import Queue from '../../lib/Queue';
@@ -53,6 +54,11 @@ class AnswerController {
       ],
       attributes: ['id', 'question', 'answer', 'answer_at', 'createdAt'],
     });
+
+    await HelpOrderNotification.findOneAndUpdate(
+      { help_order: id },
+      { answered: true }
+    );
 
     help_order = {
       id,

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { darken } from 'polished';
 
 export const Container = styled.table`
   margin: 50px 60px;
@@ -33,10 +34,18 @@ export const Container = styled.table`
 
         &.primary {
           color: #de3b3b;
+
+          &:hover {
+            color: ${darken(0.1, '#de3b3b')};
+          }
         }
 
         &.secondary {
           color: #4d85ee;
+
+          &:hover {
+            color: ${darken(0.1, '#4d85ee')};
+          }
         }
       }
     }
@@ -50,7 +59,7 @@ export const Container = styled.table`
 
   tr + tr {
     td {
-      border-top: 1px solid #eeeeee;
+      border-top: 1px solid #eee;
     }
   }
 `;

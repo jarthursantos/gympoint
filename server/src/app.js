@@ -20,6 +20,12 @@ class App {
   }
 
   middlewares() {
+    this.server.use((req, res, next) => {
+      console.log(`[${req.method}] ${req.url}`);
+
+      return next();
+    });
+
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(

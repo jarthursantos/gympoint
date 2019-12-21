@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import ReactLoading from 'react-loading';
 import { Form, Textarea } from '@rocketseat/unform';
+import { toast } from 'react-toastify';
+
+import api from '~/services/api';
+import EventManager from '~/services/eventManager';
 
 import Modal from '~/components/Modal';
 import { Content } from './styles';
-
-import EventManager from '~/services/eventManager';
 
 const manager = new EventManager();
 
@@ -34,11 +36,18 @@ export default function AnswerDialog() {
   }
 
   function handleSubmit(data) {
+    const { id } = question;
     setIsLoading(true);
 
-    console.tron.log(data, question);
-
-    // setIsLoading(false);
+    api
+      .post(`/help-orders/${id}/answer`, data)
+      .then(() => {
+        handleClose();
+      })
+      .catch(err => {
+        toast.error(err.response.data.error);
+        setIsLoading(false);
+      });
   }
 
   const schema = Yup.object().shape({

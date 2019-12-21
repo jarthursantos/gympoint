@@ -11,12 +11,12 @@ import logo from '~/assets/small-logo.svg';
 export default function Header() {
   const dispatch = useDispatch();
 
+  const { avatar, name } = useSelector(state => state.user.profile);
+  const { activeTab } = useSelector(state => state.navigation);
+
   function handleSignOut() {
     dispatch(signOut());
   }
-
-  const { avatar, name } = useSelector(state => state.user.profile);
-  const { activeTab } = useSelector(state => state.navigation);
 
   return (
     <Container>
@@ -50,19 +50,21 @@ export default function Header() {
           <Notifications />
           <Profile>
             <div>
-              <strong>{name}</strong>
+              <Link to="/profile">{name}</Link>
               <button type="button" onClick={handleSignOut}>
                 sair do sistema
               </button>
             </div>
-            <img
-              src={
-                avatar
-                  ? avatar.url
-                  : 'https://api.adorable.io/avatars/50/abott@adorable.png'
-              }
-              alt="Avatar"
-            />
+            <Link to="/profile">
+              <img
+                src={
+                  avatar
+                    ? avatar.url
+                    : 'https://api.adorable.io/avatars/50/abott@adorable.png'
+                }
+                alt="Avatar"
+              />
+            </Link>
           </Profile>
         </aside>
       </Content>
