@@ -19,9 +19,10 @@ TobBar.propTypes = {
     PropTypes.func,
     PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.func]))
       .isRequired,
-  ]).isRequired,
+  ]),
 };
 
 TobBar.defaultProps = {
   title: 'Gympoint',
+  children: null,
 };

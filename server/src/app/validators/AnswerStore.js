@@ -5,7 +5,7 @@ export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
       answer: Yup.string()
-        .max(255)
+        .max(1024)
         .required(),
     });
 

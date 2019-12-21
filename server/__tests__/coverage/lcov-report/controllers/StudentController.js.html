@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>23/23</span>
+        <span class='fraction'>24/24</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">92.86% </span>
@@ -37,7 +37,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>20/20</span>
+        <span class='fraction'>21/21</span>
       </div>
     </div>
     <p class="quiet">
@@ -118,7 +118,10 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">11x</span>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -129,6 +132,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,9 +150,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -175,17 +191,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -202,32 +208,45 @@ class StudentController {
   }
 &nbsp;
   async store(req, res) {
+    let { id, name, email, birthdate, height, weight } = req.body;
+&nbsp;
     const emailAlreadyExists = await Student.findOne({
-      where: { email: req.body.email },
+      where: { email },
     });
 &nbsp;
     if (emailAlreadyExists) {
       return res.status(400).json({ error: 'email already in use' });
     }
 &nbsp;
-    const { id, name, email, birthdate, height, weight } = await Student.create(
-      {
-        ...req.body,
-        created_by: req.user_id,
-      }
-    );
+    ({ id, name, email, birthdate, height, weight } = await Student.create({
+      name,
+      email,
+      birthdate,
+      height,
+      weight,
+      created_by: req.user_id,
+    }));
 &nbsp;
-    return res.json({ id, name, email, birthdate, height, weight });
+    return res.json({
+      id,
+      name,
+      email,
+      birthdate,
+      height,
+      weight,
+    });
   }
 &nbsp;
   async update(req, res) {
-    const student = await Student.findByPk(req.params.id);
+    const { id } = req.params;
+&nbsp;
+    const student = await Student.findByPk(id);
 &nbsp;
     if (!student) {
       return res.status(400).json({ error: "student don't exists" });
     }
 &nbsp;
-    const { email } = req.body;
+    let { name, email, birthdate, height, weight } = req.body;
 &nbsp;
     if (email &amp;&amp; email !== student.email) {
       const emailInUse = await Student.findOne({
@@ -239,25 +258,15 @@ class StudentController {
       }
     }
 &nbsp;
-    await student.update(req.body);
-&nbsp;
-    const {
-      id,
+    ({ name, email, birthdate, height, weight } = await student.update({
       name,
-      email: currentEmail,
+      email,
       birthdate,
       height,
       weight,
-    } = await Student.findByPk(req.params.id);
+    }));
 &nbsp;
-    return res.json({
-      id,
-      name,
-      email: currentEmail,
-      birthdate,
-      height,
-      weight,
-    });
+    return res.json({ id, name, email, birthdate, height, weight });
   }
 }
 &nbsp;
@@ -268,7 +277,7 @@ export default new StudentController();
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sat Dec 14 2019 16:56:42 GMT-0300 (Brasilia Standard Time)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Dec 18 2019 19:55:46 GMT-0300 (Brasilia Standard Time)
 </div>
 </div>
 <script src="../prettify.js"></script>

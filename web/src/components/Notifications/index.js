@@ -2,8 +2,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdNotifications } from 'react-icons/md';
 import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+import ReactLoading from 'react-loading';
 
 import api from '~/services/api';
+import { displayAnswerDialog } from '~/components/AnswerDialog';
 
 import {
   Container,
@@ -15,6 +17,7 @@ import {
 
 export default function Notifications() {
   const [visible, setVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   const hasNotification = useMemo(() => notifications.length, [notifications]);
@@ -25,6 +28,7 @@ export default function Notifications() {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const response = await api.get('/notifications');
 
       const data = response.data.map(notification => ({
@@ -40,6 +44,7 @@ export default function Notifications() {
       }));
 
       setNotifications(data);
+      setIsLoading(false);
     })();
 
     document.addEventListener('mouseup', handleCloseNotifications);
@@ -53,6 +58,10 @@ export default function Notifications() {
     setVisible(!visible);
   }
 
+  function handleAction({ help_order, question }) {
+    displayAnswerDialog(help_order, question);
+  }
+
   return (
     <Container>
       <Badge onClick={handleToggleVisible} hasNotification={hasNotification}>
@@ -63,7 +72,10 @@ export default function Notifications() {
         {notifications.length ? (
           <Scroll>
             {notifications.map(notification => (
-              <Notification key={notification._id}>
+              <Notification
+                key={notification._id}
+                onClick={() => handleAction(notification)}
+              >
                 <span>{notification.title}</span>
                 <p>{notification.message}</p>
                 <time>{notification.timeDistance}</time>
@@ -71,12 +83,20 @@ export default function Notifications() {
             ))}
           </Scroll>
         ) : (
-          <p className="empty-message">Você não tem notificações.</p>
+          <div className="message-container">
+            {isLoading ? (
+              <>
+                <ReactLoading type="spin" color="#fff" height={20} width={20} />
+                <span>Carregando...</span>
+              </>
+            ) : (
+              <p className="empty-message">Você não tem notificações.</p>
+            )}
+          </div>
         )}
       </NotificationList>
     </Container>
   );
 }
 
-// TODO: notification action
-// TODO: loading state
+// TODO: other notification type: asnwer avaliated

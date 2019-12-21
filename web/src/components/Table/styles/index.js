@@ -26,6 +26,7 @@ export const Container = styled.table`
     &.actions {
       a,
       button {
+        font-size: 16px;
         margin-left: 16px;
         border: none;
         background: none;

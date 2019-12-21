@@ -43,9 +43,7 @@ export default function StudentList() {
     const lowerFilter = filter.toLowerCase().trim();
 
     setFilteredStudents(
-      students.filter(
-        ({ name }) => name.toLowerCase().search(lowerFilter) !== -1
-      )
+      students.filter(({ name }) => name.toLowerCase().includes(lowerFilter))
     );
   }, [filter, students]);
 
@@ -109,6 +107,4 @@ export default function StudentList() {
   );
 }
 
-// TODO: README.md with "responsive layout has not implemented"
-
-// TODO: Loading empty state
+// TODO: empty state

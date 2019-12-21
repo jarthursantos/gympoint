@@ -21,7 +21,7 @@ class StudentNotificationController {
   }
 
   async update(req, res) {
-    const { student_id } = req.params;
+    const { id, student_id } = req.params;
 
     const studentExists = await Student.findByPk(student_id);
 
@@ -30,7 +30,7 @@ class StudentNotificationController {
     }
 
     const notification = await AnsweredNotification.findByIdAndUpdate(
-      req.params.id,
+      id,
       { read: true },
       { new: true }
     );

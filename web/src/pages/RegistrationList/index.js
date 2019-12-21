@@ -102,6 +102,4 @@ export default function PlanList() {
   );
 }
 
-// TODO: README.md with "responsive layout has not implemented"
-
-// TODO: Loading empty state
+// TODO: empty state

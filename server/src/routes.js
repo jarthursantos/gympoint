@@ -32,6 +32,7 @@ import validateAnswerStore from './app/validators/AnswerStore';
 
 import validatePlanStore from './app/validators/PlanStore';
 import validatePlanUpdate from './app/validators/PlanUpdate';
+import validatePlanExists from './app/validators/PlanExists';
 
 import validateRegistrationStore from './app/validators/RegistrationStore';
 import validateRegistrationUpdate from './app/validators/RegistrationUpdate';
@@ -82,8 +83,17 @@ routes.post(
 
 routes.get('/plans', PlanController.index);
 routes.post('/plans', validatePlanStore, PlanController.store);
-routes.put('/plans/:id', validatePlanUpdate, PlanController.update);
-routes.delete('/plans/:id', PlanController.destroy);
+routes.put(
+  '/plans/:id',
+  validatePlanUpdate,
+  validatePlanExists(req => req.params.id),
+  PlanController.update
+);
+routes.delete(
+  '/plans/:id',
+  validatePlanExists(req => req.params.id),
+  PlanController.destroy
+);
 
 routes.get('/registrations', RegistrationController.index);
 routes.post(

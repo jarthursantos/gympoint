@@ -59,7 +59,8 @@ class RegistrationController {
     const price = plan_month_price * plan_duration;
 
     const { id } = await Registration.create({
-      ...req.body,
+      student_id,
+      plan_id,
       start_date,
       end_date,
       price,
@@ -97,7 +98,9 @@ class RegistrationController {
   }
 
   async update(req, res) {
-    const registration = await Registration.findByPk(req.params.id);
+    const { id } = req.params;
+
+    const registration = await Registration.findByPk(id);
 
     if (!registration) {
       return res.status(400).json({ error: "registration don't exists" });
@@ -121,41 +124,17 @@ class RegistrationController {
     const price = plan_month_price * plan_duration;
 
     await registration.update({
-      ...req.body,
+      plan_id,
       start_date,
       end_date,
       price,
     });
 
-    const updatedRegistration = await Registration.findByPk(req.params.id, {
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: [
-            'id',
-            'name',
-            'email',
-            'birthdate',
-            'height',
-            'weight',
-            'alternative_id',
-          ],
-        },
-        {
-          model: Plan,
-          as: 'plan',
-          attributes: ['id', 'title', 'duration', 'price'],
-        },
-      ],
-      attributes: ['id', 'price', 'start_date', 'end_date'],
-    });
-
     await Queue.add(NewRegistrationJob.key, {
-      registration: updatedRegistration,
+      registration: { id, price, start_date, end_date },
     });
 
-    return res.json(updatedRegistration);
+    return res.json({ id, price, start_date, end_date });
   }
 
   async destroy(req, res) {

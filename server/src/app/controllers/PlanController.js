@@ -17,34 +17,43 @@ class PlanController {
   }
 
   async store(req, res) {
+    let { id, title, duration, price, deprecated_at } = req.body;
+
     const planExists = await Plan.findOne({
-      where: { title: req.body.title, deprecated_at: null },
+      where: { title, deprecated_at: null },
     });
 
     if (planExists) {
       return res.status(400).json({ error: 'title already in use' });
     }
 
-    const { id, title, duration, price, deprecated_at } = await Plan.create({
-      ...req.body,
+    ({ id, title, duration, price, deprecated_at } = await Plan.create({
+      title,
+      duration,
+      price,
       created_by: req.user_id,
-    });
+    }));
 
-    return res.json({ id, title, duration, price, deprecated_at });
+    return res.json({
+      id,
+      title,
+      duration,
+      price,
+      deprecated_at,
+    });
   }
 
   async update(req, res) {
-    const plan = await Plan.findByPk(req.params.id);
+    let { id } = req.params;
 
-    if (!plan) {
-      return res.status(400).json({ error: "plan don't exists" });
-    }
+    const plan = await Plan.findByPk(id);
 
     if (plan.deprecated_at) {
       return res.status(400).json({ error: 'plan has been deprecated' });
     }
 
-    const { title } = req.body;
+    let deprecated = null;
+    let { title, duration, price } = req.body;
 
     if (title && title !== plan.title) {
       const titleInUse = await Plan.findOne({
@@ -56,31 +65,17 @@ class PlanController {
       }
     }
 
-    await plan.update(req.body);
-
-    const {
-      id,
-      title: current_title,
+    ({ id, title, duration, price, deprecated } = await plan.update({
+      title,
       duration,
       price,
-      deprecated,
-    } = await Plan.findByPk(req.params.id);
+    }));
 
-    return res.json({
-      id,
-      title: current_title,
-      duration,
-      price,
-      deprecated,
-    });
+    return res.json({ id, title, duration, price, deprecated });
   }
 
   async destroy(req, res) {
     const plan = await Plan.findByPk(req.params.id);
-
-    if (!plan) {
-      return res.status(400).json({ error: "plan don't exists" });
-    }
 
     await plan.update({
       deprecated_at: new Date(),

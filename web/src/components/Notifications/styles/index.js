@@ -37,7 +37,6 @@ export const NotificationList = styled.div`
   top: calc(100% + 10px);
   background: #666;
   border-radius: 4px;
-  /* padding: 15px 5px; */
 
   &::before {
     content: '';
@@ -53,8 +52,19 @@ export const NotificationList = styled.div`
   }
 
   p.empty-message {
-    text-align: center;
     color: #fff;
+  }
+
+  div.message-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 5px;
+
+    span {
+      color: #fff;
+      margin-left: 8px;
+    }
   }
 `;
 

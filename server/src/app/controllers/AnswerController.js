@@ -11,6 +11,7 @@ import Queue from '../../lib/Queue';
 class AnswerController {
   async store(req, res) {
     const { id: help_order_id } = req.params;
+    const { answer } = req.body;
 
     let help_order = await HelpOrder.findByPk(help_order_id);
 
@@ -25,7 +26,7 @@ class AnswerController {
     }
 
     await help_order.update({
-      ...req.body,
+      answer,
       answer_at: new Date(),
       replier_by: req.user_id,
     });
@@ -33,7 +34,6 @@ class AnswerController {
     const {
       id,
       question,
-      answer,
       answer_at,
       createdAt: created_at,
       replier,

@@ -7,3 +7,5 @@ tmp/*
 dist
 
 yarn.lock
+
+__tests__/coverage*

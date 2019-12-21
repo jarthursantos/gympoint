@@ -14,6 +14,10 @@ const HelpOrderNotificationSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    question: {
+      type: String,
+      required: true,
+    },
     answered: {
       type: Boolean,
       required: true,
@@ -29,3 +33,5 @@ export default mongoose.model(
   'HelpOrderNotification',
   HelpOrderNotificationSchema
 );
+
+// TODO: remove redundant information

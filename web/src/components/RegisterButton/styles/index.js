@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { darken } from 'polished';
 
 export const Container = styled(Link)`
   display: flex;
@@ -15,5 +16,8 @@ export const Container = styled(Link)`
 
   svg {
     margin-right: 8px;
+  }
+  &:hover {
+    background: ${darken(0.03, '#ee4d64')};
   }
 `;

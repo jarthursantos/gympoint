@@ -56,3 +56,5 @@ class UserController {
 }
 
 export default new UserController();
+
+// TODO: refact req.body use

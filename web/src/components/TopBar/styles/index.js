@@ -19,21 +19,22 @@ export const Container = styled.header`
     display: flex;
     align-items: center;
 
-    div {
+    & > div {
       margin-left: 16px;
       display: flex;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 7px 16px;
 
-      svg {
+      & > svg {
         margin-right: 16px;
       }
 
-      input {
+      & > input {
         color: #999;
         border: none;
         font-size: 14px;
+        background: transparent;
 
         &::placeholder {
           color: #999;

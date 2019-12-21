@@ -10,32 +10,45 @@ class StudentController {
   }
 
   async store(req, res) {
+    let { id, name, email, birthdate, height, weight } = req.body;
+
     const emailAlreadyExists = await Student.findOne({
-      where: { email: req.body.email },
+      where: { email },
     });
 
     if (emailAlreadyExists) {
       return res.status(400).json({ error: 'email already in use' });
     }
 
-    const { id, name, email, birthdate, height, weight } = await Student.create(
-      {
-        ...req.body,
-        created_by: req.user_id,
-      }
-    );
+    ({ id, name, email, birthdate, height, weight } = await Student.create({
+      name,
+      email,
+      birthdate,
+      height,
+      weight,
+      created_by: req.user_id,
+    }));
 
-    return res.json({ id, name, email, birthdate, height, weight });
+    return res.json({
+      id,
+      name,
+      email,
+      birthdate,
+      height,
+      weight,
+    });
   }
 
   async update(req, res) {
-    const student = await Student.findByPk(req.params.id);
+    const { id } = req.params;
+
+    const student = await Student.findByPk(id);
 
     if (!student) {
       return res.status(400).json({ error: "student don't exists" });
     }
 
-    const { email } = req.body;
+    let { name, email, birthdate, height, weight } = req.body;
 
     if (email && email !== student.email) {
       const emailInUse = await Student.findOne({
@@ -47,25 +60,15 @@ class StudentController {
       }
     }
 
-    await student.update(req.body);
-
-    const {
-      id,
+    ({ name, email, birthdate, height, weight } = await student.update({
       name,
-      email: currentEmail,
+      email,
       birthdate,
       height,
       weight,
-    } = await Student.findByPk(req.params.id);
+    }));
 
-    return res.json({
-      id,
-      name,
-      email: currentEmail,
-      birthdate,
-      height,
-      weight,
-    });
+    return res.json({ id, name, email, birthdate, height, weight });
   }
 }
 

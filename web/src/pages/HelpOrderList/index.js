@@ -9,6 +9,7 @@ import { navigate } from '~/store/modules/navigation/actions';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import LoadingState from '~/components/States/Loading';
+import { displayAnswerDialog } from '~/components/AnswerDialog';
 import { Wrapper, Container } from './styles';
 
 export default function HelpOrderList() {
@@ -30,7 +31,11 @@ export default function HelpOrderList() {
     })();
   }, []);
 
-  function renderTable() {
+  function handleAction({ id, question }) {
+    displayAnswerDialog(id, question);
+  }
+
+  function HelpOrderTable() {
     return (
       <Table>
         <thead>
@@ -54,7 +59,11 @@ export default function HelpOrderList() {
                 )}
               </td>
               <td className="collapsing actions">
-                <button type="button" className="secondary">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => handleAction(helpOrder)}
+                >
                   responder
                 </button>
               </td>
@@ -70,12 +79,10 @@ export default function HelpOrderList() {
       <Container>
         <TopBar title="Pedidos de auxílio" />
 
-        {loading ? <LoadingState /> : renderTable()}
+        {loading ? <LoadingState /> : <HelpOrderTable />}
       </Container>
     </Wrapper>
   );
 }
 
-// TODO: README.md with "responsive layout has not implemented"
-
-// TODO: Loading empty state
+// TODO: empty state

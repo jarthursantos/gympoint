@@ -2,7 +2,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { Input } from '@rocketseat/unform';
+import { toast } from 'react-toastify';
 
+import api from '~/services/api';
+import history from '~/services/history';
 import { navigate } from '~/store/modules/navigation/actions';
 import { formatPrice } from '~/util/format';
 
@@ -17,6 +20,7 @@ export default function PlanRegister() {
 
   const [price, setPrice] = useState(null);
   const [duration, setDuration] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const amount = useMemo(() => {
     return formatPrice(price * duration);
@@ -26,8 +30,18 @@ export default function PlanRegister() {
     dispatch(navigate('plans'));
   }, [dispatch]);
 
-  function handleSubmit(data) {
-    console.tron.log(data);
+  async function handleSubmit(data) {
+    setIsLoading(true);
+
+    api
+      .post('/plans', data)
+      .then(() => {
+        history.push('/plans');
+      })
+      .catch(err => {
+        toast.error(err.response.data.error);
+        setIsLoading(false);
+      });
   }
 
   const schema = Yup.object().shape({
@@ -38,11 +52,11 @@ export default function PlanRegister() {
       .integer('A duração precisa ser um valor inteiro')
       .min(1, 'A duração precisa ser maior que 0')
       .required('A duração é obrigatória')
-      .typeError('A duração precisa ser um número'),
+      .typeError('A duração é obrigatória'),
     price: Yup.number('Valor informado é inválido')
       .min(1, 'A duração precisa ser maior que 0')
       .required('O preço mensal é obrigatório')
-      .typeError('O preço precisa ser um número'),
+      .typeError('O preço mensal é obrigatório'),
   });
 
   return (
@@ -50,7 +64,7 @@ export default function PlanRegister() {
       <Container schema={schema} onSubmit={handleSubmit}>
         <TopBar title="Cadastrar plano">
           <BackButton to="/plans" />
-          <SaveButton />
+          <SaveButton isLoading={isLoading} />
         </TopBar>
 
         <div>

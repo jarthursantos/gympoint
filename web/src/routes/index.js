@@ -17,7 +17,6 @@ import RegistrationRegister from '../pages/RegistrationRegister';
 import RegistrationEditor from '../pages/RegistrationEditor';
 
 import HelpOrderList from '../pages/HelpOrderList';
-import HelpOrderAnswer from '../pages/HelpOrderAnswer';
 
 export default function routes() {
   return (
@@ -50,11 +49,6 @@ export default function routes() {
       />
 
       <Route path="/helpOrders" exact component={HelpOrderList} isPrivate />
-      <Route
-        path="/helpOrders/:id/answer"
-        component={HelpOrderAnswer}
-        isPrivate
-      />
     </Switch>
   );
 }

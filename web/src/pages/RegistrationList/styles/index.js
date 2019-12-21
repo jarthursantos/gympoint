@@ -11,8 +11,6 @@ export const Container = styled.div`
   width: 100%;
   max-width: 1060px;
 
-  background: white;
-
   table {
     th,
     td {

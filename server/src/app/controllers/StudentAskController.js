@@ -41,6 +41,7 @@ class StudentAskController {
 
   async store(req, res) {
     const { id: student_id } = req.params;
+    const { question } = req.body;
 
     const studentExists = await Student.findByPk(student_id);
 
@@ -64,7 +65,7 @@ class StudentAskController {
     }
 
     const { id } = await HelpOrder.create({
-      ...req.body,
+      question,
       student_id,
     });
 
@@ -91,6 +92,7 @@ class StudentAskController {
       help_order: id,
       title: `${help_order.student.name} solicitou ajuda`,
       message: `"${short_question}${overflow_limit ? '...' : ''}"`,
+      question,
     });
 
     return res.json(help_order);
@@ -98,3 +100,5 @@ class StudentAskController {
 }
 
 export default new StudentAskController();
+
+// TODO: refact req.body use

@@ -6,6 +6,7 @@ import { Router } from 'react-router-dom';
 
 import './config/reactotron';
 
+import AnswerDialog from './components/AnswerDialog';
 import Routes from './routes';
 import history from './services/history';
 
@@ -21,12 +22,14 @@ function App() {
           <Routes />
           <GlobalStyle />
           <ToastContainer autoClose={3000} />
+          <AnswerDialog />
         </Router>
       </PersistGate>
     </Provider>
   );
 }
 
-// TODO: add a wrapper to create dialogs, to answer helpOrders in any pages
+// TODO: README.md with "responsive layout has not implemented"
+// TODO: preparar arquivo de seeds
 
 export default App;
