@@ -1,34 +1,62 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { MdArrowBack, MdSave } from 'react-icons/md';
+import React, { useState, useEffect } from 'react';
+import { parseISO } from 'date-fns';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import { navigate } from '~/store/modules/navigation/actions';
 
-import TopBar from '~/components/TopBar';
-import { Wrapper, Container } from './styles';
+import api from '~/services/api';
+import history from '~/services/history';
+import StudentForm from '~/components/StudentForm';
+import { Wrapper } from './styles';
 
 export default function StudentEditor() {
+  const { id } = useParams();
+
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [student, setStudent] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const response = await api.get(`/students/${id}`);
+
+      setStudent({
+        ...response.data,
+        birthdate: parseISO(response.data.birthdate),
+      });
+
+      console.tron.log(response.data);
+    })();
+  }, [id]);
 
   useEffect(() => {
     dispatch(navigate('students'));
   }, [dispatch]);
 
+  async function handleSubmit(data) {
+    setIsLoading(true);
+
+    api
+      .put(`/students/${id}/`, data)
+      .then(() => {
+        history.push('/students');
+      })
+      .catch(err => {
+        toast.error(err.response.data.error);
+        setIsLoading(false);
+      });
+  }
+
   return (
     <Wrapper>
-      <Container>
-        <TopBar title="Edição de aluno">
-          <Link to="/students" className="secondary">
-            <MdArrowBack size={20} color="#fff" />
-            Voltar
-          </Link>
-          <button className="primary" type="button">
-            <MdSave size={20} color="#fff" />
-            Salvar
-          </button>
-        </TopBar>
-      </Container>
+      <StudentForm
+        title="Edição de aluno"
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+        initialData={student}
+      />
     </Wrapper>
   );
 }

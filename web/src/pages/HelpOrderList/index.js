@@ -8,13 +8,14 @@ import { navigate } from '~/store/modules/navigation/actions';
 
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
-import LoadingState from '~/components/States/Loading';
+import EmptyState from '~/components/EmptyState';
+import LoadingState from '~/components/LoadingState';
 import { displayAnswerDialog } from '~/components/AnswerDialog';
 import { Wrapper, Container } from './styles';
 
 export default function HelpOrderList() {
   const [helpOrders, setHelpOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,11 +24,11 @@ export default function HelpOrderList() {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
+      setIsLoading(true);
       const response = await api.get('/help-orders');
 
       setHelpOrders(response.data);
-      setLoading(false);
+      setIsLoading(false);
     })();
   }, []);
 
@@ -35,7 +36,11 @@ export default function HelpOrderList() {
     displayAnswerDialog(id, question);
   }
 
-  function HelpOrderTable() {
+  function RenderCurrentState() {
+    if (isLoading) return <LoadingState />;
+
+    if (!helpOrders.length) return <EmptyState />;
+
     return (
       <Table>
         <thead>
@@ -79,10 +84,8 @@ export default function HelpOrderList() {
       <Container>
         <TopBar title="Pedidos de auxílio" />
 
-        {loading ? <LoadingState /> : <HelpOrderTable />}
+        <RenderCurrentState />
       </Container>
     </Wrapper>
   );
 }
-
-// TODO: empty state

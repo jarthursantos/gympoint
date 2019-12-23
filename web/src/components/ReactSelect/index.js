@@ -52,12 +52,10 @@ export default function ReactSelect({ name, options, multiple, ...rest }) {
         getOptionLabel={option => option.title}
         {...rest}
       />
-
       {error && <span>{error}</span>}
     </>
   );
 }
-
 ReactSelect.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(

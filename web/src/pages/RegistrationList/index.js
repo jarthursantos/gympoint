@@ -9,13 +9,14 @@ import { navigate } from '~/store/modules/navigation/actions';
 
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
-import LoadingState from '~/components/States/Loading';
+import EmptyState from '~/components/EmptyState';
+import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
 import { Wrapper, Container } from './styles';
 
-export default function PlanList() {
+export default function RegistrationList() {
   const [registrations, setRegistrations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,15 +25,37 @@ export default function PlanList() {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
+      setIsLoading(true);
       const response = await api.get('/registrations');
 
-      setRegistrations(response.data);
-      setLoading(false);
+      const data = response.data.map(registration => ({
+        ...registration,
+        startDateFormated: format(
+          parseISO(registration.start_date),
+          "dd 'de' MMMM 'de' yyyy",
+          {
+            locale: pt,
+          }
+        ),
+        endDateFormated: format(
+          parseISO(registration.end_date),
+          "dd 'de' MMMM 'de' yyyy",
+          {
+            locale: pt,
+          }
+        ),
+      }));
+
+      setRegistrations(data);
+      setIsLoading(false);
     })();
   }, []);
 
-  function RegistrationTable() {
+  function RenderCurrentState() {
+    if (isLoading) return <LoadingState />;
+
+    if (!registrations.length) return <EmptyState />;
+
     return (
       <Table>
         <thead>
@@ -51,23 +74,9 @@ export default function PlanList() {
               <td>{registration.student.name}</td>
               <td className="fill centered">{registration.plan.title}</td>
               <td className="fill centered">
-                {format(
-                  parseISO(registration.start_date),
-                  "dd 'de' MMMM 'de' yyyy",
-                  {
-                    locale: pt,
-                  }
-                )}
+                {registration.startDateFormated}
               </td>
-              <td className="fill centered">
-                {format(
-                  parseISO(registration.end_date),
-                  "dd 'de' MMMM 'de' yyyy",
-                  {
-                    locale: pt,
-                  }
-                )}
-              </td>
+              <td className="fill centered">{registration.endDateFormated}</td>
               <td className="fill centered">
                 {registration.active ? 'SIM' : 'NÃO'}
               </td>
@@ -96,10 +105,8 @@ export default function PlanList() {
           <RegisterButton to="/registrations/register" />
         </TopBar>
 
-        {loading ? <LoadingState /> : <RegistrationTable />}
+        <RenderCurrentState />
       </Container>
     </Wrapper>
   );
 }
-
-// TODO: empty state

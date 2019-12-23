@@ -1,6 +1,7 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import ReactLoading from 'react-loading';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input } from '@rocketseat/unform';
 import logo from '~/assets/logo.svg';
 
@@ -44,11 +45,13 @@ export default function SignIn() {
           />
         </label>
         <button type="submit">
-          {loading ? 'Carregando...' : 'Entrar no Sistema'}
+          {loading ? (
+            <ReactLoading type="spin" color="#fff" height={24} width={24} />
+          ) : (
+            'Entrar no Sistema'
+          )}
         </button>
       </Form>
     </>
   );
 }
-
-// TODO: change loading state to spinner

@@ -9,7 +9,8 @@ import { navigate } from '~/store/modules/navigation/actions';
 
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
-import LoadingState from '~/components/States/Loading';
+import EmptyState from '~/components/EmptyState';
+import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
 import { Wrapper, Container } from './styles';
 
@@ -17,7 +18,7 @@ export default function StudentList() {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [students, setStudents] = useState([]);
   const [filter, setFilter] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function StudentList() {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
+      setIsLoading(true);
       const response = await api.get('/students');
 
       const data = response.data.map(student => ({
@@ -35,7 +36,7 @@ export default function StudentList() {
       }));
 
       setStudents(data);
-      setLoading(false);
+      setIsLoading(false);
     })();
   }, []);
 
@@ -47,9 +48,11 @@ export default function StudentList() {
     );
   }, [filter, students]);
 
-  function handleDelete({ id, name }) {}
+  function RenderCurrentState() {
+    if (isLoading) return <LoadingState />;
 
-  function StudentTable() {
+    if (!students.length) return <EmptyState />;
+
     return (
       <Table>
         <thead>
@@ -70,13 +73,6 @@ export default function StudentList() {
                 <Link to={`/students/${student.id}/edit`} className="secondary">
                   editar
                 </Link>
-                <button
-                  onClick={() => handleDelete(student)}
-                  type="button"
-                  className="primary"
-                >
-                  apagar
-                </button>
               </td>
             </tr>
           ))}
@@ -101,10 +97,9 @@ export default function StudentList() {
             />
           </div>
         </TopBar>
-        {loading ? <LoadingState /> : <StudentTable />}
+
+        <RenderCurrentState />
       </Container>
     </Wrapper>
   );
 }
-
-// TODO: empty state

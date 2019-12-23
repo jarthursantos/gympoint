@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { addMonths, format } from 'date-fns';
+import { toast } from 'react-toastify';
 
 import api from '~/services/api';
+import history from '~/services/history';
+import { formatPrice } from '~/util/format';
 import { navigate } from '~/store/modules/navigation/actions';
 
 import TopBar from '~/components/TopBar';
@@ -17,6 +21,20 @@ export default function RegistrationRegister() {
   const dispatch = useDispatch();
   const [students, setStudents] = useState([]);
   const [plans, setPlans] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  const endDate = useMemo(() => {
+    if (!selectedPlan || !startDate) return null;
+    return format(addMonths(startDate, selectedPlan.duration), 'dd/MM/yyyy');
+  }, [selectedPlan, startDate]);
+
+  const totalValue = useMemo(() => {
+    if (!selectedPlan) return null;
+    return formatPrice(selectedPlan.duration * selectedPlan.price);
+  }, [selectedPlan]);
 
   useEffect(() => {
     dispatch(navigate('registrations'));
@@ -32,20 +50,37 @@ export default function RegistrationRegister() {
     (async () => {
       const response = await api.get('/plans');
 
-      setPlans(response.data.map(({ id, title }) => ({ id, title })));
+      setPlans(
+        response.data.map(({ id, title, duration, price }) => ({
+          id,
+          title,
+          duration,
+          price,
+        }))
+      );
     })();
   }, []);
 
   function handleSubmit(data) {
-    console.tron.log(data);
+    setIsLoading(true);
+
+    api
+      .post('/registrations', data)
+      .then(() => {
+        history.push('/registrations');
+      })
+      .catch(err => {
+        toast.error(err.response.data.error);
+        setIsLoading(false);
+      });
   }
 
   const schema = Yup.object().shape({
-    student: Yup.number()
+    student_id: Yup.number()
       .integer()
       .typeError('É necessário selecionar um aluno')
       .required('É necessário selecionar um aluno'),
-    plan: Yup.number()
+    plan_id: Yup.number()
       .integer()
       .typeError('É necessário selecionar um plano')
       .required('É necessário selecionar um plano'),
@@ -59,14 +94,14 @@ export default function RegistrationRegister() {
       <Container autoComplete="off" schema={schema} onSubmit={handleSubmit}>
         <TopBar title="Cadastra de matrícula">
           <BackButton to="/registrations" />
-          <SaveButton />
+          <SaveButton isLoading={isLoading} />
         </TopBar>
 
         <div className="fields">
           <LabeledField htmlFor="student">
             <strong>Aluno</strong>
             <ReactSelect
-              name="student"
+              name="student_id"
               id="student"
               options={students}
               placeholder="Selecionar aluno"
@@ -77,10 +112,12 @@ export default function RegistrationRegister() {
             <LabeledField htmlFor="plan">
               <strong>Plano</strong>
               <ReactSelect
-                name="plan"
+                name="plan_id"
                 id="plan"
                 options={plans}
                 placeholder="Selecionar plano"
+                value={selectedPlan}
+                onChange={setSelectedPlan}
               />
             </LabeledField>
             <LabeledField htmlFor="start_date">
@@ -89,15 +126,17 @@ export default function RegistrationRegister() {
                 style={{ width: '50px' }}
                 name="start_date"
                 id="start_date"
+                selected={startDate}
+                onChange={setStartDate}
               />
             </LabeledField>
             <LabeledField htmlFor="end_date">
               <strong>Data de Término</strong>
-              <input type="number" id="end_date" disabled />
+              <input value={endDate} type="text" id="end_date" disabled />
             </LabeledField>
             <LabeledField htmlFor="amount">
               <strong>Valor Final</strong>
-              <input type="number" id="amount" disabled />
+              <input value={totalValue} type="text" id="amount" disabled />
             </LabeledField>
           </div>
         </div>

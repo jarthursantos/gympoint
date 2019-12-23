@@ -1,33 +1,37 @@
 import Plan from '../models/Plan';
 
 class PlanController {
+  async show(req, res) {
+    const { id } = req.params;
+
+    const plan = await Plan.findByPk(id, {
+      attributes: ['id', 'title', 'duration', 'price'],
+    });
+
+    return res.json(plan);
+  }
+
   async index(_req, res) {
     const plans = await Plan.findAll({
-      attributes: [
-        'id',
-        'title',
-        'duration',
-        'price',
-        'deprecated',
-        'deprecated_at',
-      ],
+      attributes: ['id', 'title', 'duration', 'price'],
+      order: ['title'],
     });
 
     return res.json(plans);
   }
 
   async store(req, res) {
-    let { id, title, duration, price, deprecated_at } = req.body;
+    let { id, title, duration, price } = req.body;
 
     const planExists = await Plan.findOne({
-      where: { title, deprecated_at: null },
+      where: { title },
     });
 
     if (planExists) {
       return res.status(400).json({ error: 'title already in use' });
     }
 
-    ({ id, title, duration, price, deprecated_at } = await Plan.create({
+    ({ id, title, duration, price } = await Plan.create({
       title,
       duration,
       price,
@@ -39,7 +43,6 @@ class PlanController {
       title,
       duration,
       price,
-      deprecated_at,
     });
   }
 
@@ -48,16 +51,11 @@ class PlanController {
 
     const plan = await Plan.findByPk(id);
 
-    if (plan.deprecated_at) {
-      return res.status(400).json({ error: 'plan has been deprecated' });
-    }
-
-    let deprecated = null;
     let { title, duration, price } = req.body;
 
     if (title && title !== plan.title) {
       const titleInUse = await Plan.findOne({
-        where: { title, deprecated_at: null },
+        where: { title },
       });
 
       if (titleInUse) {
@@ -65,20 +63,22 @@ class PlanController {
       }
     }
 
-    ({ id, title, duration, price, deprecated } = await plan.update({
+    ({ id, title, duration, price } = await plan.update({
       title,
       duration,
       price,
     }));
 
-    return res.json({ id, title, duration, price, deprecated });
+    return res.json({ id, title, duration, price });
   }
 
   async destroy(req, res) {
-    const plan = await Plan.findByPk(req.params.id);
+    const { id } = req.params;
 
-    await plan.update({
-      deprecated_at: new Date(),
+    await Plan.destroy({
+      where: {
+        id,
+      },
     });
 
     return res.json();

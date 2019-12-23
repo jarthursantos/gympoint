@@ -35,6 +35,10 @@ export const Content = styled.div`
       font-size: 15px;
       font-weight: bold;
       color: #999;
+
+      &:hover {
+        color: #666;
+      }
     }
 
     a.active {
@@ -92,8 +96,17 @@ export const Profile = styled.div`
   }
 
   img {
-    height: 32px;
-    width: 32px;
+    border: 2px solid #ddd;
+    height: 34px;
+    width: 34px;
     border-radius: 50%;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  img.active {
+    border: 2px solid #444;
   }
 `;

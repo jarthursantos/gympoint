@@ -10,6 +10,7 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       duration: {
         type: Sequelize.INTEGER,
@@ -33,10 +34,6 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-      deprecated_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
       },
     });
   },

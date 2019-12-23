@@ -43,12 +43,3 @@ export const Container = styled.div`
     }
   }
 `;
-
-export const DialogContent = styled.div`
-  color: #666;
-  font-size: 16px;
-
-  strong {
-    color: #444;
-  }
-`;

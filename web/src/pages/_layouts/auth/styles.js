@@ -57,6 +57,11 @@ export const Content = styled.div`
     }
 
     button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      text-transform: uppercase;
       margin-top: 15px;
       height: 44px;
       background: #ee4d64;

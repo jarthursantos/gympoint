@@ -7,6 +7,7 @@ import { Router } from 'react-router-dom';
 import './config/reactotron';
 
 import AnswerDialog from './components/AnswerDialog';
+import DeleteDialog from './components/DeleteDialog';
 import Routes from './routes';
 import history from './services/history';
 
@@ -20,9 +21,11 @@ function App() {
       <PersistGate persistor={persistor}>
         <Router history={history}>
           <Routes />
+
           <GlobalStyle />
           <ToastContainer autoClose={3000} />
           <AnswerDialog />
+          <DeleteDialog />
         </Router>
       </PersistGate>
     </Provider>
@@ -30,6 +33,5 @@ function App() {
 }
 
 // TODO: README.md with "responsive layout has not implemented"
-// TODO: preparar arquivo de seeds
 
 export default App;

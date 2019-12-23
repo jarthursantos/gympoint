@@ -1,21 +1,43 @@
 import styled from 'styled-components';
-import { darken } from 'polished';
+import { Form } from '@rocketseat/unform';
 
-export const Container = styled.div`
-  max-width: 600px;
-  margin: 50px auto;
+export const Wrapper = styled.div`
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
-  form {
+export const Container = styled(Form)`
+  width: 100%;
+  max-width: 1060px;
+
+  & > div {
+    padding: 50px 60px;
+  }
+
+  .horizontal {
+    display: flex;
+  }
+
+  .fill {
+    flex: 1;
+  }
+
+  .vertical {
     display: flex;
     flex-direction: column;
-    margin-top: 30px;
+  }
+
+  .fields {
+    margin-left: 30px;
 
     label + label {
       margin-top: 16px;
     }
 
     span {
-      color: #fb6f91;
+      color: #ee4d64;
       align-self: flex-start;
       margin: 0 0 10px;
       font-weight: bold;
@@ -26,24 +48,6 @@ export const Container = styled.div`
       height: 1px;
       background: #eeeeee;
       margin: 20px 0;
-    }
-
-    button {
-      text-transform: uppercase;
-      width: 100%;
-      margin: 20px 0 0;
-      height: 44px;
-      background: #ee4d64;
-      font-weight: bold;
-      color: #fff;
-      border: 0;
-      border-radius: 4px;
-      font-size: 16px;
-      transition: all 0.2s;
-
-      &:hover {
-        background: ${darken(0.03, '#ee4d64')};
-      }
     }
   }
 `;

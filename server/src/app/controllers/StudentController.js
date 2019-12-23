@@ -1,6 +1,16 @@
 import Student from '../models/Student';
 
 class StudentController {
+  async show(req, res) {
+    const { id } = req.params;
+
+    const student = await Student.findByPk(id, {
+      attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],
+    });
+
+    return res.json(student);
+  }
+
   async index(_req, res) {
     const students = await Student.findAll({
       attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],

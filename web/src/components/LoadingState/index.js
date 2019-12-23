@@ -1,10 +1,9 @@
 import React from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-// import ReactLoading from 'react-loading';
 
 import { Container } from './styles';
 
-export default function Loading() {
+export default function LoadingState() {
   return (
     <Container>
       <SkeletonTheme color="#ddd" highlightColor="#eee">

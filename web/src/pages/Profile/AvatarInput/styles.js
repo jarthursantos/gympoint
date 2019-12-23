@@ -1,26 +1,56 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  align-self: center;
+  height: 150px;
+  width: 150px;
+  position: relative;
   margin-bottom: 30px;
+
+  &:hover {
+    .camera-icon {
+      background: #666;
+    }
+
+    label {
+      img {
+        border: 5px solid #666;
+      }
+    }
+  }
 
   label {
     cursor: pointer;
 
-    &:hover {
-      opacity: 0.7;
-    }
-
     img {
-      height: 120px;
-      width: 120px;
+      transition: all 0.2s;
+      height: 150px;
+      width: 150px;
       border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, 0.3);
+      border: 5px solid #999;
       background: #eee;
     }
 
     input {
+      position: absolute;
       display: none;
     }
+  }
+
+  .camera-icon {
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    background: #999;
   }
 `;

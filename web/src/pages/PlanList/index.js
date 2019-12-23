@@ -7,19 +7,17 @@ import { navigate } from '~/store/modules/navigation/actions';
 import { month as monthPlurals } from '~/util/plurals';
 import { formatPrice } from '~/util/format';
 
-import ConfirmDialog from '~/components/ConfirmDialog';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
-import LoadingState from '~/components/States/Loading';
+import EmptyState from '~/components/EmptyState';
+import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
-import { Wrapper, Container, DialogContent } from './styles';
+import { displayDeleteDialog } from '~/components/DeleteDialog';
+import { Wrapper, Container } from './styles';
 
 export default function PlanList() {
-  const [planToCancel, setPlanToCancel] = useState(null);
-  const [cancelingPlan, setCancelingPlan] = useState(false);
-
   const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -29,35 +27,32 @@ export default function PlanList() {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
+      setIsLoading(true);
       const response = await api.get('/plans');
 
       setPlans(response.data);
-      setLoading(false);
+      setIsLoading(false);
     })();
   }, []);
 
   function handleDelete({ id, title }) {
-    setPlanToCancel({ id, title });
-  }
+    displayDeleteDialog(
+      <div>
+        Deseja remover o aluno <strong>{title}</strong>
+      </div>,
+      async () => {
+        await api.delete(`/plans/${id}`);
 
-  async function handleConfirmDelete() {
-    setCancelingPlan(true);
-
-    await api.delete(`/plans/${planToCancel.id}`);
-
-    setPlans(
-      plans.map(plan => ({
-        ...plan,
-        deprecated: plan.id === planToCancel.id,
-      }))
+        setPlans(plans.filter(plan => plan.id !== id));
+      }
     );
-
-    setPlanToCancel(null);
-    setCancelingPlan(false);
   }
 
-  function PlanTable() {
+  function RenderCurrentState() {
+    if (isLoading) return <LoadingState />;
+
+    if (!plans.length) return <EmptyState />;
+
     return (
       <Table>
         <thead>
@@ -70,24 +65,18 @@ export default function PlanList() {
         </thead>
         <tbody>
           {plans.map(plan => (
-            <tr key={plan.id} className={plan.deprecated && 'deprecated'}>
+            <tr key={plan.id}>
               <td>
-                <div>
-                  {plan.title}
-                  {plan.deprecated && <small>descontinuado</small>}
-                </div>
+                <div>{plan.title}</div>
               </td>
               <td className="fill centered">{monthPlurals(plan.duration)}</td>
               <td className="fill centered">{formatPrice(plan.price)}</td>
               <td className="collapsing actions">
-                <Link
-                  to={!plan.deprecated && `/plans/${plan.id}/edit`}
-                  className="secondary"
-                >
+                <Link to={`/plans/${plan.id}/edit`} className="secondary">
                   editar
                 </Link>
                 <button
-                  onClick={() => !plan.deprecated && handleDelete(plan)}
+                  onClick={() => handleDelete(plan)}
                   type="button"
                   className="primary"
                 >
@@ -103,27 +92,12 @@ export default function PlanList() {
 
   return (
     <Wrapper>
-      <ConfirmDialog
-        isOpen={!!planToCancel}
-        isLoading={cancelingPlan}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => !cancelingPlan && setPlanToCancel(null)}
-        onRequestClose={() => !cancelingPlan && setPlanToCancel(null)}
-      >
-        <DialogContent>
-          Deseja apagar o plano{' '}
-          <strong>&ldquo;{planToCancel && planToCancel.title}&rdquo;</strong> ?
-        </DialogContent>
-      </ConfirmDialog>
-
       <Container>
         <TopBar title="Gerenciando planos">
           <RegisterButton to="/plans/register" />
         </TopBar>
-        {loading ? <LoadingState /> : <PlanTable />}
+        <RenderCurrentState />
       </Container>
     </Wrapper>
   );
 }
-
-// TODO: empty state

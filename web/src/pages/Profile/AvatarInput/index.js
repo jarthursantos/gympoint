@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { MdCameraAlt } from 'react-icons/md';
 import { useField } from '@rocketseat/unform';
 import api from '~/services/api';
 
@@ -53,6 +54,9 @@ export default function AvatarInput() {
           ref={ref}
         />
       </label>
+      <div className="camera-icon">
+        <MdCameraAlt size={24} color="#fff" />
+      </div>
     </Container>
   );
 }

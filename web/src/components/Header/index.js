@@ -57,6 +57,7 @@ export default function Header() {
             </div>
             <Link to="/profile">
               <img
+                className={activeTab === 'profile' ? 'active' : ''}
                 src={
                   avatar
                     ? avatar.url
@@ -71,5 +72,3 @@ export default function Header() {
     </Container>
   );
 }
-
-// TODO: profile

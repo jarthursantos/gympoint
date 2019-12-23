@@ -71,6 +71,7 @@ routes.get('/help-orders', HelpOrderController.index);
 routes.get('/notifications', HelpOrderNotificationController.index);
 routes.put('/notifications/:id', HelpOrderNotificationController.update);
 
+routes.get('/students/:id', StudentController.show);
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);
 routes.put('/students/:id', validateStudentUpdate, StudentController.update);
@@ -82,6 +83,11 @@ routes.post(
 );
 
 routes.get('/plans', PlanController.index);
+routes.get(
+  '/plans/:id',
+  validatePlanExists(req => req.params.id),
+  PlanController.show
+);
 routes.post('/plans', validatePlanStore, PlanController.store);
 routes.put(
   '/plans/:id',

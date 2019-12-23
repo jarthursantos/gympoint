@@ -21,5 +21,5 @@ const customStyles = {
 };
 
 export default function Modal(props) {
-  return <ReactModal style={customStyles} {...props} />;
+  return <ReactModal ariaHideApp={false} style={customStyles} {...props} />;
 }

@@ -22,9 +22,14 @@ export default function Notifications() {
 
   const hasNotification = useMemo(() => notifications.length, [notifications]);
 
-  const handleCloseNotifications = useCallback(() => {
-    if (visible) setVisible(false);
-  }, [visible]);
+  const handleCloseNotifications = useCallback(
+    event => {
+      if (event.type === 'keydown' && event.key !== 'Escape') return;
+
+      if (visible) setVisible(false);
+    },
+    [visible]
+  );
 
   useEffect(() => {
     (async () => {
@@ -48,9 +53,11 @@ export default function Notifications() {
     })();
 
     document.addEventListener('mouseup', handleCloseNotifications);
+    document.addEventListener('keydown', handleCloseNotifications);
 
     return () => {
       document.removeEventListener('mouseup', handleCloseNotifications);
+      document.removeEventListener('keydown', handleCloseNotifications);
     };
   }, [handleCloseNotifications]);
 
