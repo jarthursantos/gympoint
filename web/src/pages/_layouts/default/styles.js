@@ -10,4 +10,15 @@ export const Wrapper = styled.div`
 
 export const Container = styled(Scrollbar)`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const CenterContent = styled.div`
+  flex: 1;
+
+  width: 100%;
+  max-width: 1150px;
+  padding: 30px 30px 0;
 `;

@@ -36,7 +36,7 @@ export default function HelpOrderList() {
     displayAnswerDialog(id, question);
   }
 
-  function RenderCurrentState() {
+  function CurrentState() {
     if (isLoading) return <LoadingState />;
 
     if (!helpOrders.length) return <EmptyState />;
@@ -81,10 +81,10 @@ export default function HelpOrderList() {
 
   return (
     <Wrapper>
-      <Container>
-        <TopBar title="Pedidos de auxílio" />
+      <TopBar title="Pedidos de auxílio" />
 
-        <RenderCurrentState />
+      <Container>
+        <CurrentState />
       </Container>
     </Wrapper>
   );

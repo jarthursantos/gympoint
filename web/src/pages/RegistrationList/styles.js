@@ -1,16 +1,12 @@
 import styled from 'styled-components';
 
+import BodyContainer from '~/components/BodyContainer';
+
 export const Wrapper = styled.div`
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex: 1;
 `;
 
-export const Container = styled.div`
-  width: 100%;
-  max-width: 1060px;
-
+export const Container = styled(BodyContainer)`
   table {
     th,
     td {

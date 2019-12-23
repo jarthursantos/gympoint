@@ -48,7 +48,7 @@ export default function StudentList() {
     );
   }, [filter, students]);
 
-  function RenderCurrentState() {
+  function CurrentState() {
     if (isLoading) return <LoadingState />;
 
     if (!students.length) return <EmptyState />;
@@ -83,22 +83,22 @@ export default function StudentList() {
 
   return (
     <Wrapper>
+      <TopBar title="Gerenciando alunos">
+        <RegisterButton to="/students/register" />
+
+        <div>
+          <MdSearch size={20} color="#999" />
+          <input
+            value={filter}
+            onChange={e => setFilter(e.target.value)}
+            type="text"
+            placeholder="Buscar aluno"
+          />
+        </div>
+      </TopBar>
+
       <Container>
-        <TopBar title="Gerenciando alunos">
-          <RegisterButton to="/students/register" />
-
-          <div>
-            <MdSearch size={20} color="#999" />
-            <input
-              value={filter}
-              onChange={e => setFilter(e.target.value)}
-              type="text"
-              placeholder="Buscar aluno"
-            />
-          </div>
-        </TopBar>
-
-        <RenderCurrentState />
+        <CurrentState />
       </Container>
     </Wrapper>
   );

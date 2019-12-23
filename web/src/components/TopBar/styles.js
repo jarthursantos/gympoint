@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const Container = styled.header`
   display: flex;
-  padding: 0 30px;
   align-items: center;
   justify-content: space-between;
 
@@ -20,6 +19,7 @@ export const Container = styled.header`
     align-items: center;
 
     & > div {
+      background: #fff;
       margin-left: 16px;
       display: flex;
       border: 1px solid #ddd;
@@ -34,7 +34,6 @@ export const Container = styled.header`
         color: #999;
         border: none;
         font-size: 14px;
-        background: transparent;
 
         &::placeholder {
           color: #999;

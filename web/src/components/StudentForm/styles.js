@@ -1,24 +1,24 @@
 import styled from 'styled-components';
-
 import { Form } from '@rocketseat/unform';
 
-export const Container = styled(Form)`
-  width: 100%;
-  max-width: 1060px;
+import BodyContainer from '~/components/BodyContainer';
 
-  .fields {
-    padding: 50px 60px;
+export const Wrapper = styled(Form)`
+  flex: 1;
+`;
+
+export const Container = styled(BodyContainer)`
+  & > label + label {
+    margin-top: 20px;
+  }
+
+  .horizontal {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    margin-top: 20px;
 
     label + label {
       margin-left: 16px;
-    }
-
-    .horizontal {
-      margin-top: 20px;
-      padding: 0;
-      flex-direction: row;
     }
   }
 

@@ -7,7 +7,6 @@ export const Container = styled.div`
   flex-direction: column;
 
   margin: 30px;
-  padding-top: 50px;
 
   span {
     color: #777;

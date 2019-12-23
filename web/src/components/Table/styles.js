@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Container = styled.table`
-  margin: 50px 60px;
   text-align: left;
   font-size: 16px;
 
@@ -60,6 +59,14 @@ export const Container = styled.table`
   tr + tr {
     td {
       border-top: 1px solid #eee;
+    }
+  }
+
+  tbody {
+    tr:last-child {
+      td {
+        padding: 16px 0 0;
+      }
     }
   }
 `;

@@ -6,8 +6,6 @@ export const Container = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  padding: 50px 60px;
-
   & > div {
     width: 100%;
 
@@ -34,16 +32,6 @@ export const Container = styled.div`
       .collapsed {
         width: 98px;
         margin-left: 16px;
-      }
-    }
-
-    .circles {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      span {
-        margin: 0 4px;
       }
     }
   }

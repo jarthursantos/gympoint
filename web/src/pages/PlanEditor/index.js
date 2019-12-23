@@ -8,7 +8,6 @@ import history from '~/services/history';
 import { navigate } from '~/store/modules/navigation/actions';
 
 import PlanForm from '~/components/PlanForm';
-import { Wrapper } from './styles';
 
 export default function PlanEditor() {
   const { id } = useParams();
@@ -44,13 +43,11 @@ export default function PlanEditor() {
   }
 
   return (
-    <Wrapper>
-      <PlanForm
-        title="Edição de plano"
-        initialData={plan}
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-      />
-    </Wrapper>
+    <PlanForm
+      title="Edição de plano"
+      initialData={plan}
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+    />
   );
 }

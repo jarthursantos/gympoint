@@ -51,7 +51,7 @@ export default function RegistrationList() {
     })();
   }, []);
 
-  function RenderCurrentState() {
+  function CurrentState() {
     if (isLoading) return <LoadingState />;
 
     if (!registrations.length) return <EmptyState />;
@@ -100,12 +100,12 @@ export default function RegistrationList() {
 
   return (
     <Wrapper>
-      <Container>
-        <TopBar title="Gerenciando matrículas">
-          <RegisterButton to="/registrations/register" />
-        </TopBar>
+      <TopBar title="Gerenciando matrículas">
+        <RegisterButton to="/registrations/register" />
+      </TopBar>
 
-        <RenderCurrentState />
+      <Container>
+        <CurrentState />
       </Container>
     </Wrapper>
   );

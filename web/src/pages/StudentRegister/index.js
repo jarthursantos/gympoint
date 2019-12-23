@@ -7,7 +7,6 @@ import { navigate } from '~/store/modules/navigation/actions';
 import api from '~/services/api';
 import history from '~/services/history';
 import StudentForm from '~/components/StudentForm';
-import { Wrapper } from './styles';
 
 export default function StudentRegister() {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,12 +31,10 @@ export default function StudentRegister() {
   }
 
   return (
-    <Wrapper>
-      <StudentForm
-        title="Cadastrar aluno"
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-      />
-    </Wrapper>
+    <StudentForm
+      title="Cadastrar aluno"
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+    />
   );
 }

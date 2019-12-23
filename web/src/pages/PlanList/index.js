@@ -48,7 +48,7 @@ export default function PlanList() {
     );
   }
 
-  function RenderCurrentState() {
+  function CurrentState() {
     if (isLoading) return <LoadingState />;
 
     if (!plans.length) return <EmptyState />;
@@ -92,11 +92,11 @@ export default function PlanList() {
 
   return (
     <Wrapper>
+      <TopBar title="Gerenciando planos">
+        <RegisterButton to="/plans/register" />
+      </TopBar>
       <Container>
-        <TopBar title="Gerenciando planos">
-          <RegisterButton to="/plans/register" />
-        </TopBar>
-        <RenderCurrentState />
+        <CurrentState />
       </Container>
     </Wrapper>
   );

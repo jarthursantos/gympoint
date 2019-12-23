@@ -7,7 +7,6 @@ import history from '~/services/history';
 import { navigate } from '~/store/modules/navigation/actions';
 
 import PlanForm from '~/components/PlanForm';
-import { Wrapper } from './styles';
 
 export default function PlanRegister() {
   const dispatch = useDispatch();
@@ -33,12 +32,10 @@ export default function PlanRegister() {
   }
 
   return (
-    <Wrapper>
-      <PlanForm
-        title="Cadastrar plano"
-        isLoading={isLoading}
-        onSubmit={handleSubmit}
-      />
-    </Wrapper>
+    <PlanForm
+      title="Cadastrar plano"
+      isLoading={isLoading}
+      onSubmit={handleSubmit}
+    />
   );
 }

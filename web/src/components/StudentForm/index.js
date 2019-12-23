@@ -9,7 +9,7 @@ import BackButton from '~/components/BackButton';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
 
-import { Container } from './styles';
+import { Wrapper, Container } from './styles';
 
 export default function StudentForm({
   title,
@@ -47,7 +47,7 @@ export default function StudentForm({
   });
 
   return (
-    <Container
+    <Wrapper
       initialData={initialData}
       autoComplete="off"
       schema={schema}
@@ -58,20 +58,18 @@ export default function StudentForm({
         <SaveButton isLoading={isLoading} />
       </TopBar>
 
-      <div className="fields">
+      <Container>
         <LabeledField htmlFor="name">
           <strong>Nome Completo</strong>
           <Input name="name" type="text" id="name" />
         </LabeledField>
 
-        <div className="horizontal">
-          <LabeledField htmlFor="email">
-            <strong>Endereço de E-mail</strong>
-            <Input name="email" type="text" id="email" />
-          </LabeledField>
-        </div>
+        <LabeledField htmlFor="email">
+          <strong>Endereço de E-mail</strong>
+          <Input name="email" type="text" id="email" />
+        </LabeledField>
 
-        <div className="fields horizontal">
+        <div className="horizontal">
           <LabeledField htmlFor="birthdate">
             <strong>Data de Nascimento</strong>
             <DatePicker
@@ -93,8 +91,8 @@ export default function StudentForm({
             <Input name="weight" type="number" step={0.01} id="weight" />
           </LabeledField>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </Wrapper>
   );
 }
 

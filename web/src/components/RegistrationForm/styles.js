@@ -8,14 +8,26 @@ export const Wrapper = styled(Form)`
 `;
 
 export const Container = styled(BodyContainer)`
+  #plan,
+  #student {
+    input {
+      height: 31px;
+    }
+  }
+
   .horizontal {
     display: flex;
-    flex-direction: row;
-
     margin-top: 20px;
+    flex-direction: row;
 
     label + label {
       margin-left: 16px;
+    }
+  }
+
+  .react-datepicker__input-container {
+    input {
+      width: 100%;
     }
   }
 `;

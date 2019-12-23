@@ -9,7 +9,6 @@ import { navigate } from '~/store/modules/navigation/actions';
 import api from '~/services/api';
 import history from '~/services/history';
 import StudentForm from '~/components/StudentForm';
-import { Wrapper } from './styles';
 
 export default function StudentEditor() {
   const { id } = useParams();
@@ -50,13 +49,11 @@ export default function StudentEditor() {
   }
 
   return (
-    <Wrapper>
-      <StudentForm
-        title="Edição de aluno"
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-        initialData={student}
-      />
-    </Wrapper>
+    <StudentForm
+      title="Edição de aluno"
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+      initialData={student}
+    />
   );
 }

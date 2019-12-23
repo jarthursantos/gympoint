@@ -7,7 +7,7 @@ import SaveButton from '~/components/SaveButton';
 import BackButton from '~/components/BackButton';
 import LabeledField from '~/components/LabeledField';
 import TopBar from '~/components/TopBar';
-import { Container } from './styles';
+import { Wrapper, Container } from './styles';
 
 import { formatPrice } from '~/util/format';
 
@@ -42,7 +42,7 @@ export default function PlanForm({ title, initialData, isLoading, ...rest }) {
   });
 
   return (
-    <Container
+    <Wrapper
       initialData={initialData}
       autoComplete="off"
       schema={schema}
@@ -53,12 +53,12 @@ export default function PlanForm({ title, initialData, isLoading, ...rest }) {
         <SaveButton isLoading={isLoading} />
       </TopBar>
 
-      <div>
+      <Container>
         <LabeledField htmlFor="title">
           <strong>Título do Plano</strong>
           <Input name="title" type="text" id="title" />
         </LabeledField>
-        <div>
+        <div className="horizontal">
           <LabeledField htmlFor="duration">
             <strong>
               Duração <small>(em meses)</small>
@@ -86,8 +86,8 @@ export default function PlanForm({ title, initialData, isLoading, ...rest }) {
             <input disabled type="text" id="amount" value={amount} />
           </LabeledField>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </Wrapper>
   );
 }
 

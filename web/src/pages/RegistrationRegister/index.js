@@ -1,65 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import * as Yup from 'yup';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addMonths, format } from 'date-fns';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
 import history from '~/services/history';
-import { formatPrice } from '~/util/format';
 import { navigate } from '~/store/modules/navigation/actions';
 
-import TopBar from '~/components/TopBar';
-import LabeledField from '~/components/LabeledField';
-import BackButton from '~/components/BackButton';
-import DatePicker from '~/components/DatePicker';
-import SaveButton from '~/components/SaveButton';
-import ReactSelect from '~/components/ReactSelect';
-import { Wrapper, Container } from './styles';
+import RegistrationForm from '~/components/RegistrationForm';
 
 export default function RegistrationRegister() {
   const dispatch = useDispatch();
-  const [students, setStudents] = useState([]);
-  const [plans, setPlans] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
-
-  const [selectedPlan, setSelectedPlan] = useState(null);
-
-  const endDate = useMemo(() => {
-    if (!selectedPlan || !startDate) return null;
-    return format(addMonths(startDate, selectedPlan.duration), 'dd/MM/yyyy');
-  }, [selectedPlan, startDate]);
-
-  const totalValue = useMemo(() => {
-    if (!selectedPlan) return null;
-    return formatPrice(selectedPlan.duration * selectedPlan.price);
-  }, [selectedPlan]);
 
   useEffect(() => {
     dispatch(navigate('registrations'));
   }, [dispatch]);
-
-  useEffect(() => {
-    (async () => {
-      const response = await api.get('/students');
-
-      setStudents(response.data.map(({ id, name: title }) => ({ id, title })));
-    })();
-
-    (async () => {
-      const response = await api.get('/plans');
-
-      setPlans(
-        response.data.map(({ id, title, duration, price }) => ({
-          id,
-          title,
-          duration,
-          price,
-        }))
-      );
-    })();
-  }, []);
 
   function handleSubmit(data) {
     setIsLoading(true);
@@ -75,74 +30,11 @@ export default function RegistrationRegister() {
       });
   }
 
-  const schema = Yup.object().shape({
-    student_id: Yup.number()
-      .integer()
-      .typeError('É necessário selecionar um aluno')
-      .required('É necessário selecionar um aluno'),
-    plan_id: Yup.number()
-      .integer()
-      .typeError('É necessário selecionar um plano')
-      .required('É necessário selecionar um plano'),
-    start_date: Yup.date('A data de nascimento é inválida').required(
-      'A data de nascimento é obrigatória'
-    ),
-  });
-
   return (
-    <Wrapper>
-      <Container autoComplete="off" schema={schema} onSubmit={handleSubmit}>
-        <TopBar title="Cadastra de matrícula">
-          <BackButton to="/registrations" />
-          <SaveButton isLoading={isLoading} />
-        </TopBar>
-
-        <div className="fields">
-          <LabeledField htmlFor="student">
-            <strong>Aluno</strong>
-            <ReactSelect
-              name="student_id"
-              id="student"
-              options={students}
-              placeholder="Selecionar aluno"
-            />
-          </LabeledField>
-
-          <div className="fields horizontal">
-            <LabeledField htmlFor="plan">
-              <strong>Plano</strong>
-              <ReactSelect
-                name="plan_id"
-                id="plan"
-                options={plans}
-                placeholder="Selecionar plano"
-                value={selectedPlan}
-                onChange={setSelectedPlan}
-              />
-            </LabeledField>
-            <LabeledField htmlFor="start_date">
-              <strong>Data de Início</strong>
-              <DatePicker
-                style={{ width: '50px' }}
-                name="start_date"
-                id="start_date"
-                selected={startDate}
-                onChange={setStartDate}
-              />
-            </LabeledField>
-            <LabeledField htmlFor="end_date">
-              <strong>Data de Término</strong>
-              <input value={endDate} type="text" id="end_date" disabled />
-            </LabeledField>
-            <LabeledField htmlFor="amount">
-              <strong>Valor Final</strong>
-              <input value={totalValue} type="text" id="amount" disabled />
-            </LabeledField>
-          </div>
-        </div>
-      </Container>
-    </Wrapper>
+    <RegistrationForm
+      title="Cadastro de matrícula"
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+    />
   );
 }
-
-// TODO: loading state
