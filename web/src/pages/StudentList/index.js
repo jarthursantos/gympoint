@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { MdSearch } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { differenceInYears, parseISO } from 'date-fns';
 
@@ -13,6 +12,7 @@ import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
 import EditButton from '~/components/EditButton';
 import MailButton from './MailButton';
+import SearchBar from './SearchBar';
 import { Wrapper, Container } from './styles';
 
 export default function StudentList() {
@@ -86,16 +86,7 @@ export default function StudentList() {
     <Wrapper>
       <TopBar title="Gerenciando alunos">
         <RegisterButton to="/students/register" />
-
-        <div>
-          <MdSearch size={20} color="#999" />
-          <input
-            value={filter}
-            onChange={e => setFilter(e.target.value)}
-            type="text"
-            placeholder="Buscar aluno"
-          />
-        </div>
+        <SearchBar value={filter} onChange={e => setFilter(e.target.value)} />
       </TopBar>
 
       <Container>
