@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { formatInitials } from '~/util/format';
-
-import { signOut } from '~/store/modules/auth/actions';
-import { Container, Content, Profile } from './styles';
-import Notifications from '../Notifications';
+import { Link } from 'react-router-dom';
 
 import logo from '~/assets/small-logo.svg';
+import { signOut } from '~/store/modules/auth/actions';
+import { formatInitials } from '~/util/format';
+
+import Notifications from '../Notifications';
+import { Container, Content, Profile } from './styles';
 
 export default function Header() {
   const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import { MdAdd } from 'react-icons/md';
+
+import PropTypes from 'prop-types';
 
 import { Container } from './styles';
 

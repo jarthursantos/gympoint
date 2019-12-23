@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { parseISO } from 'date-fns';
-import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { navigate } from '~/store/modules/navigation/actions';
+import { parseISO } from 'date-fns';
 
+import StudentForm from '~/components/StudentForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import StudentForm from '~/components/StudentForm';
+import { navigate } from '~/store/modules/navigation/actions';
 
 export default function StudentEditor() {
   const { id } = useParams();
@@ -25,8 +25,6 @@ export default function StudentEditor() {
         ...response.data,
         birthdate: parseISO(response.data.birthdate),
       });
-
-      console.tron.log(response.data);
     })();
   }, [id]);
 

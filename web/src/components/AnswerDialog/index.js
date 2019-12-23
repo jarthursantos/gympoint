@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import * as Yup from 'yup';
 import ReactLoading from 'react-loading';
-import { Form, Textarea } from '@rocketseat/unform';
 import { toast } from 'react-toastify';
 
+import { Form, Textarea } from '@rocketseat/unform';
+import * as Yup from 'yup';
+
+import Modal from '~/components/Modal';
 import api from '~/services/api';
 import EventManager from '~/services/eventManager';
 
-import Modal from '~/components/Modal';
 import { Content } from './styles';
 
 const manager = new EventManager();

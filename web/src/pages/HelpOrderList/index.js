@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 
+import { displayAnswerDialog } from '~/components/AnswerDialog';
+import EmptyState from '~/components/EmptyState';
+import LoadingState from '~/components/LoadingState';
+import Table from '~/components/Table';
+import TopBar from '~/components/TopBar';
 import api from '~/services/api';
 import { navigate } from '~/store/modules/navigation/actions';
 
-import Table from '~/components/Table';
-import TopBar from '~/components/TopBar';
-import EmptyState from '~/components/EmptyState';
-import LoadingState from '~/components/LoadingState';
 import AnswerButton from './AnswerButton';
-import { displayAnswerDialog } from '~/components/AnswerDialog';
 import { Wrapper, Container } from './styles';
 
 export default function HelpOrderList() {

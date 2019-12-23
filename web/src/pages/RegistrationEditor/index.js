@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-
-import { navigate } from '~/store/modules/navigation/actions';
-
-import api from '~/services/api';
-import history from '~/services/history';
 
 import RegistrationForm from '~/components/RegistrationForm';
+import api from '~/services/api';
+import history from '~/services/history';
+import { navigate } from '~/store/modules/navigation/actions';
 
 export default function RegistrationEditor() {
   const { id } = useParams();
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [registration, setRegistration] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const response = await api.get(`/registrations/${id}`);
+
+      setRegistration(response.data);
+    })();
+  }, [id]);
 
   useEffect(() => {
     dispatch(navigate('registrations'));
@@ -39,7 +46,7 @@ export default function RegistrationEditor() {
       title="Edição de matrícula"
       onSubmit={handleSubmit}
       isLoading={isLoading}
-      initialData={{ student_id: 1 }}
+      initialData={registration}
     />
   );
 }

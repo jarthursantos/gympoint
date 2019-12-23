@@ -15,6 +15,7 @@ export const Container = styled.div`
       .name,
       img {
         border: 5px solid #666;
+        color: #666;
       }
     }
   }

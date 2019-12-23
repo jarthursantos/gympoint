@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import * as Yup from 'yup';
-import { format, addMonths } from 'date-fns';
 
+import { format, addMonths } from 'date-fns';
+import PropTypes from 'prop-types';
+import * as Yup from 'yup';
+
+import BackButton from '~/components/BackButton';
+import DatePicker from '~/components/DatePicker';
+import LabeledField from '~/components/LabeledField';
+import SaveButton from '~/components/SaveButton';
+import Select from '~/components/Select';
+import TopBar from '~/components/TopBar';
 import api from '~/services/api';
 import { formatPrice } from '~/util/format';
 
-import TopBar from '~/components/TopBar';
-import LabeledField from '~/components/LabeledField';
-import BackButton from '~/components/BackButton';
-import DatePicker from '~/components/DatePicker';
-import ReactSelect from '~/components/ReactSelect';
-import SaveButton from '~/components/SaveButton';
 import { Wrapper, Container } from './styles';
 
 export default function RegistrationForm({
@@ -39,16 +41,16 @@ export default function RegistrationForm({
     (async () => {
       const response = await api.get('/students');
 
-      setStudents(response.data.map(({ id, name: title }) => ({ id, title })));
+      setStudents(response.data.map(({ id, name }) => ({ id, title: name })));
     })();
 
     (async () => {
       const response = await api.get('/plans');
 
       setPlans(
-        response.data.map(({ id, title, duration, price }) => ({
+        response.data.map(({ id, title: name, duration, price }) => ({
           id,
-          title,
+          title: name,
           duration,
           price,
         }))
@@ -71,7 +73,12 @@ export default function RegistrationForm({
   });
 
   return (
-    <Wrapper autoComplete="off" schema={schema} {...rest}>
+    <Wrapper
+      initialData={initialData}
+      autoComplete="off"
+      schema={schema}
+      {...rest}
+    >
       <TopBar title={title}>
         <BackButton to="/registrations" />
         <SaveButton isLoading={isLoading} />
@@ -80,7 +87,7 @@ export default function RegistrationForm({
       <Container>
         <LabeledField htmlFor="student">
           <strong>Aluno</strong>
-          <ReactSelect
+          <Select
             name="student_id"
             id="student"
             options={students}
@@ -91,7 +98,7 @@ export default function RegistrationForm({
         <div className="horizontal">
           <LabeledField htmlFor="plan">
             <strong>Plano</strong>
-            <ReactSelect
+            <Select
               name="plan_id"
               id="plan"
               options={plans}
@@ -123,3 +130,23 @@ export default function RegistrationForm({
     </Wrapper>
   );
 }
+
+RegistrationForm.propTypes = {
+  title: PropTypes.string.isRequired,
+  initialData: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    birthdate: PropTypes.oneOfType([
+      PropTypes.instanceOf(Date),
+      PropTypes.string,
+    ]),
+    height: PropTypes.number,
+    weight: PropTypes.number,
+  }),
+  isLoading: PropTypes.bool,
+};
+
+RegistrationForm.defaultProps = {
+  isLoading: false,
+  initialData: {},
+};

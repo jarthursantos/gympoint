@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdCameraAlt } from 'react-icons/md';
-import { useField } from '@rocketseat/unform';
-import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading';
+import { useSelector } from 'react-redux';
+
+import { useField } from '@rocketseat/unform';
 
 import api from '~/services/api';
-
 import { formatInitials } from '~/util/format';
+
 import { Container } from './styles';
 
 export default function AvatarInput() {

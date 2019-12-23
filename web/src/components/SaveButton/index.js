@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { MdSave } from 'react-icons/md';
 import ReactLoading from 'react-loading';
 
-import { MdSave } from 'react-icons/md';
+import PropTypes from 'prop-types';
 
 import { Container } from './styles';
 

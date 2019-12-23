@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import PlanForm from '~/components/PlanForm';
 import api from '~/services/api';
 import history from '~/services/history';
 import { navigate } from '~/store/modules/navigation/actions';
-
-import PlanForm from '~/components/PlanForm';
 
 export default function PlanRegister() {
   const dispatch = useDispatch();

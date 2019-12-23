@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
 import { differenceInYears, parseISO } from 'date-fns';
 
-import api from '~/services/api';
-import { navigate } from '~/store/modules/navigation/actions';
-
-import Table from '~/components/Table';
-import TopBar from '~/components/TopBar';
+import EditButton from '~/components/EditButton';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
-import EditButton from '~/components/EditButton';
+import Table from '~/components/Table';
+import TopBar from '~/components/TopBar';
+import api from '~/services/api';
+import { navigate } from '~/store/modules/navigation/actions';
+
 import MailButton from './MailButton';
 import SearchBar from './SearchBar';
 import { Wrapper, Container } from './styles';

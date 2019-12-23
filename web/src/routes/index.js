@@ -1,23 +1,19 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
-import Route from './Route';
-
-import SignIn from '../pages/SignIn';
-import Profile from '../pages/Profile';
-
-import StudentList from '../pages/StudentList';
-import StudentRegister from '../pages/StudentRegister';
-import StudentEditor from '../pages/StudentEditor';
-
-import PlanList from '../pages/PlanList';
-import PlanRegister from '../pages/PlanRegister';
-import PlanEditor from '../pages/PlanEditor';
-
-import RegistrationList from '../pages/RegistrationList';
-import RegistrationRegister from '../pages/RegistrationRegister';
-import RegistrationEditor from '../pages/RegistrationEditor';
 
 import HelpOrderList from '../pages/HelpOrderList';
+import PlanEditor from '../pages/PlanEditor';
+import PlanList from '../pages/PlanList';
+import PlanRegister from '../pages/PlanRegister';
+import Profile from '../pages/Profile';
+import RegistrationEditor from '../pages/RegistrationEditor';
+import RegistrationList from '../pages/RegistrationList';
+import RegistrationRegister from '../pages/RegistrationRegister';
+import SignIn from '../pages/SignIn';
+import StudentEditor from '../pages/StudentEditor';
+import StudentList from '../pages/StudentList';
+import StudentRegister from '../pages/StudentRegister';
+import Route from './Route';
 
 export default function routes() {
   return (

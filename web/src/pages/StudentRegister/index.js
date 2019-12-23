@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
-import { navigate } from '~/store/modules/navigation/actions';
-
+import StudentForm from '~/components/StudentForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import StudentForm from '~/components/StudentForm';
+import { navigate } from '~/store/modules/navigation/actions';
 
 export default function StudentRegister() {
   const [isLoading, setIsLoading] = useState(false);

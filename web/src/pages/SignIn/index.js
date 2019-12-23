@@ -1,10 +1,11 @@
 import React from 'react';
-import * as Yup from 'yup';
 import ReactLoading from 'react-loading';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input } from '@rocketseat/unform';
-import logo from '~/assets/logo.svg';
 
+import { Form, Input } from '@rocketseat/unform';
+import * as Yup from 'yup';
+
+import logo from '~/assets/logo.svg';
 import { signInRequest } from '~/store/modules/auth/actions';
 
 const schema = Yup.object().shape({

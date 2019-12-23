@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import * as Yup from 'yup';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { Input } from '@rocketseat/unform';
+import * as Yup from 'yup';
 
-import { updateProfileRequest } from '~/store/modules/user/actions';
-import { navigate } from '~/store/modules/navigation/actions';
-
-import { Wrapper, Form, Container } from './styles';
-import AvatarInput from './AvatarInput';
-import TopBar from '~/components/TopBar';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
+import TopBar from '~/components/TopBar';
+import { navigate } from '~/store/modules/navigation/actions';
+import { updateProfileRequest } from '~/store/modules/user/actions';
+
+import AvatarInput from './AvatarInput';
+import { Wrapper, Form, Container } from './styles';
 
 export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
+  const isLoading = useSelector(state => state.user.isLoading);
 
   useEffect(() => {
     dispatch(navigate('profile'));
   }, [dispatch]);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   function handleSubmit(data) {
     dispatch(updateProfileRequest(data));
@@ -46,12 +46,7 @@ export default function Profile() {
 
   return (
     <Wrapper>
-      <Form
-        Container
-        schema={schema}
-        initialData={profile}
-        onSubmit={handleSubmit}
-      >
+      <Form schema={schema} initialData={profile} onSubmit={handleSubmit}>
         <TopBar title="Perfil">
           <SaveButton isLoading={isLoading} />
         </TopBar>

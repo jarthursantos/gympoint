@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   margin-left: 20px;

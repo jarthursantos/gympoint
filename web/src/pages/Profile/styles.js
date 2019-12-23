@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Form as BaseForm } from '@rocketseat/unform';
+import styled from 'styled-components';
 
 import BodyContainer from '~/components/BodyContainer';
 

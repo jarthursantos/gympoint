@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 
+import Modal from '~/components/Modal';
 import EventManager from '~/services/eventManager';
 
-import Modal from '~/components/Modal';
 import { Content, Actions } from './styles';
 
 const manager = new EventManager();

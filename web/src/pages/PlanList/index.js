@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import api from '~/services/api';
-import { navigate } from '~/store/modules/navigation/actions';
-import { month as monthPlurals } from '~/util/plurals';
-import { formatPrice } from '~/util/format';
-
-import Table from '~/components/Table';
-import TopBar from '~/components/TopBar';
+import DeleteButton from '~/components/DeleteButton';
+import { displayDeleteDialog } from '~/components/DeleteDialog';
+import EditButton from '~/components/EditButton';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
-import DeleteButton from '~/components/DeleteButton';
-import EditButton from '~/components/EditButton';
-import { displayDeleteDialog } from '~/components/DeleteDialog';
+import Table from '~/components/Table';
+import TopBar from '~/components/TopBar';
+import api from '~/services/api';
+import { navigate } from '~/store/modules/navigation/actions';
+import { formatPrice } from '~/util/format';
+import { month as monthPlurals } from '~/util/plurals';
+
 import { Wrapper, Container } from './styles';
 
 export default function PlanList() {

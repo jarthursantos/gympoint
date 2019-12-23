@@ -5,10 +5,10 @@ export const { format: formatPrice } = new Intl.NumberFormat('pt-br', {
 
 export function formatInitials(str) {
   let result = '';
-  const initials = str.split(' ');
+  const initials = str.trim().split(' ');
 
   initials.forEach(word => {
-    result = `${result}${word.substr(0, 1)}`;
+    if (word.length > 3) result = result.concat(word.substr(0, 1));
   });
 
   return result.substr(0, 2);

@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+
 import { darken } from 'polished';
+import styled from 'styled-components';
 
 export const Container = styled(Link)`
   display: flex;

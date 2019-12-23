@@ -1,12 +1,12 @@
-import { all, takeLatest, call, put } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
-import types from './types';
+import { all, takeLatest, call, put } from 'redux-saga/effects';
 
-import history from '~/services/history';
 import api from '~/services/api';
+import history from '~/services/history';
 
 import { signInSuccess, signInFailure } from './actions';
+import types from './types';
 
 export function* signIn({ payload }) {
   try {

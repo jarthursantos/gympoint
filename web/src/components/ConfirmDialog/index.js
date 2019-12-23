@@ -1,8 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import ReactLoading from 'react-loading';
 
+import PropTypes from 'prop-types';
+
 import Modal from '~/components/Modal';
+
 import { Content, Actions } from './styles';
 
 export default function ConfirmDialog({

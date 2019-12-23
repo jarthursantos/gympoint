@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import PlanForm from '~/components/PlanForm';
 import api from '~/services/api';
 import history from '~/services/history';
 import { navigate } from '~/store/modules/navigation/actions';
-
-import PlanForm from '~/components/PlanForm';
 
 export default function PlanEditor() {
   const { id } = useParams();
