@@ -55,7 +55,7 @@ export default function DeleteDialog() {
           {isLoading ? (
             <ReactLoading type="spin" color="#fff" height={20} width={20} />
           ) : (
-            'Apagar'
+            'Confirmar'
           )}
         </button>
       </Actions>

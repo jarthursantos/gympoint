@@ -5,7 +5,7 @@ const BodyContainer = styled.div`
   flex-direction: column;
 
   background: #fff;
-  margin: 20px 0;
+  margin: 20px 0 50px;
   border-radius: 4px;
   padding: 30px;
 `;

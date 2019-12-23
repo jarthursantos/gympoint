@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import api from '~/services/api';
@@ -12,6 +11,8 @@ import TopBar from '~/components/TopBar';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
+import DeleteButton from '~/components/DeleteButton';
+import EditButton from '~/components/EditButton';
 import { displayDeleteDialog } from '~/components/DeleteDialog';
 import { Wrapper, Container } from './styles';
 
@@ -37,9 +38,9 @@ export default function PlanList() {
 
   function handleDelete({ id, title }) {
     displayDeleteDialog(
-      <div>
-        Deseja remover o aluno <strong>{title}</strong>
-      </div>,
+      <>
+        Deseja remover o aluno &quot;<strong>{title}</strong>&quot;?
+      </>,
       async () => {
         await api.delete(`/plans/${id}`);
 
@@ -71,17 +72,9 @@ export default function PlanList() {
               </td>
               <td className="fill centered">{monthPlurals(plan.duration)}</td>
               <td className="fill centered">{formatPrice(plan.price)}</td>
-              <td className="collapsing actions">
-                <Link to={`/plans/${plan.id}/edit`} className="secondary">
-                  editar
-                </Link>
-                <button
-                  onClick={() => handleDelete(plan)}
-                  type="button"
-                  className="primary"
-                >
-                  apagar
-                </button>
+              <td className="collapsing">
+                <EditButton to={`/plans/${plan.id}/edit`} />
+                <DeleteButton onClick={() => handleDelete(plan)} />
               </td>
             </tr>
           ))}

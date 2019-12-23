@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { MdSearch } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { differenceInYears, parseISO } from 'date-fns';
@@ -12,6 +11,8 @@ import TopBar from '~/components/TopBar';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
+import EditButton from '~/components/EditButton';
+import MailButton from './MailButton';
 import { Wrapper, Container } from './styles';
 
 export default function StudentList() {
@@ -67,12 +68,12 @@ export default function StudentList() {
           {filteredStudents.map(student => (
             <tr key={student.id}>
               <td>{student.name}</td>
-              <td>{student.email}</td>
+              <td>
+                <MailButton mail={student.email} />
+              </td>
               <td className="fill centered">{student.age}</td>
               <td className="collapsing actions">
-                <Link to={`/students/${student.id}/edit`} className="secondary">
-                  editar
-                </Link>
+                <EditButton to={`/students/${student.id}/edit`} />
               </td>
             </tr>
           ))}

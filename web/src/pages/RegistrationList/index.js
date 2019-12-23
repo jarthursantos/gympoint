@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -12,7 +11,10 @@ import TopBar from '~/components/TopBar';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
+import DeleteButton from '~/components/DeleteButton';
+import EditButton from '~/components/EditButton';
 import { Wrapper, Container } from './styles';
+import { displayDeleteDialog } from '~/components/DeleteDialog';
 
 export default function RegistrationList() {
   const [registrations, setRegistrations] = useState([]);
@@ -51,6 +53,22 @@ export default function RegistrationList() {
     })();
   }, []);
 
+  function handleDelete({ id, plan: { title }, student: { name } }) {
+    displayDeleteDialog(
+      <>
+        Deseja cancelar a matrícula do(a) aluno(a) &quot;<strong>{name}</strong>
+        &quot; no plano &quot;<strong>{title}</strong>&quot;?
+      </>,
+      async () => {
+        await api.delete(`/registrations/${id}`);
+
+        setRegistrations(
+          registrations.filter(registration => registration.id !== id)
+        );
+      }
+    );
+  }
+
   function CurrentState() {
     if (isLoading) return <LoadingState />;
 
@@ -81,15 +99,8 @@ export default function RegistrationList() {
                 {registration.active ? 'SIM' : 'NÃO'}
               </td>
               <td className="collapsing actions">
-                <Link
-                  to={`registrations/${registration.id}/edit`}
-                  className="secondary"
-                >
-                  editar
-                </Link>
-                <button type="button" className="primary">
-                  apagar
-                </button>
+                <EditButton to={`registrations/${registration.id}/edit`} />
+                <DeleteButton onClick={() => handleDelete(registration)} />
               </td>
             </tr>
           ))}
@@ -110,3 +121,5 @@ export default function RegistrationList() {
     </Wrapper>
   );
 }
+
+// TODO: delete

@@ -10,6 +10,7 @@ import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import EmptyState from '~/components/EmptyState';
 import LoadingState from '~/components/LoadingState';
+import AnswerButton from './AnswerButton';
 import { displayAnswerDialog } from '~/components/AnswerDialog';
 import { Wrapper, Container } from './styles';
 
@@ -33,7 +34,9 @@ export default function HelpOrderList() {
   }, []);
 
   function handleAction({ id, question }) {
-    displayAnswerDialog(id, question);
+    displayAnswerDialog(id, question, () => {
+      setHelpOrders(helpOrders.filter(helpOrder => helpOrder.id !== id));
+    });
   }
 
   function CurrentState() {
@@ -64,13 +67,7 @@ export default function HelpOrderList() {
                 )}
               </td>
               <td className="collapsing actions">
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => handleAction(helpOrder)}
-                >
-                  responder
-                </button>
+                <AnswerButton onClick={() => handleAction(helpOrder)} />
               </td>
             </tr>
           ))}

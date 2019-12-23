@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { darken } from 'polished';
 
 export const Container = styled.table`
   text-align: left;
@@ -12,6 +11,22 @@ export const Container = styled.table`
 
   td.collapsing {
     width: 1px;
+
+    button + button {
+      margin-left: 16px;
+    }
+
+    a + a {
+      margin-left: 16px;
+    }
+
+    a + button {
+      margin-left: 16px;
+    }
+
+    button + a {
+      margin-left: 16px;
+    }
   }
 
   th.centered,
@@ -22,32 +37,6 @@ export const Container = styled.table`
   td {
     color: #666;
     padding: 16px 0;
-
-    &.actions {
-      a,
-      button {
-        font-size: 16px;
-        margin-left: 16px;
-        border: none;
-        background: none;
-
-        &.primary {
-          color: #de3b3b;
-
-          &:hover {
-            color: ${darken(0.1, '#de3b3b')};
-          }
-        }
-
-        &.secondary {
-          color: #4d85ee;
-
-          &:hover {
-            color: ${darken(0.1, '#4d85ee')};
-          }
-        }
-      }
-    }
   }
 
   th {

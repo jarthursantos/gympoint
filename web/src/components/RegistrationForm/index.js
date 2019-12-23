@@ -112,11 +112,11 @@ export default function RegistrationForm({
           </LabeledField>
           <LabeledField htmlFor="end_date">
             <strong>Data de Término</strong>
-            <input value={endDate} type="text" id="end_date" disabled />
+            <input value={endDate || ''} type="text" id="end_date" disabled />
           </LabeledField>
           <LabeledField htmlFor="amount">
             <strong>Valor Final</strong>
-            <input value={totalValue} type="text" id="amount" disabled />
+            <input value={totalValue || ''} type="text" id="amount" disabled />
           </LabeledField>
         </div>
       </Container>

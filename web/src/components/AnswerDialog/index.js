@@ -12,8 +12,8 @@ import { Content } from './styles';
 
 const manager = new EventManager();
 
-export const displayAnswerDialog = (id, question) => {
-  manager.emit('answer', id, question);
+export const displayAnswerDialog = (id, question, callback) => {
+  manager.emit('answer', id, question, callback);
 };
 
 export default function AnswerDialog() {
@@ -22,8 +22,8 @@ export default function AnswerDialog() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    manager.on('answer', (id, content) => {
-      setQuestion({ id, content });
+    manager.on('answer', (id, content, callback) => {
+      setQuestion({ id, content, callback });
       setIsOpen(true);
     });
 
@@ -43,6 +43,10 @@ export default function AnswerDialog() {
       .post(`/help-orders/${id}/answer`, data)
       .then(() => {
         handleClose();
+
+        const { callback } = question;
+
+        if (callback) callback();
       })
       .catch(err => {
         toast.error(err.response.data.error);

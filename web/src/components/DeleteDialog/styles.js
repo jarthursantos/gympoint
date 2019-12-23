@@ -2,12 +2,16 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-
   width: 100%;
   max-width: 400px;
   min-width: 300px;
+
+  color: #666;
+  font-size: 16px;
+
+  strong {
+    color: #444;
+  }
 `;
 
 export const Actions = styled.div`
