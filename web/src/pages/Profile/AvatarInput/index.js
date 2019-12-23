@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MdCameraAlt } from 'react-icons/md';
 import { useField } from '@rocketseat/unform';
 import { useSelector } from 'react-redux';
+import ReactLoading from 'react-loading';
 
 import api from '~/services/api';
 
@@ -12,6 +13,7 @@ export default function AvatarInput() {
   const { defaultValue, registerField } = useField('avatar');
   const { name } = useSelector(state => state.user.profile);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
 
@@ -31,12 +33,15 @@ export default function AvatarInput() {
     const data = new FormData();
     data.append('file', e.target.files[0]);
 
+    setIsLoading(true);
+
     const response = await api.post('/avatars', data);
 
     const { id, url } = response.data;
 
     setFile(id);
     setPreview(url);
+    setIsLoading(false);
   }
 
   return (
@@ -58,7 +63,11 @@ export default function AvatarInput() {
         />
       </label>
       <div className="camera-icon">
-        <MdCameraAlt size={24} color="#fff" />
+        {isLoading ? (
+          <ReactLoading type="spin" color="#fff" height={24} width={24} />
+        ) : (
+          <MdCameraAlt size={24} color="#fff" />
+        )}
       </div>
     </Container>
   );

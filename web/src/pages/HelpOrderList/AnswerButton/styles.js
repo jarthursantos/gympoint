@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Container = styled.button`
-  font-size: 16px;
+  font-size: 15px;
   border: none;
   background: none;
   text-transform: lowercase;

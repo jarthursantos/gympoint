@@ -3,7 +3,7 @@ import { darken } from 'polished';
 import { Link } from 'react-router-dom';
 
 export const Container = styled(Link)`
-  font-size: 16px;
+  font-size: 15px;
   border: none;
   background: none;
   text-transform: lowercase;
