@@ -6,7 +6,7 @@ import { Input } from '@rocketseat/unform';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 import { navigate } from '~/store/modules/navigation/actions';
 
-import { Wrapper, Container } from './styles';
+import { Wrapper, Form, Container } from './styles';
 import AvatarInput from './AvatarInput';
 import TopBar from '~/components/TopBar';
 import LabeledField from '~/components/LabeledField';
@@ -46,12 +46,17 @@ export default function Profile() {
 
   return (
     <Wrapper>
-      <Container schema={schema} initialData={profile} onSubmit={handleSubmit}>
+      <Form
+        Container
+        schema={schema}
+        initialData={profile}
+        onSubmit={handleSubmit}
+      >
         <TopBar title="Perfil">
           <SaveButton isLoading={isLoading} />
         </TopBar>
 
-        <div className="horizontal">
+        <Container className="horizontal">
           <AvatarInput className="avatar" name="avatar_id" />
 
           <div className="fill vertical fields">
@@ -97,8 +102,8 @@ export default function Profile() {
               />
             </LabeledField>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </Form>
     </Wrapper>
   );
 }

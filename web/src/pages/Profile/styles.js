@@ -1,21 +1,17 @@
 import styled from 'styled-components';
-import { Form } from '@rocketseat/unform';
+import { Form as BaseForm } from '@rocketseat/unform';
+
+import BodyContainer from '~/components/BodyContainer';
 
 export const Wrapper = styled.div`
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex: 1;
 `;
 
-export const Container = styled(Form)`
-  width: 100%;
-  max-width: 1060px;
+export const Container = styled(BodyContainer)`
+  flex-direction: row;
+`;
 
-  & > div {
-    padding: 50px 60px;
-  }
-
+export const Form = styled(BaseForm)`
   .horizontal {
     display: flex;
   }

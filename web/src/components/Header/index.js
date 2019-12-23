@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { formatInitials } from '~/util/format';
+
 import { signOut } from '~/store/modules/auth/actions';
 import { Container, Content, Profile } from './styles';
 import Notifications from '../Notifications';
@@ -56,15 +58,19 @@ export default function Header() {
               </button>
             </div>
             <Link to="/profile">
-              <img
-                className={activeTab === 'profile' ? 'active' : ''}
-                src={
-                  avatar
-                    ? avatar.url
-                    : 'https://api.adorable.io/avatars/50/abott@adorable.png'
-                }
-                alt="Avatar"
-              />
+              {avatar ? (
+                <img
+                  className={activeTab === 'profile' ? 'active' : ''}
+                  src={avatar.url}
+                  alt="Avatar"
+                />
+              ) : (
+                <div
+                  className={`name ${activeTab === 'profile' ? 'active' : ''}`}
+                >
+                  {formatInitials(name)}
+                </div>
+              )}
             </Link>
           </Profile>
         </aside>

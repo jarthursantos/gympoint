@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdCameraAlt } from 'react-icons/md';
 import { useField } from '@rocketseat/unform';
+import { useSelector } from 'react-redux';
+
 import api from '~/services/api';
 
+import { formatInitials } from '~/util/format';
 import { Container } from './styles';
 
 export default function AvatarInput() {
   const { defaultValue, registerField } = useField('avatar');
+  const { name } = useSelector(state => state.user.profile);
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
@@ -38,12 +42,11 @@ export default function AvatarInput() {
   return (
     <Container>
       <label htmlFor="avatar">
-        <img
-          src={
-            preview || 'https://api.adorable.io/avatars/50/abott@adorable.png'
-          }
-          alt="Avatar"
-        />
+        {preview ? (
+          <img src={preview} alt="Avatar" />
+        ) : (
+          <div className="name">{formatInitials(name)}</div>
+        )}
 
         <input
           type="file"
@@ -60,3 +63,5 @@ export default function AvatarInput() {
     </Container>
   );
 }
+
+// TODO: change default image

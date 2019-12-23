@@ -95,8 +95,9 @@ export const Profile = styled.div`
     }
   }
 
+  .name,
   img {
-    border: 2px solid #ddd;
+    border: 2px solid #999;
     height: 34px;
     width: 34px;
     border-radius: 50%;
@@ -106,7 +107,19 @@ export const Profile = styled.div`
     }
   }
 
+  .name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #999;
+    font-weight: 500;
+    text-transform: uppercase;
+    background: #eee;
+  }
+
+  .name.active,
   img.active {
-    border: 2px solid #444;
+    border: 2px solid #666;
   }
 `;

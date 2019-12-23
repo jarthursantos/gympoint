@@ -12,6 +12,7 @@ export const Container = styled.div`
     }
 
     label {
+      .name,
       img {
         border: 5px solid #666;
       }
@@ -21,6 +22,7 @@ export const Container = styled.div`
   label {
     cursor: pointer;
 
+    .name,
     img {
       transition: all 0.2s;
       height: 150px;
@@ -28,6 +30,16 @@ export const Container = styled.div`
       border-radius: 50%;
       border: 5px solid #999;
       background: #eee;
+    }
+
+    .name {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: #999;
+      font-size: 50px;
+      text-transform: uppercase;
     }
 
     input {
@@ -48,8 +60,8 @@ export const Container = styled.div`
     border-radius: 50%;
 
     position: absolute;
-    top: 8px;
-    right: 8px;
+    bottom: 5px;
+    right: 5px;
 
     background: #999;
   }
