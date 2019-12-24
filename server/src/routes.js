@@ -101,6 +101,7 @@ routes.delete(
   PlanController.destroy
 );
 
+routes.get('/registrations/:id', RegistrationController.show);
 routes.get('/registrations', RegistrationController.index);
 routes.post(
   '/registrations',

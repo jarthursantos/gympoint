@@ -8,6 +8,28 @@ import NewRegistrationJob from '../jobs/NewRegistrationMail';
 import Queue from '../../lib/Queue';
 
 class RegistrationController {
+  async show(req, res) {
+    const { id } = req.params;
+
+    const registration = await Registration.findByPk(id, {
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration', 'price'],
+        },
+      ],
+      attributes: ['id', 'price', 'start_date', 'end_date', 'active'],
+    });
+
+    return res.json(registration);
+  }
+
   async index(_req, res) {
     const registrations = await Registration.findAll({
       include: [

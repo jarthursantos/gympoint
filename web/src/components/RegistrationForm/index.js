@@ -23,8 +23,9 @@ export default function RegistrationForm({
 }) {
   const [students, setStudents] = useState([]);
   const [plans, setPlans] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState();
 
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const endDate = useMemo(() => {
@@ -38,6 +39,14 @@ export default function RegistrationForm({
   }, [selectedPlan]);
 
   useEffect(() => {
+    if (!initialData) return;
+
+    setStartDate(initialData.start_date);
+    setSelectedStudent(initialData.student);
+    setSelectedPlan(initialData.plan);
+  }, [initialData]);
+
+  useEffect(() => {
     (async () => {
       const response = await api.get('/students');
 
@@ -47,14 +56,7 @@ export default function RegistrationForm({
     (async () => {
       const response = await api.get('/plans');
 
-      setPlans(
-        response.data.map(({ id, title: name, duration, price }) => ({
-          id,
-          title: name,
-          duration,
-          price,
-        }))
-      );
+      setPlans(response.data);
     })();
   }, []);
 
@@ -78,6 +80,7 @@ export default function RegistrationForm({
       autoComplete="off"
       schema={schema}
       {...rest}
+      onSubmit={data => console.tron.log(data)}
     >
       <TopBar title={title}>
         <BackButton to="/registrations" />
@@ -92,6 +95,8 @@ export default function RegistrationForm({
             id="student"
             options={students}
             placeholder="Selecionar aluno"
+            value={selectedStudent}
+            onChange={setSelectedStudent}
           />
         </LabeledField>
 
@@ -104,7 +109,10 @@ export default function RegistrationForm({
               options={plans}
               placeholder="Selecionar plano"
               value={selectedPlan}
-              onChange={setSelectedPlan}
+              onChange={value => {
+                console.tron.log(value);
+                setSelectedPlan(value);
+              }}
             />
           </LabeledField>
           <LabeledField htmlFor="start_date">
@@ -136,7 +144,14 @@ RegistrationForm.propTypes = {
   initialData: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string,
-    birthdate: PropTypes.oneOfType([
+    student: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    plan: PropTypes.shape({
+      id: PropTypes.number,
+    }),
+    start_date: PropTypes.oneOfType([
       PropTypes.instanceOf(Date),
       PropTypes.string,
     ]),

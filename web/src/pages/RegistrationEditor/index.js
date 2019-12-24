@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { parseISO } from 'date-fns';
+
 import RegistrationForm from '~/components/RegistrationForm';
 import api from '~/services/api';
 import history from '~/services/history';
@@ -19,7 +21,16 @@ export default function RegistrationEditor() {
     (async () => {
       const response = await api.get(`/registrations/${id}`);
 
-      setRegistration(response.data);
+      const { student } = response.data;
+
+      setRegistration({
+        ...response.data,
+        start_date: parseISO(response.data.start_date),
+        student: {
+          ...student,
+          title: student.name,
+        },
+      });
     })();
   }, [id]);
 
@@ -28,6 +39,7 @@ export default function RegistrationEditor() {
   }, [dispatch]);
 
   function handleSubmit(data) {
+    console.tron.log(data);
     setIsLoading(true);
 
     api
