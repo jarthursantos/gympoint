@@ -13,6 +13,7 @@ import TopBar from '~/components/TopBar';
 import api from '~/services/api';
 import { formatPrice } from '~/util/format';
 
+import StudentPicker from './StudentPicker';
 import { Wrapper, Container } from './styles';
 
 export default function RegistrationForm({
@@ -21,11 +22,9 @@ export default function RegistrationForm({
   isLoading,
   ...rest
 }) {
-  const [students, setStudents] = useState([]);
   const [plans, setPlans] = useState([]);
   const [startDate, setStartDate] = useState();
 
-  const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const endDate = useMemo(() => {
@@ -42,17 +41,10 @@ export default function RegistrationForm({
     if (!initialData) return;
 
     setStartDate(initialData.start_date);
-    setSelectedStudent(initialData.student);
     setSelectedPlan(initialData.plan);
   }, [initialData]);
 
   useEffect(() => {
-    (async () => {
-      const response = await api.get('/students');
-
-      setStudents(response.data.map(({ id, name }) => ({ id, title: name })));
-    })();
-
     (async () => {
       const response = await api.get('/plans');
 
@@ -80,7 +72,7 @@ export default function RegistrationForm({
       autoComplete="off"
       schema={schema}
       {...rest}
-      onSubmit={data => console.tron.log(data)}
+      onSubmit={data => console.log(data)}
     >
       <TopBar title={title}>
         <BackButton to="/registrations" />
@@ -90,14 +82,7 @@ export default function RegistrationForm({
       <Container>
         <LabeledField htmlFor="student">
           <strong>Aluno</strong>
-          <Select
-            name="student_id"
-            id="student"
-            options={students}
-            placeholder="Selecionar aluno"
-            value={selectedStudent}
-            onChange={setSelectedStudent}
-          />
+          <StudentPicker id="student" name="student_id" />
         </LabeledField>
 
         <div className="horizontal">
