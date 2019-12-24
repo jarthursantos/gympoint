@@ -38,12 +38,11 @@ export default function RegistrationEditor() {
     dispatch(navigate('registrations'));
   }, [dispatch]);
 
-  function handleSubmit(data) {
-    console.tron.log(data);
+  function handleSubmit({ start_date, plan: plan_id, student: student_id }) {
     setIsLoading(true);
 
     api
-      .put(`/registrations/${id}`, data)
+      .put(`/registrations/${id}`, { start_date, student_id, plan_id })
       .then(() => {
         history.push('/registrations');
       })

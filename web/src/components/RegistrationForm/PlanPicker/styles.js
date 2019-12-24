@@ -43,14 +43,14 @@ export const SearchBar = styled.input`
   padding: 30px 30px 20px;
 `;
 
-export const StudentList = styled(Scrollbar)`
+export const PlanList = styled(Scrollbar)`
   margin: 0 -30px 20px;
   min-height: 250px;
   max-height: 250px;
   width: 500px;
 `;
 
-export const Student = styled.div`
+export const Plan = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -58,21 +58,21 @@ export const Student = styled.div`
   padding: 12px 30px;
   background: ${props => (props.selected ? '#ccc' : '#fff')};
 
-  div {
-    display: flex;
-    flex-direction: column;
-
-    strong {
-      color: #444;
-    }
-
-    small {
-      color: #666;
-    }
+  strong {
+    color: #444;
   }
 
-  span {
-    color: #444;
+  div {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+
+    color: #666;
+
+    small {
+      margin-top: 2px;
+      font-size: 12px;
+    }
   }
 
   &:hover {

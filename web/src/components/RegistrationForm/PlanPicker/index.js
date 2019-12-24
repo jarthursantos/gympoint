@@ -3,22 +3,23 @@ import { MdExpandMore } from 'react-icons/md';
 import ReactLoading from 'react-loading';
 
 import { useField } from '@rocketseat/unform';
-import { differenceInYears, parseISO } from 'date-fns';
 import PropTypes from 'prop-types';
 
 import Modal from '~/components/Modal';
 import api from '~/services/api';
+import { formatPrice } from '~/util/format';
+import { month as monthPlurals } from '~/util/plurals';
 
 import {
   Container,
   ModalContent,
   SearchBar,
-  StudentList,
-  Student,
+  PlanList,
+  Plan,
   Actions,
 } from './styles';
 
-export default function StudentPicker({ name }) {
+export default function PlanPicker({ onPlanChange, name }) {
   const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
 
@@ -32,27 +33,22 @@ export default function StudentPicker({ name }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState('');
-  const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [plans, setPlans] = useState([]);
+  const [filteredPlans, setFilteredPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [selectedPlan, setSelectedPlan] = useState(defaultValue);
   const [selectedListItem, setSelectedListItem] = useState({});
-  const [selectedStudent, setSelectedStudent] = useState(defaultValue);
   const [value, setValue] = useState(defaultValue && defaultValue.id);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
 
-      const response = await api.get('/students');
+      const response = await api.get('/plans');
 
-      const data = response.data.map(student => ({
-        ...student,
-        age: differenceInYears(new Date(), parseISO(student.birthdate)),
-      }));
-
-      setStudents(data);
-      setFilteredStudents(data);
+      setPlans(response.data);
+      setFilteredPlans(response.data);
 
       setIsLoading(false);
     })();
@@ -62,20 +58,20 @@ export default function StudentPicker({ name }) {
     if (!defaultValue) return;
 
     setValue(defaultValue.id);
-    setSelectedStudent(defaultValue);
+    setSelectedPlan(defaultValue);
   }, [defaultValue]);
 
   useEffect(() => {
     const lowerFilter = filter.toLowerCase().trim();
 
-    const data = students.filter(({ name: studentName }) =>
-      studentName.toLowerCase().includes(lowerFilter)
+    const data = plans.filter(({ title }) =>
+      title.toLowerCase().includes(lowerFilter)
     );
 
-    setFilteredStudents(data);
+    setFilteredPlans(data);
 
     setSelectedListItem(data.length === 1 ? data[0] : {});
-  }, [filter, students]);
+  }, [filter, plans]);
 
   function handleOpenModal() {
     if (isLoading) return;
@@ -95,7 +91,8 @@ export default function StudentPicker({ name }) {
 
   function handleConfirmSelection() {
     setValue(selectedListItem.id);
-    setSelectedStudent(selectedListItem);
+    setSelectedPlan(selectedListItem);
+    onPlanChange(selectedListItem);
 
     handleCloseModal();
   }
@@ -103,9 +100,7 @@ export default function StudentPicker({ name }) {
   return (
     <>
       <Container onClick={handleOpenModal}>
-        <span>
-          {!selectedStudent ? 'Selecionar aluno' : selectedStudent.name}
-        </span>
+        <span>{!selectedPlan ? 'Selecionar plano' : selectedPlan.title}</span>
         {isLoading ? (
           <ReactLoading type="spin" color="#666" height={24} width={24} />
         ) : (
@@ -128,23 +123,23 @@ export default function StudentPicker({ name }) {
             onChange={e => setFilter(e.target.value)}
             type="text"
             autoFocus
-            placeholder="Buscar aluno"
+            placeholder="Buscar plano"
           />
-          <StudentList>
-            {filteredStudents.map(student => (
-              <Student
+          <PlanList>
+            {filteredPlans.map(student => (
+              <Plan
                 key={student.id}
                 selected={student.id === selectedListItem.id}
                 onClick={() => handleSelectListItem(student)}
               >
+                <strong>{student.title}</strong>
                 <div>
-                  <strong>{student.name}</strong>
-                  <small>{student.email}</small>
+                  <span>{formatPrice(student.price)} p/mês</span>
+                  <small>durante {monthPlurals(student.duration)}</small>
                 </div>
-                <span>{student.age} anos</span>
-              </Student>
+              </Plan>
             ))}
-          </StudentList>
+          </PlanList>
           <Actions>
             <button type="button" className="cancel" onClick={handleCloseModal}>
               Cancelar
@@ -165,6 +160,11 @@ export default function StudentPicker({ name }) {
   );
 }
 
-StudentPicker.propTypes = {
+PlanPicker.propTypes = {
+  onPlanChange: PropTypes.func,
   name: PropTypes.string.isRequired,
+};
+
+PlanPicker.defaultProps = {
+  onPlanChange: () => {},
 };

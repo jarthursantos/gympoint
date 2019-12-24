@@ -15,11 +15,11 @@ export default function RegistrationRegister() {
     dispatch(navigate('registrations'));
   }, [dispatch]);
 
-  function handleSubmit(data) {
+  function handleSubmit({ start_date, plan: plan_id, student: student_id }) {
     setIsLoading(true);
 
     api
-      .post('/registrations', data)
+      .post('/registrations', { start_date, student_id, plan_id })
       .then(() => {
         history.push('/registrations');
       })

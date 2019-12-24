@@ -8,11 +8,10 @@ import BackButton from '~/components/BackButton';
 import DatePicker from '~/components/DatePicker';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
-import Select from '~/components/Select';
 import TopBar from '~/components/TopBar';
-import api from '~/services/api';
 import { formatPrice } from '~/util/format';
 
+import PlanPicker from './PlanPicker';
 import StudentPicker from './StudentPicker';
 import { Wrapper, Container } from './styles';
 
@@ -22,7 +21,6 @@ export default function RegistrationForm({
   isLoading,
   ...rest
 }) {
-  const [plans, setPlans] = useState([]);
   const [startDate, setStartDate] = useState();
 
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -44,20 +42,12 @@ export default function RegistrationForm({
     setSelectedPlan(initialData.plan);
   }, [initialData]);
 
-  useEffect(() => {
-    (async () => {
-      const response = await api.get('/plans');
-
-      setPlans(response.data);
-    })();
-  }, []);
-
   const schema = Yup.object().shape({
-    student_id: Yup.number()
+    student: Yup.number()
       .integer()
       .typeError('É necessário selecionar um aluno')
       .required('É necessário selecionar um aluno'),
-    plan_id: Yup.number()
+    plan: Yup.number()
       .integer()
       .typeError('É necessário selecionar um plano')
       .required('É necessário selecionar um plano'),
@@ -72,7 +62,6 @@ export default function RegistrationForm({
       autoComplete="off"
       schema={schema}
       {...rest}
-      onSubmit={data => console.log(data)}
     >
       <TopBar title={title}>
         <BackButton to="/registrations" />
@@ -82,24 +71,15 @@ export default function RegistrationForm({
       <Container>
         <LabeledField htmlFor="student">
           <strong>Aluno</strong>
-          <StudentPicker id="student" name="student_id" />
+          <StudentPicker id="student" name="student" />
         </LabeledField>
 
         <div className="horizontal">
           <LabeledField htmlFor="plan">
             <strong>Plano</strong>
-            <Select
-              name="plan_id"
-              id="plan"
-              options={plans}
-              placeholder="Selecionar plano"
-              value={selectedPlan}
-              onChange={value => {
-                console.tron.log(value);
-                setSelectedPlan(value);
-              }}
-            />
+            <PlanPicker id="plan" name="plan" onPlanChange={setSelectedPlan} />
           </LabeledField>
+
           <LabeledField htmlFor="start_date">
             <strong>Data de Início</strong>
             <DatePicker
@@ -110,10 +90,12 @@ export default function RegistrationForm({
               onChange={setStartDate}
             />
           </LabeledField>
+
           <LabeledField htmlFor="end_date">
             <strong>Data de Término</strong>
             <input value={endDate || ''} type="text" id="end_date" disabled />
           </LabeledField>
+
           <LabeledField htmlFor="amount">
             <strong>Valor Final</strong>
             <input value={totalValue || ''} type="text" id="amount" disabled />

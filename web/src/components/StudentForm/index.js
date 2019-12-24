@@ -81,15 +81,15 @@ export default function StudentForm({
               onChange={date => setBirthdate(date)}
             />
           </LabeledField>
-          <LabeledField htmlFor="height">
+          <LabeledField htmlFor="weight">
             <strong>
               Peso <small>(em kg)</small>
             </strong>
-            <Input name="height" type="number" step={0.01} id="height" />
-          </LabeledField>
-          <LabeledField htmlFor="weight">
-            <strong>Altura</strong>
             <Input name="weight" type="number" step={0.01} id="weight" />
+          </LabeledField>
+          <LabeledField htmlFor="height">
+            <strong>Altura</strong>
+            <Input name="height" type="number" step={0.01} id="height" />
           </LabeledField>
         </div>
       </Container>
