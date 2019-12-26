@@ -16,9 +16,9 @@ import StudentPicker from './StudentPicker';
 import { Wrapper, Container } from './styles';
 
 export default function RegistrationForm({
-  initialData,
   title,
   isLoading,
+  initialData,
   ...rest
 }) {
   const [startDate, setStartDate] = useState();

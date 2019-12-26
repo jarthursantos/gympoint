@@ -45,6 +45,11 @@ class RegistrationController {
         },
       ],
       attributes: ['id', 'price', 'start_date', 'end_date', 'active'],
+      order: [
+        [{ model: Student, as: 'student' }, 'name'],
+        [{ model: Student, as: 'student' }, 'birthdate'],
+        [{ model: Student, as: 'student' }, 'email'],
+      ],
     });
     return res.json(registrations);
   }

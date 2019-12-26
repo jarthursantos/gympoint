@@ -14,7 +14,7 @@ class StudentController {
   async index(_req, res) {
     const students = await Student.findAll({
       attributes: ['id', 'name', 'email', 'birthdate', 'height', 'weight'],
-      order: ['name'],
+      order: ['name', 'birthdate', 'email'],
     });
     return res.json(students);
   }
