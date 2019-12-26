@@ -91,14 +91,16 @@ export default function PlanForm({
               </LabeledField>
               <LabeledField htmlFor="price">
                 <strong>Preço Mensal</strong>
-                <Input
-                  name="price"
-                  type="number"
-                  id="price"
-                  value={price || ''}
-                  onChange={e => setPrice(e.target.value)}
-                  disabled={locked}
-                />
+                <CurrencyInput>
+                  <Input
+                    name="price"
+                    type="number"
+                    id="price"
+                    value={price || ''}
+                    onChange={e => setPrice(e.target.value)}
+                    disabled={locked}
+                  />
+                </CurrencyInput>
               </LabeledField>
               <LabeledField htmlFor="amount">
                 <strong>Preço Total</strong>
