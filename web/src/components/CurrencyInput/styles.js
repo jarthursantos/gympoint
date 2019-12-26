@@ -6,8 +6,10 @@ export const Container = styled.div`
   input {
     flex: 1;
     border-radius: 0 4px 4px 0 !important;
+    text-align: right;
   }
 `;
+
 export const Currency = styled.div`
   font-weight: bold;
   color: #666;

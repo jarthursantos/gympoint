@@ -126,6 +126,7 @@ class RegistrationController {
 
   async update(req, res) {
     const { id } = req.params;
+    let data = {};
 
     const registration = await Registration.findByPk(id);
 
@@ -135,36 +136,43 @@ class RegistrationController {
 
     const { student_id, plan_id, start_date: start_date_raw } = req.body;
 
-    const planExists = await Plan.findByPk(plan_id || registration.plan_id);
+    if (plan_id !== registration.plan_id) {
+      const planExists = await Plan.findByPk(plan_id || registration.plan_id);
 
-    if (!planExists) {
-      return res.status(400).json({ error: "plan don't exists" });
+      if (!planExists) {
+        return res.status(400).json({ error: "plan don't exists" });
+      }
+
+      const { duration: plan_duration, price: plan_month_price } = planExists;
+
+      const start_date = start_date_raw
+        ? parseISO(start_date_raw)
+        : registration.start_date;
+
+      data = {
+        ...data,
+        plan_id,
+        end_date: addMonths(start_date, plan_duration),
+        price: plan_month_price * plan_duration,
+      };
     }
 
-    const studentExists = await Student.findByPk(
-      student_id || registration.student_id
-    );
+    if (student_id !== registration.student_id) {
+      const studentExists = await Student.findByPk(
+        student_id || registration.student_id
+      );
 
-    if (!studentExists) {
-      return res.status(400).json({ error: "student don't exists" });
+      if (!studentExists) {
+        return res.status(400).json({ error: "student don't exists" });
+      }
+
+      data = {
+        ...data,
+        student_id,
+      };
     }
 
-    const { duration: plan_duration, price: plan_month_price } = planExists;
-
-    const start_date = start_date_raw
-      ? parseISO(start_date_raw)
-      : registration.start_date;
-
-    const end_date = addMonths(start_date, plan_duration);
-    const price = plan_month_price * plan_duration;
-
-    await registration.update({
-      student_id,
-      plan_id,
-      start_date,
-      end_date,
-      price,
-    });
+    const { price, start_date, end_date } = await registration.update(data);
 
     await Queue.add(NewRegistrationJob.key, {
       registration: { id, price, start_date, end_date },

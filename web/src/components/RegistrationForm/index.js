@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { format, addMonths } from 'date-fns';
+import { format, addMonths, parseISO } from 'date-fns';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 
@@ -31,16 +31,43 @@ export default function RegistrationForm({
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const endDate = useMemo(() => {
-    if (!selectedPlan || !startDate) return null;
-    return format(addMonths(startDate, selectedPlan.duration), 'dd/MM/yyyy');
-  }, [selectedPlan, startDate]);
+    const { end_date, plan: currentPlan } = initialData;
+
+    if (selectedPlan) {
+      if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
+        return format(
+          addMonths(startDate, selectedPlan.duration),
+          'dd/MM/yyyy'
+        );
+      }
+
+      return format(parseISO(end_date), 'dd/MM/yyyy');
+    }
+
+    if (!end_date) return null;
+    return format(parseISO(end_date), 'dd/MM/yyyy');
+  }, [initialData, selectedPlan, startDate]);
 
   const totalValue = useMemo(() => {
-    if (!selectedPlan) return null;
-    return formatPrice(selectedPlan.duration * selectedPlan.price)
+    const { price, plan: currentPlan } = initialData;
+
+    if (selectedPlan) {
+      if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
+        return formatPrice(selectedPlan.duration * selectedPlan.price)
+          .replace('R$', '')
+          .trim();
+      }
+
+      return formatPrice(price)
+        .replace('R$', '')
+        .trim();
+    }
+
+    if (!price) return null;
+    return formatPrice(price)
       .replace('R$', '')
       .trim();
-  }, [selectedPlan]);
+  }, [initialData, selectedPlan]);
 
   useEffect(() => {
     if (!initialData) return;
@@ -142,6 +169,7 @@ RegistrationForm.propTypes = {
   initialData: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string,
+    price: PropTypes.number,
     student: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
@@ -150,6 +178,10 @@ RegistrationForm.propTypes = {
       id: PropTypes.number,
     }),
     start_date: PropTypes.oneOfType([
+      PropTypes.instanceOf(Date),
+      PropTypes.string,
+    ]),
+    end_date: PropTypes.oneOfType([
       PropTypes.instanceOf(Date),
       PropTypes.string,
     ]),
