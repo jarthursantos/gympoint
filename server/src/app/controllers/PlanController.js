@@ -2,13 +2,7 @@ import Plan from '../models/Plan';
 
 class PlanController {
   async show(req, res) {
-    const { id } = req.params;
-
-    const plan = await Plan.findByPk(id, {
-      attributes: ['id', 'title', 'duration', 'price'],
-    });
-
-    return res.json(plan);
+    return res.json(req.plan);
   }
 
   async index(_req, res) {

@@ -22,7 +22,13 @@ function App() {
           <Routes />
 
           <GlobalStyle />
-          <ToastContainer autoClose={3000} />
+          <ToastContainer
+            toastClassName="toast-container"
+            bodyClassName="toast-container"
+            newestOnTop
+            position="top-center"
+            autoClose={3000}
+          />
           <AnswerDialog />
           <DeleteDialog />
         </Router>

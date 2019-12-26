@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -8,29 +7,33 @@ import { parseISO } from 'date-fns';
 import StudentForm from '~/components/StudentForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import { navigate } from '~/store/modules/navigation/actions';
 
 export default function StudentEditor() {
   const { id } = useParams();
 
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
   const [student, setStudent] = useState({});
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`/students/${id}`);
+      try {
+        const response = await api.get(`/students/${id}`);
 
-      setStudent({
-        ...response.data,
-        birthdate: parseISO(response.data.birthdate),
-      });
+        setStudent({
+          ...response.data,
+          birthdate: parseISO(response.data.birthdate),
+        });
+      } catch (err) {
+        toast.error(
+          'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+        );
+
+        isLoading(false);
+        setLoadingError(true);
+      }
     })();
-  }, [id]);
-
-  useEffect(() => {
-    dispatch(navigate('students'));
-  }, [dispatch]);
+  }, [id, isLoading]);
 
   async function handleSubmit(data) {
     setIsLoading(true);
@@ -41,7 +44,14 @@ export default function StudentEditor() {
         history.push('/students');
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }
@@ -49,9 +59,12 @@ export default function StudentEditor() {
   return (
     <StudentForm
       title="Edição de aluno"
-      onSubmit={handleSubmit}
-      isLoading={isLoading}
       initialData={student}
+      onSubmit={handleSubmit}
+      saving={isLoading}
+      error={loadingError}
+      locked={!student.id}
+      isLoading={!student.id}
     />
   );
 }

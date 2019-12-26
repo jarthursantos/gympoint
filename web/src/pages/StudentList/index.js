@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { differenceInYears, parseISO } from 'date-fns';
 
 import EditButton from '~/components/EditButton';
 import EmptyState from '~/components/EmptyState';
+import ErrorState from '~/components/ErrorState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import api from '~/services/api';
-import { navigate } from '~/store/modules/navigation/actions';
 
 import MailButton from './MailButton';
 import SearchBar from './SearchBar';
@@ -21,23 +20,23 @@ export default function StudentList() {
   const [students, setStudents] = useState([]);
   const [filter, setFilter] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(navigate('students'));
-  }, [dispatch]);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const response = await api.get('/students');
+      try {
+        const response = await api.get('/students');
 
-      const data = response.data.map(student => ({
-        ...student,
-        age: differenceInYears(new Date(), parseISO(student.birthdate)),
-      }));
+        const data = response.data.map(student => ({
+          ...student,
+          age: differenceInYears(new Date(), parseISO(student.birthdate)),
+        }));
 
-      setStudents(data);
+        setStudents(data);
+      } catch (err) {
+        setLoadingError(true);
+      }
       setIsLoading(false);
     })();
   }, []);
@@ -51,7 +50,12 @@ export default function StudentList() {
   }, [filter, students]);
 
   function CurrentState() {
+    if (loadingError) return <ErrorState />;
+
     if (isLoading) return <LoadingState />;
+
+    if (filter.length && !filteredStudents.length)
+      return <EmptyState message="Sua busca não encontrou nada" />;
 
     if (!students.length) return <EmptyState />;
 

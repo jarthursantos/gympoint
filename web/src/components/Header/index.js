@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import logo from '~/assets/small-logo.svg';
 import Notifications from '~/components/Notifications';
@@ -13,7 +13,6 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const { avatar, name } = useSelector(state => state.user.profile);
-  const { activeTab } = useSelector(state => state.navigation);
 
   function handleSignOut() {
     dispatch(signOut());
@@ -25,55 +24,36 @@ export default function Header() {
         <Content>
           <nav>
             <img src={logo} alt="Gympoint" />
-            <Link
-              to="/students"
-              className={activeTab === 'students' ? 'active' : ''}
-            >
+            <NavLink to="/students" activeClassName="active">
               ALUNOS
-            </Link>
-            <Link to="/plans" className={activeTab === 'plans' ? 'active' : ''}>
+            </NavLink>
+            <NavLink to="/plans" activeClassName="active">
               PLANOS
-            </Link>
-            <Link
-              to="/registrations"
-              className={activeTab === 'registrations' ? 'active' : ''}
-            >
+            </NavLink>
+            <NavLink to="/registrations" activeClassName="active">
               MATRÍCULAS
-            </Link>
-            <Link
-              to="/helpOrders"
-              className={activeTab === 'helpOrders' ? 'active' : ''}
-            >
+            </NavLink>
+            <NavLink to="/helpOrders" activeClassName="active">
               PEDIDOS DE AUXÍLIO
-            </Link>
+            </NavLink>
           </nav>
 
           <aside>
             <Notifications />
             <Profile>
               <div>
-                <Link to="/profile">{name}</Link>
+                <NavLink to="/profile">{name}</NavLink>
                 <button type="button" onClick={handleSignOut}>
                   sair do sistema
                 </button>
               </div>
-              <Link to="/profile">
+              <NavLink to="/profile" activeClassName="active">
                 {avatar ? (
-                  <img
-                    className={activeTab === 'profile' ? 'active' : ''}
-                    src={avatar.url}
-                    alt="Avatar"
-                  />
+                  <img src={avatar.url} alt="Avatar" />
                 ) : (
-                  <div
-                    className={`name ${
-                      activeTab === 'profile' ? 'active' : ''
-                    }`}
-                  >
-                    {formatInitials(name)}
-                  </div>
+                  <div className="name">{formatInitials(name)}</div>
                 )}
-              </Link>
+              </NavLink>
             </Profile>
           </aside>
         </Content>

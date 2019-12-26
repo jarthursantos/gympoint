@@ -5,9 +5,7 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 100%;
-  max-width: 390px;
-  min-width: 250px;
+  width: 390px;
 
   strong {
     color: #444;

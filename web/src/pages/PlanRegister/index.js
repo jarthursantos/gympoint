@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import PlanForm from '~/components/PlanForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import { navigate } from '~/store/modules/navigation/actions';
 
 export default function PlanRegister() {
-  const dispatch = useDispatch();
-
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    dispatch(navigate('plans'));
-  }, [dispatch]);
 
   async function handleSubmit(data) {
     setIsLoading(true);
@@ -25,7 +17,14 @@ export default function PlanRegister() {
         history.push('/plans');
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }
@@ -33,7 +32,7 @@ export default function PlanRegister() {
   return (
     <PlanForm
       title="Cadastrar plano"
-      isLoading={isLoading}
+      saving={isLoading}
       onSubmit={handleSubmit}
     />
   );

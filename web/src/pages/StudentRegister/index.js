@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import StudentForm from '~/components/StudentForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import { navigate } from '~/store/modules/navigation/actions';
 
 export default function StudentRegister() {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(navigate('students'));
-  }, [dispatch]);
 
   async function handleSubmit(data) {
     setIsLoading(true);
@@ -24,7 +17,14 @@ export default function StudentRegister() {
         history.push('/students');
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }

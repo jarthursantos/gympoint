@@ -17,6 +17,7 @@ import StudentNotificationController from './app/controllers/StudentNotification
 import UserController from './app/controllers/UserController';
 
 import authMiddleware from './app/middlewares/auth';
+import findPlanMiddleware from './app/middlewares/findPlan';
 
 import validateUserStore from './app/validators/UserStore';
 import validateUserUpdate from './app/validators/UserUpdate';
@@ -32,7 +33,6 @@ import validateAnswerStore from './app/validators/AnswerStore';
 
 import validatePlanStore from './app/validators/PlanStore';
 import validatePlanUpdate from './app/validators/PlanUpdate';
-import validatePlanExists from './app/validators/PlanExists';
 
 import validateRegistrationStore from './app/validators/RegistrationStore';
 import validateRegistrationUpdate from './app/validators/RegistrationUpdate';
@@ -85,19 +85,19 @@ routes.post(
 routes.get('/plans', PlanController.index);
 routes.get(
   '/plans/:id',
-  validatePlanExists(req => req.params.id),
+  findPlanMiddleware(req => req.params.id, 'plan'),
   PlanController.show
 );
 routes.post('/plans', validatePlanStore, PlanController.store);
 routes.put(
   '/plans/:id',
   validatePlanUpdate,
-  validatePlanExists(req => req.params.id),
+  findPlanMiddleware(req => req.params.id, 'plan'),
   PlanController.update
 );
 routes.delete(
   '/plans/:id',
-  validatePlanExists(req => req.params.id),
+  findPlanMiddleware(req => req.params.id, 'plan'),
   PlanController.destroy
 );
 

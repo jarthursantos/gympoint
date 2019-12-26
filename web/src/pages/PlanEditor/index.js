@@ -1,31 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import PlanForm from '~/components/PlanForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import { navigate } from '~/store/modules/navigation/actions';
 
 export default function PlanEditor() {
   const { id } = useParams();
 
-  const dispatch = useDispatch();
   const [plan, setPlan] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`/plans/${id}`);
+      try {
+        const response = await api.get(`/plans/${id}`);
 
-      setPlan(response.data);
+        setPlan(response.data);
+      } catch (err) {
+        toast.error(
+          'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+        );
+
+        isLoading(false);
+        setLoadingError(true);
+      }
     })();
-  }, [id]);
-
-  useEffect(() => {
-    dispatch(navigate('plans'));
-  }, [dispatch]);
+  }, [id, isLoading]);
 
   async function handleSubmit(data) {
     setIsLoading(true);
@@ -36,7 +39,14 @@ export default function PlanEditor() {
         history.push('/plans');
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }
@@ -46,7 +56,10 @@ export default function PlanEditor() {
       title="Edição de plano"
       initialData={plan}
       onSubmit={handleSubmit}
-      isLoading={isLoading}
+      saving={isLoading}
+      error={loadingError}
+      locked={!plan.id}
+      isLoading={!plan.id}
     />
   );
 }

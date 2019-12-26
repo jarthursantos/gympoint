@@ -13,7 +13,7 @@ export const displayDeleteDialog = (message, callback) => {
 };
 
 export default function DeleteDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
   const [content, setContent] = useState(null);
   const [callback, setCallback] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +24,14 @@ export default function DeleteDialog() {
         handler: eventCallback,
       });
       setContent(message);
-      setIsOpen(true);
+      setOpened(true);
     });
 
     return () => manager.off('delete');
   }, [content]);
 
   function handleClose() {
-    setIsOpen(false);
+    setOpened(false);
     setIsLoading(false);
     setContent(null);
     setCallback({});
@@ -45,7 +45,7 @@ export default function DeleteDialog() {
   }
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={handleClose}>
+    <Modal isOpen={opened} onRequestClose={handleClose}>
       <Content>{content}</Content>
       <Actions>
         <button className="secondary" type="button" onClick={handleClose}>

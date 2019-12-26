@@ -8,6 +8,7 @@ export const Container = styled.div`
   align-items: center;
   border: 1px solid #ddd;
   border-radius: 4px;
+  height: 36px;
 
   & > svg {
     position: absolute;

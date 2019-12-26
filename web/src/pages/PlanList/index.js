@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import DeleteButton from '~/components/DeleteButton';
 import { displayDeleteDialog } from '~/components/DeleteDialog';
 import EditButton from '~/components/EditButton';
 import EmptyState from '~/components/EmptyState';
+import ErrorState from '~/components/ErrorState';
 import LoadingState from '~/components/LoadingState';
 import RegisterButton from '~/components/RegisterButton';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import api from '~/services/api';
-import { navigate } from '~/store/modules/navigation/actions';
 import { formatPrice } from '~/util/format';
 import { month as monthPlurals } from '~/util/plurals';
 
@@ -19,19 +18,20 @@ import { Wrapper, Container } from './styles';
 export default function PlanList() {
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(navigate('plans'));
-  }, [dispatch]);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const response = await api.get('/plans');
 
-      setPlans(response.data);
+      try {
+        const response = await api.get('/plans');
+
+        setPlans(response.data);
+      } catch (err) {
+        setLoadingError(true);
+      }
+
       setIsLoading(false);
     })();
   }, []);
@@ -50,6 +50,8 @@ export default function PlanList() {
   }
 
   function CurrentState() {
+    if (loadingError) return <ErrorState />;
+
     if (isLoading) return <LoadingState />;
 
     if (!plans.length) return <EmptyState />;

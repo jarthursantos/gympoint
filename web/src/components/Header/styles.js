@@ -118,8 +118,10 @@ export const Profile = styled.div`
     background: #eee;
   }
 
-  .name.active,
-  img.active {
-    border: 2px solid #666;
+  a.active {
+    .name,
+    img {
+      border: 2px solid #666;
+    }
   }
 `;

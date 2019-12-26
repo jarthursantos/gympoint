@@ -133,12 +133,20 @@ class RegistrationController {
       return res.status(400).json({ error: "registration don't exists" });
     }
 
-    const { plan_id, start_date: start_date_raw } = req.body;
+    const { student_id, plan_id, start_date: start_date_raw } = req.body;
 
     const planExists = await Plan.findByPk(plan_id || registration.plan_id);
 
     if (!planExists) {
       return res.status(400).json({ error: "plan don't exists" });
+    }
+
+    const studentExists = await Student.findByPk(
+      student_id || registration.student_id
+    );
+
+    if (!studentExists) {
+      return res.status(400).json({ error: "student don't exists" });
     }
 
     const { duration: plan_duration, price: plan_month_price } = planExists;
@@ -151,6 +159,7 @@ class RegistrationController {
     const price = plan_month_price * plan_duration;
 
     await registration.update({
+      student_id,
       plan_id,
       start_date,
       end_date,

@@ -20,4 +20,13 @@ export const Container = styled.button`
   &:hover {
     background: ${darken(0.03, '#ee4d64')};
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+
+    &:hover {
+      background: #ee4d64;
+    }
+  }
 `;

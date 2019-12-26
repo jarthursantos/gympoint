@@ -18,21 +18,21 @@ export const displayAnswerDialog = (id, question, callback) => {
 };
 
 export default function AnswerDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
   const [question, setQuestion] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     manager.on('answer', (id, content, callback) => {
       setQuestion({ id, content, callback });
-      setIsOpen(true);
+      setOpened(true);
     });
 
     return () => manager.off('answer');
   }, [question]);
 
   function handleClose() {
-    setIsOpen(false);
+    setOpened(false);
     setIsLoading(false);
   }
 
@@ -50,7 +50,14 @@ export default function AnswerDialog() {
         if (callback) callback();
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }
@@ -62,7 +69,7 @@ export default function AnswerDialog() {
   });
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={handleClose}>
+    <Modal isOpen={opened} onRequestClose={handleClose}>
       <Content>
         <strong>Pergunta do Aluno</strong>
         <p>{question.content}</p>

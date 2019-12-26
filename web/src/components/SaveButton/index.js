@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 
 import { Container } from './styles';
 
-export default function SaveButton({ isLoading }) {
+export default function SaveButton({ isLoading, ...rest }) {
   return (
-    <Container type="submit">
+    <Container type="submit" {...rest}>
       {isLoading ? (
         <ReactLoading type="spin" color="#fff" height={20} width={20} />
       ) : (

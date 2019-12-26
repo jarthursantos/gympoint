@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 
 import { displayAnswerDialog } from '~/components/AnswerDialog';
 import EmptyState from '~/components/EmptyState';
+import ErrorState from '~/components/ErrorState';
 import LoadingState from '~/components/LoadingState';
 import Table from '~/components/Table';
 import TopBar from '~/components/TopBar';
 import api from '~/services/api';
-import { navigate } from '~/store/modules/navigation/actions';
 
 import AnswerButton from './AnswerButton';
 import { Wrapper, Container } from './styles';
@@ -18,18 +17,20 @@ import { Wrapper, Container } from './styles';
 export default function HelpOrderList() {
   const [helpOrders, setHelpOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(navigate('helpOrders'));
-  }, [dispatch]);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const response = await api.get('/help-orders');
 
-      setHelpOrders(response.data);
+      try {
+        const response = await api.get('/help-orders');
+
+        setHelpOrders(response.data);
+      } catch (err) {
+        setLoadingError(true);
+      }
+
       setIsLoading(false);
     })();
   }, []);
@@ -41,6 +42,8 @@ export default function HelpOrderList() {
   }
 
   function CurrentState() {
+    if (loadingError) return <ErrorState />;
+
     if (isLoading) return <LoadingState />;
 
     if (!helpOrders.length) return <EmptyState />;

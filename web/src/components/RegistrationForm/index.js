@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 
 import BackButton from '~/components/BackButton';
+import CurrencyInput from '~/components/CurrencyInput';
 import DatePicker from '~/components/DatePicker';
+import ErrorState from '~/components/ErrorState';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
@@ -18,6 +20,9 @@ import { Wrapper, Container } from './styles';
 export default function RegistrationForm({
   title,
   isLoading,
+  saving,
+  error,
+  locked,
   initialData,
   ...rest
 }) {
@@ -32,7 +37,9 @@ export default function RegistrationForm({
 
   const totalValue = useMemo(() => {
     if (!selectedPlan) return null;
-    return formatPrice(selectedPlan.duration * selectedPlan.price);
+    return formatPrice(selectedPlan.duration * selectedPlan.price)
+      .replace('R$', '')
+      .trim();
   }, [selectedPlan]);
 
   useEffect(() => {
@@ -63,44 +70,68 @@ export default function RegistrationForm({
       schema={schema}
       {...rest}
     >
-      <TopBar title={title}>
+      <TopBar isLoading={isLoading} title={title}>
         <BackButton to="/registrations" />
-        <SaveButton isLoading={isLoading} />
+        <SaveButton isLoading={saving} disabled={locked} />
       </TopBar>
 
       <Container>
-        <LabeledField htmlFor="student">
-          <strong>Aluno</strong>
-          <StudentPicker id="student" name="student" />
-        </LabeledField>
+        {error ? (
+          <ErrorState />
+        ) : (
+          <>
+            <LabeledField htmlFor="student">
+              <strong>Aluno</strong>
+              <StudentPicker id="student" name="student" />
+            </LabeledField>
 
-        <div className="horizontal">
-          <LabeledField htmlFor="plan">
-            <strong>Plano</strong>
-            <PlanPicker id="plan" name="plan" onPlanChange={setSelectedPlan} />
-          </LabeledField>
+            <div className="horizontal">
+              <LabeledField htmlFor="plan">
+                <strong>Plano</strong>
+                <PlanPicker
+                  id="plan"
+                  name="plan"
+                  onPlanChange={setSelectedPlan}
+                />
+              </LabeledField>
 
-          <LabeledField htmlFor="start_date">
-            <strong>Data de Início</strong>
-            <DatePicker
-              style={{ width: '50px' }}
-              name="start_date"
-              id="start_date"
-              selected={startDate}
-              onChange={setStartDate}
-            />
-          </LabeledField>
+              <LabeledField htmlFor="start_date">
+                <strong>Data de Início</strong>
+                <DatePicker
+                  style={{ width: '50px' }}
+                  name="start_date"
+                  id="start_date"
+                  selected={startDate}
+                  onChange={setStartDate}
+                  placeholderText="Selecione o dia do inicio"
+                  disabled={locked}
+                />
+              </LabeledField>
 
-          <LabeledField htmlFor="end_date">
-            <strong>Data de Término</strong>
-            <input value={endDate || ''} type="text" id="end_date" disabled />
-          </LabeledField>
+              <LabeledField htmlFor="end_date">
+                <strong>Data de Término</strong>
+                <input
+                  value={endDate || ''}
+                  type="text"
+                  id="end_date"
+                  disabled
+                />
+              </LabeledField>
 
-          <LabeledField htmlFor="amount">
-            <strong>Valor Final</strong>
-            <input value={totalValue || ''} type="text" id="amount" disabled />
-          </LabeledField>
-        </div>
+              <LabeledField htmlFor="amount">
+                <strong>Valor Final</strong>
+                <CurrencyInput>
+                  <input
+                    value={totalValue || ''}
+                    type="text"
+                    id="amount"
+                    disabled
+                  />
+                </CurrencyInput>
+              </LabeledField>
+            </div>
+          </>
+        )}
       </Container>
     </Wrapper>
   );
@@ -125,10 +156,16 @@ RegistrationForm.propTypes = {
     height: PropTypes.number,
     weight: PropTypes.number,
   }),
+  saving: PropTypes.bool,
+  locked: PropTypes.bool,
+  error: PropTypes.bool,
   isLoading: PropTypes.bool,
 };
 
 RegistrationForm.defaultProps = {
+  saving: false,
+  locked: false,
+  error: false,
   isLoading: false,
   initialData: {},
 };

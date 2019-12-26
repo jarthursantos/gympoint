@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { MdExpandMore } from 'react-icons/md';
+import { MdExpandMore, MdError } from 'react-icons/md';
 import ReactLoading from 'react-loading';
 
 import { useField } from '@rocketseat/unform';
 import PropTypes from 'prop-types';
 
+import EmptyState from '~/components/EmptyState';
 import Modal from '~/components/Modal';
 import api from '~/services/api';
 import { formatPrice } from '~/util/format';
@@ -31,11 +32,12 @@ export default function PlanPicker({ onPlanChange, name }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
   const [filter, setFilter] = useState('');
   const [plans, setPlans] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState(false);
 
   const [selectedPlan, setSelectedPlan] = useState(defaultValue);
   const [selectedListItem, setSelectedListItem] = useState({});
@@ -45,10 +47,14 @@ export default function PlanPicker({ onPlanChange, name }) {
     (async () => {
       setIsLoading(true);
 
-      const response = await api.get('/plans');
+      try {
+        const response = await api.get('/plans');
 
-      setPlans(response.data);
-      setFilteredPlans(response.data);
+        setPlans(response.data);
+        setFilteredPlans(response.data);
+      } catch (err) {
+        setLoadingError(true);
+      }
 
       setIsLoading(false);
     })();
@@ -76,12 +82,12 @@ export default function PlanPicker({ onPlanChange, name }) {
   function handleOpenModal() {
     if (isLoading) return;
 
-    setIsOpen(true);
+    setOpened(true);
   }
 
   function handleCloseModal() {
     setFilter('');
-    setIsOpen(false);
+    setOpened(false);
     setSelectedListItem({});
   }
 
@@ -97,15 +103,45 @@ export default function PlanPicker({ onPlanChange, name }) {
     handleCloseModal();
   }
 
+  function CurrentInputState() {
+    if (loadingError) return <MdError size={24} color="#de3b3b" />;
+
+    if (isLoading)
+      return <ReactLoading type="spin" color="#666" height={24} width={24} />;
+
+    return <MdExpandMore size={24} color="#666" />;
+  }
+
+  function CurrentState() {
+    if (!plans.length) return <EmptyState />;
+
+    if (filter.length && !filteredPlans.length)
+      return <EmptyState message="Sua busca não encontrou nada" />;
+
+    return (
+      <PlanList>
+        {filteredPlans.map(student => (
+          <Plan
+            key={student.id}
+            selected={student.id === selectedListItem.id}
+            onClick={() => handleSelectListItem(student)}
+          >
+            <strong>{student.title}</strong>
+            <div>
+              <span>{formatPrice(student.price)} p/mês</span>
+              <small>durante {monthPlurals(student.duration)}</small>
+            </div>
+          </Plan>
+        ))}
+      </PlanList>
+    );
+  }
+
   return (
     <>
       <Container onClick={handleOpenModal}>
         <span>{!selectedPlan ? 'Selecionar plano' : selectedPlan.title}</span>
-        {isLoading ? (
-          <ReactLoading type="spin" color="#666" height={24} width={24} />
-        ) : (
-          <MdExpandMore size={24} color="#666" />
-        )}
+        <CurrentInputState />
         <input
           type="hidden"
           ref={ref}
@@ -116,7 +152,7 @@ export default function PlanPicker({ onPlanChange, name }) {
           defaultValue={defaultValue}
         />
       </Container>
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)}>
+      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}>
         <ModalContent>
           <SearchBar
             value={filter}
@@ -125,21 +161,9 @@ export default function PlanPicker({ onPlanChange, name }) {
             autoFocus
             placeholder="Buscar plano"
           />
-          <PlanList>
-            {filteredPlans.map(student => (
-              <Plan
-                key={student.id}
-                selected={student.id === selectedListItem.id}
-                onClick={() => handleSelectListItem(student)}
-              >
-                <strong>{student.title}</strong>
-                <div>
-                  <span>{formatPrice(student.price)} p/mês</span>
-                  <small>durante {monthPlurals(student.duration)}</small>
-                </div>
-              </Plan>
-            ))}
-          </PlanList>
+          <div className="content">
+            <CurrentState />
+          </div>
           <Actions>
             <button type="button" className="cancel" onClick={handleCloseModal}>
               Cancelar

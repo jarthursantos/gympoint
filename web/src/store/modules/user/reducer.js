@@ -24,6 +24,10 @@ export default function user(state = INITIAL_STATE, action) {
         draft.isLoading = false;
         break;
       }
+      case types.UPDATE_PROFILE_FAILURE: {
+        draft.isLoading = false;
+        break;
+      }
       case authTypes.SIGN_OUT: {
         draft.profile = null;
         break;

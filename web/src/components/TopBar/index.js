@@ -1,13 +1,19 @@
 import React from 'react';
+import ReactLoading from 'react-loading';
 
 import PropTypes from 'prop-types';
 
 import { Container } from './styles';
 
-export default function TobBar({ title, children }) {
+export default function TobBar({ title, isLoading, children }) {
   return (
     <Container>
-      <strong>{title}</strong>
+      <div>
+        <strong>{title}</strong>
+        {isLoading && (
+          <ReactLoading type="spin" color="#666" height={20} width={20} />
+        )}
+      </div>
       <aside>{children}</aside>
     </Container>
   );
@@ -15,6 +21,7 @@ export default function TobBar({ title, children }) {
 
 TobBar.propTypes = {
   title: PropTypes.string,
+  isLoading: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.func,
@@ -26,4 +33,5 @@ TobBar.propTypes = {
 TobBar.defaultProps = {
   title: 'Gympoint',
   children: null,
+  isLoading: false,
 };

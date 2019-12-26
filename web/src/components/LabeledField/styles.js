@@ -38,8 +38,8 @@ export const Container = styled.label`
       color: #999;
     }
 
-    :disabled {
-      background: #e5e5e5;
+    &:disabled {
+      background: #f0f0f0;
     }
   }
 `;

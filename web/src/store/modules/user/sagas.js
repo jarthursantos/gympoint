@@ -23,9 +23,13 @@ export function* updateProfile({ payload }) {
 
     yield put(updateProfileSuccess(response.data));
   } catch (err) {
-    console.tron.log(err);
-
-    toast.error('Erro ao atualizar perfil, confirme seus dados!');
+    if (err.response) {
+      toast.error(err.response.data.error);
+    } else {
+      toast.error(
+        'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+      );
+    }
 
     yield put(updateProfileFailure());
   }

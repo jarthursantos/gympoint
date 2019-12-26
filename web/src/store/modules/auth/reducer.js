@@ -21,7 +21,7 @@ export default function auth(state = INITIAL_STATE, action) {
         draft.loading = true;
         break;
       }
-      case types.SIGN_FAILURE: {
+      case types.SIGN_IN_FAILURE: {
         draft.loading = false;
         break;
       }

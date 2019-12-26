@@ -44,4 +44,14 @@ export default createGlobalStyle`
   input[type=number] {
     -moz-appearance:textfield;
   }
+
+  .Toastify__toast.Toastify__toast--error.toast-container,
+  .Toastify__toast.Toastify__toast--success.toast-container {
+    border-radius: 4px !important;
+    padding: 15px !important;
+  }
+
+  .Toastify__toast.Toastify__toast--error.toast-container.Toastify__toast--error {
+    background: #de3b3b;
+  }
 `;

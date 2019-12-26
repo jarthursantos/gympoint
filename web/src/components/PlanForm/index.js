@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 
 import BackButton from '~/components/BackButton';
+import CurrencyInput from '~/components/CurrencyInput';
+import ErrorState from '~/components/ErrorState';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
@@ -12,12 +14,22 @@ import { formatPrice } from '~/util/format';
 
 import { Wrapper, Container } from './styles';
 
-export default function PlanForm({ title, initialData, isLoading, ...rest }) {
+export default function PlanForm({
+  title,
+  isLoading,
+  saving,
+  error,
+  locked,
+  initialData,
+  ...rest
+}) {
   const [price, setPrice] = useState(null);
   const [duration, setDuration] = useState(null);
 
   const amount = useMemo(() => {
-    return formatPrice((price || 0) * (duration || 0));
+    return formatPrice((price || 0) * (duration || 0))
+      .replace('R$', '')
+      .trim();
   }, [duration, price]);
 
   useEffect(() => {
@@ -49,44 +61,54 @@ export default function PlanForm({ title, initialData, isLoading, ...rest }) {
       schema={schema}
       {...rest}
     >
-      <TopBar title={title}>
+      <TopBar isLoading={isLoading} title={title}>
         <BackButton to="/plans" />
-        <SaveButton isLoading={isLoading} />
+        <SaveButton isLoading={saving} disabled={locked} />
       </TopBar>
 
       <Container>
-        <LabeledField htmlFor="title">
-          <strong>Título do Plano</strong>
-          <Input name="title" type="text" id="title" />
-        </LabeledField>
-        <div className="horizontal">
-          <LabeledField htmlFor="duration">
-            <strong>
-              Duração <small>(em meses)</small>
-            </strong>
-            <Input
-              name="duration"
-              type="number"
-              id="duration"
-              value={duration || ''}
-              onChange={e => setDuration(e.target.value)}
-            />
-          </LabeledField>
-          <LabeledField htmlFor="price">
-            <strong>Preço Mensal</strong>
-            <Input
-              name="price"
-              type="number"
-              id="price"
-              value={price || ''}
-              onChange={e => setPrice(e.target.value)}
-            />
-          </LabeledField>
-          <LabeledField htmlFor="amount">
-            <strong>Preço Total</strong>
-            <input disabled type="text" id="amount" value={amount} />
-          </LabeledField>
-        </div>
+        {error ? (
+          <ErrorState />
+        ) : (
+          <>
+            <LabeledField htmlFor="title">
+              <strong>Título do Plano</strong>
+              <Input name="title" type="text" id="title" disabled={locked} />
+            </LabeledField>
+            <div className="horizontal">
+              <LabeledField htmlFor="duration">
+                <strong>
+                  Duração <small>(em meses)</small>
+                </strong>
+                <Input
+                  name="duration"
+                  type="number"
+                  id="duration"
+                  value={duration || ''}
+                  onChange={e => setDuration(e.target.value)}
+                  disabled={locked}
+                />
+              </LabeledField>
+              <LabeledField htmlFor="price">
+                <strong>Preço Mensal</strong>
+                <Input
+                  name="price"
+                  type="number"
+                  id="price"
+                  value={price || ''}
+                  onChange={e => setPrice(e.target.value)}
+                  disabled={locked}
+                />
+              </LabeledField>
+              <LabeledField htmlFor="amount">
+                <strong>Preço Total</strong>
+                <CurrencyInput>
+                  <input disabled type="text" id="amount" value={amount} />
+                </CurrencyInput>
+              </LabeledField>
+            </div>
+          </>
+        )}
       </Container>
     </Wrapper>
   );
@@ -100,9 +122,15 @@ PlanForm.propTypes = {
     price: PropTypes.number,
   }),
   isLoading: PropTypes.bool,
+  saving: PropTypes.bool,
+  error: PropTypes.bool,
+  locked: PropTypes.bool,
 };
 
 PlanForm.defaultProps = {
   isLoading: false,
+  error: false,
+  saving: false,
+  locked: false,
   initialData: {},
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Input } from '@rocketseat/unform';
@@ -7,7 +7,6 @@ import * as Yup from 'yup';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
-import { navigate } from '~/store/modules/navigation/actions';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 
 import AvatarInput from './AvatarInput';
@@ -17,10 +16,6 @@ export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const isLoading = useSelector(state => state.user.isLoading);
-
-  useEffect(() => {
-    dispatch(navigate('profile'));
-  }, [dispatch]);
 
   function handleSubmit(data) {
     dispatch(updateProfileRequest(data));

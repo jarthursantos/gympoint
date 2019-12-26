@@ -31,6 +31,16 @@ export const Container = styled.div`
 export const ModalContent = styled.form`
   display: flex;
   flex-direction: column;
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 250px;
+    max-height: 250px;
+    width: 440px;
+  }
 `;
 
 export const SearchBar = styled.input`
@@ -40,7 +50,7 @@ export const SearchBar = styled.input`
 
   flex: 1;
   border: none;
-  padding: 30px 30px 20px;
+  padding: 30px;
 `;
 
 export const PlanList = styled(Scrollbar)`

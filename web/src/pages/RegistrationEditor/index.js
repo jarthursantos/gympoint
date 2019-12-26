@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -8,35 +7,39 @@ import { parseISO } from 'date-fns';
 import RegistrationForm from '~/components/RegistrationForm';
 import api from '~/services/api';
 import history from '~/services/history';
-import { navigate } from '~/store/modules/navigation/actions';
 
 export default function RegistrationEditor() {
   const { id } = useParams();
 
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [registration, setRegistration] = useState({});
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`/registrations/${id}`);
+      try {
+        const response = await api.get(`/registrations/${id}`);
 
-      const { student } = response.data;
+        const { student } = response.data;
 
-      setRegistration({
-        ...response.data,
-        start_date: parseISO(response.data.start_date),
-        student: {
-          ...student,
-          title: student.name,
-        },
-      });
+        setRegistration({
+          ...response.data,
+          start_date: parseISO(response.data.start_date),
+          student: {
+            ...student,
+            title: student.name,
+          },
+        });
+      } catch (err) {
+        toast.error(
+          'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+        );
+
+        isLoading(false);
+        setLoadingError(true);
+      }
     })();
-  }, [id]);
-
-  useEffect(() => {
-    dispatch(navigate('registrations'));
-  }, [dispatch]);
+  }, [id, isLoading]);
 
   function handleSubmit({ start_date, plan: plan_id, student: student_id }) {
     setIsLoading(true);
@@ -47,7 +50,14 @@ export default function RegistrationEditor() {
         history.push('/registrations');
       })
       .catch(err => {
-        toast.error(err.response.data.error);
+        if (err.response) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error(
+            'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+          );
+        }
+
         setIsLoading(false);
       });
   }
@@ -55,9 +65,12 @@ export default function RegistrationEditor() {
   return (
     <RegistrationForm
       title="Edição de matrícula"
-      onSubmit={handleSubmit}
-      isLoading={isLoading}
       initialData={registration}
+      onSubmit={handleSubmit}
+      saving={isLoading}
+      error={loadingError}
+      locked={!registration.id}
+      isLoading={!registration.id}
     />
   );
 }
