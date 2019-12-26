@@ -31,3 +31,10 @@ export const Container = styled(BodyContainer)`
     }
   }
 `;
+
+export const Observation = styled.span`
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+`;

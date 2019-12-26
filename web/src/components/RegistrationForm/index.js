@@ -15,7 +15,7 @@ import { formatPrice } from '~/util/format';
 
 import PlanPicker from './PlanPicker';
 import StudentPicker from './StudentPicker';
-import { Wrapper, Container } from './styles';
+import { Wrapper, Container, Observation } from './styles';
 
 export default function RegistrationForm({
   title,
@@ -27,10 +27,12 @@ export default function RegistrationForm({
   ...rest
 }) {
   const [startDate, setStartDate] = useState();
+  const [showsObservation, setShowsObservation] = useState(false);
 
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const endDate = useMemo(() => {
+    setShowsObservation(false);
     const { end_date, plan: currentPlan } = initialData;
 
     if (selectedPlan) {
@@ -41,14 +43,17 @@ export default function RegistrationForm({
         );
       }
 
+      setShowsObservation(true);
       return format(parseISO(end_date), 'dd/MM/yyyy');
     }
 
     if (!end_date) return null;
+    setShowsObservation(true);
     return format(parseISO(end_date), 'dd/MM/yyyy');
   }, [initialData, selectedPlan, startDate]);
 
   const totalValue = useMemo(() => {
+    setShowsObservation(false);
     const { price, plan: currentPlan } = initialData;
 
     if (selectedPlan) {
@@ -58,12 +63,14 @@ export default function RegistrationForm({
           .trim();
       }
 
+      setShowsObservation(true);
       return formatPrice(price)
         .replace('R$', '')
         .trim();
     }
 
     if (!price) return null;
+    setShowsObservation(true);
     return formatPrice(price)
       .replace('R$', '')
       .trim();
@@ -111,7 +118,6 @@ export default function RegistrationForm({
               <strong>Aluno</strong>
               <StudentPicker id="student" name="student" />
             </LabeledField>
-
             <div className="horizontal">
               <LabeledField htmlFor="plan">
                 <strong>Plano</strong>
@@ -136,7 +142,7 @@ export default function RegistrationForm({
               </LabeledField>
 
               <LabeledField htmlFor="end_date">
-                <strong>Data de Término</strong>
+                <strong>{showsObservation && '* '}Data de Término</strong>
                 <input
                   value={endDate || ''}
                   type="text"
@@ -146,7 +152,7 @@ export default function RegistrationForm({
               </LabeledField>
 
               <LabeledField htmlFor="amount">
-                <strong>Valor Final</strong>
+                <strong>{showsObservation && '* '}Valor Final</strong>
                 <CurrencyInput>
                   <input
                     value={totalValue || ''}
@@ -157,6 +163,13 @@ export default function RegistrationForm({
                 </CurrencyInput>
               </LabeledField>
             </div>
+            {showsObservation && (
+              <Observation>
+                * A politíca dos cálculos levam em conta os valores cadastrados
+                no plano na data desta matrícula, caso a mesma não tenha
+                expirado.
+              </Observation>
+            )}
           </>
         )}
       </Container>
@@ -201,3 +214,5 @@ RegistrationForm.defaultProps = {
   isLoading: false,
   initialData: {},
 };
+
+// TODO: verify if start_date is after of end_date, to apply new politics
