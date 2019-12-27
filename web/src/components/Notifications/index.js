@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdNotifications } from 'react-icons/md';
-import ReactLoading from 'react-loading';
 
 import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 
-import { displayAnswerDialog } from '~/components/AnswerDialog';
+import ActivityIndicator from '~/components/ActivityIndicator';
+
+// import { displayAnswerDialog } from '~/components/AnswerDialog';
 import api from '~/services/api';
 
 import {
@@ -67,7 +68,7 @@ export default function Notifications() {
   }
 
   function handleAction({ help_order, question }) {
-    displayAnswerDialog(help_order, question);
+    // TODO: displayAnswerDialog(help_order, question);
   }
 
   return (
@@ -94,7 +95,7 @@ export default function Notifications() {
           <div className="message-container">
             {isLoading ? (
               <>
-                <ReactLoading type="spin" color="#fff" height={20} width={20} />
+                <ActivityIndicator />
                 <span>Carregando...</span>
               </>
             ) : (
@@ -108,4 +109,3 @@ export default function Notifications() {
 }
 
 // TODO: other notification type: asnwer avaliated
-// TODO: add redux to notifications and help orders

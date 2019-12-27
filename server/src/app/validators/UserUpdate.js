@@ -6,10 +6,11 @@ export default async (req, res, next) => {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
-      password: Yup.string().when('oldPassword', (oldPassword, field) =>
-        oldPassword ? field.required() : field
+      old_assword: Yup.string(),
+      password: Yup.string().when('old_assword', (old_assword, field) =>
+        old_assword ? field.required() : field
       ),
-      confirmPassword: Yup.string().when('password', (password, field) =>
+      confirm_password: Yup.string().when('password', (password, field) =>
         password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
       avatar_id: Yup.number().integer(),

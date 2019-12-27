@@ -166,6 +166,16 @@ class RegistrationController {
         return res.status(400).json({ error: "student don't exists" });
       }
 
+      const studentAlreadyRegistered = await Registration.findOne({
+        where: {
+          student_id,
+        },
+      });
+
+      if (studentAlreadyRegistered) {
+        return res.status(400).json({ error: 'student already in a plan' });
+      }
+
       data = {
         ...data,
         student_id,

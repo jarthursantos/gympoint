@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { MdExpandMore, MdError } from 'react-icons/md';
-import ReactLoading from 'react-loading';
 
 import { useField } from '@rocketseat/unform';
 import PropTypes from 'prop-types';
 
+import ActivityIndicator from '~/components/ActivityIndicator';
 import EmptyState from '~/components/EmptyState';
 import Modal from '~/components/Modal';
 import api from '~/services/api';
@@ -32,16 +32,17 @@ export default function PlanPicker({ onPlanChange, name }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
-  const [opened, setOpened] = useState(false);
   const [filter, setFilter] = useState('');
-  const [plans, setPlans] = useState([]);
-  const [filteredPlans, setFilteredPlans] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingError, setLoadingError] = useState(false);
-
+  const [opened, setOpened] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(defaultValue);
   const [selectedListItem, setSelectedListItem] = useState({});
   const [value, setValue] = useState(defaultValue && defaultValue.id);
+
+  const [plans, setPlans] = useState([]);
+  const [filteredPlans, setFilteredPlans] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -50,8 +51,14 @@ export default function PlanPicker({ onPlanChange, name }) {
       try {
         const response = await api.get('/plans');
 
-        setPlans(response.data);
-        setFilteredPlans(response.data);
+        const data = response.data.map(plan => ({
+          ...plan,
+          months: monthPlurals(plan.duration),
+          formatedPrice: formatPrice(plan.price),
+        }));
+
+        setPlans(data);
+        setFilteredPlans(data);
       } catch (err) {
         setLoadingError(true);
       }
@@ -103,45 +110,17 @@ export default function PlanPicker({ onPlanChange, name }) {
     handleCloseModal();
   }
 
-  function CurrentInputState() {
-    if (loadingError) return <MdError size={24} color="#de3b3b" />;
-
-    if (isLoading)
-      return <ReactLoading type="spin" color="#666" height={24} width={24} />;
-
-    return <MdExpandMore size={24} color="#666" />;
-  }
-
-  function CurrentState() {
-    if (!plans.length) return <EmptyState />;
-
-    if (filter.length && !filteredPlans.length)
-      return <EmptyState message="Sua busca não encontrou nada" />;
-
-    return (
-      <PlanList>
-        {filteredPlans.map(student => (
-          <Plan
-            key={student.id}
-            selected={student.id === selectedListItem.id}
-            onClick={() => handleSelectListItem(student)}
-          >
-            <strong>{student.title}</strong>
-            <div>
-              <span>{formatPrice(student.price)} p/mês</span>
-              <small>durante {monthPlurals(student.duration)}</small>
-            </div>
-          </Plan>
-        ))}
-      </PlanList>
-    );
-  }
-
   return (
     <>
       <Container onClick={handleOpenModal}>
-        <span>{!selectedPlan ? 'Selecionar plano' : selectedPlan.title}</span>
-        <CurrentInputState />
+        <span>{selectedPlan && selectedPlan.title}</span>
+        {(() => {
+          if (loadingError) return <MdError size={24} color="#de3b3b" />;
+
+          if (isLoading) return <ActivityIndicator color="#666" size={24} />;
+
+          return <MdExpandMore size={24} color="#666" />;
+        })()}
         <input
           type="hidden"
           ref={ref}
@@ -162,7 +141,30 @@ export default function PlanPicker({ onPlanChange, name }) {
             placeholder="Buscar plano"
           />
           <div className="content">
-            <CurrentState />
+            {(() => {
+              if (!plans.length) return <EmptyState />;
+
+              if (filter.length && !filteredPlans.length)
+                return <EmptyState message="Sua busca não encontrou nada" />;
+
+              return (
+                <PlanList>
+                  {filteredPlans.map(student => (
+                    <Plan
+                      key={student.id}
+                      selected={student.id === selectedListItem.id}
+                      onClick={() => handleSelectListItem(student)}
+                    >
+                      <strong>{student.title}</strong>
+                      <div>
+                        <span>{student.formatedPrice} p/mês</span>
+                        <small>durante {student.months}</small>
+                      </div>
+                    </Plan>
+                  ))}
+                </PlanList>
+              );
+            })()}
           </div>
           <Actions>
             <button type="button" className="cancel" onClick={handleCloseModal}>

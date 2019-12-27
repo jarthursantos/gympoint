@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
 
 import PropTypes from 'prop-types';
 
+import ActivityIndicator from '~/components/ActivityIndicator';
 import Modal from '~/components/Modal';
 
 import { Content, Actions } from './styles';
@@ -27,11 +27,7 @@ export default function ConfirmDialog({
           Cancelar
         </button>
         <button className="primary" type="button" onClick={onConfirm}>
-          {isLoading ? (
-            <ReactLoading type="spin" color="#fff" height={20} width={20} />
-          ) : (
-            'Confirmar'
-          )}
+          {isLoading ? <ActivityIndicator /> : 'Confirmar'}
         </button>
       </Actions>
     </Modal>

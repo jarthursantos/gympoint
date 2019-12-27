@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Input } from '@rocketseat/unform';
@@ -17,6 +17,16 @@ export default function Profile() {
   const profile = useSelector(state => state.user.profile);
   const isLoading = useSelector(state => state.user.isLoading);
 
+  const [oldPassword, setOldPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    setOldPassword('');
+    setPassword('');
+    setConfirmPassword('');
+  }, [profile]);
+
   function handleSubmit(data) {
     dispatch(updateProfileRequest(data));
   }
@@ -26,10 +36,11 @@ export default function Profile() {
     email: Yup.string()
       .email()
       .required(),
-    password: Yup.string().when('oldPassword', (oldPassword, field) =>
-      oldPassword ? field.required() : field
+    old_password: Yup.string(),
+    password: Yup.string().when('old_password', (old_password, field) =>
+      old_password ? field.required() : field
     ),
-    confirmPassword: Yup.string().when('password', (password, field) =>
+    confirm_password: Yup.string().when('password', (password, field) =>
       password
         ? field
             .required()
@@ -68,9 +79,11 @@ export default function Profile() {
               <strong>Senha atual</strong>
               <Input
                 placeholder="Sua senha atual"
-                name="oldPassword"
+                name="old_password"
                 type="password"
                 id="oldPassword"
+                value={oldPassword}
+                onChange={e => setOldPassword(e.target.value)}
               />
             </LabeledField>
             <LabeledField htmlFor="password">
@@ -80,15 +93,19 @@ export default function Profile() {
                 name="password"
                 type="password"
                 id="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
               />
             </LabeledField>
             <LabeledField htmlFor="confirmPassword">
               <strong>Confirmação da senha</strong>
               <Input
                 placeholder="Repita sua nova senha"
-                name="confirmPassword"
+                name="confirm_password"
                 type="password"
                 id="confirmPassword"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
               />
             </LabeledField>
           </div>

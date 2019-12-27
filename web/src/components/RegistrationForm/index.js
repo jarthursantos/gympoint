@@ -11,7 +11,7 @@ import ErrorState from '~/components/ErrorState';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
-import { formatPrice } from '~/util/format';
+import { formatPriceWithoutSymbol } from '~/util/format';
 
 import PlanPicker from './PlanPicker';
 import StudentPicker from './StudentPicker';
@@ -37,14 +37,12 @@ export default function RegistrationForm({
 
     if (selectedPlan) {
       if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
-        return format(
-          addMonths(startDate, selectedPlan.duration),
-          'dd/MM/yyyy'
-        );
+        if (startDate)
+          return format(
+            addMonths(startDate, selectedPlan.duration),
+            'dd/MM/yyyy'
+          );
       }
-
-      setShowsObservation(true);
-      return format(parseISO(end_date), 'dd/MM/yyyy');
     }
 
     if (!end_date) return null;
@@ -58,22 +56,15 @@ export default function RegistrationForm({
 
     if (selectedPlan) {
       if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
-        return formatPrice(selectedPlan.duration * selectedPlan.price)
-          .replace('R$', '')
-          .trim();
+        return formatPriceWithoutSymbol(
+          selectedPlan.duration * selectedPlan.price
+        );
       }
-
-      setShowsObservation(true);
-      return formatPrice(price)
-        .replace('R$', '')
-        .trim();
     }
 
     if (!price) return null;
     setShowsObservation(true);
-    return formatPrice(price)
-      .replace('R$', '')
-      .trim();
+    return formatPriceWithoutSymbol(price);
   }, [initialData, selectedPlan]);
 
   useEffect(() => {
@@ -85,16 +76,16 @@ export default function RegistrationForm({
 
   const schema = Yup.object().shape({
     student: Yup.number()
-      .integer()
+      .integer('O aluno selecionado é inválido')
       .typeError('É necessário selecionar um aluno')
       .required('É necessário selecionar um aluno'),
     plan: Yup.number()
-      .integer()
+      .integer('O plano selecionado é inválido')
       .typeError('É necessário selecionar um plano')
       .required('É necessário selecionar um plano'),
-    start_date: Yup.date('A data de nascimento é inválida').required(
-      'A data de nascimento é obrigatória'
-    ),
+    start_date: Yup.date('A data de nascimento é inválida')
+      .typeError('A data de nascimento é inválida')
+      .required('A data de nascimento é obrigatória'),
   });
 
   return (
@@ -136,7 +127,6 @@ export default function RegistrationForm({
                   id="start_date"
                   selected={startDate}
                   onChange={setStartDate}
-                  placeholderText="Selecione o dia do inicio"
                   disabled={locked}
                 />
               </LabeledField>

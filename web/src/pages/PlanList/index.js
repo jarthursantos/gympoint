@@ -27,7 +27,13 @@ export default function PlanList() {
       try {
         const response = await api.get('/plans');
 
-        setPlans(response.data);
+        const data = response.data.map(plan => ({
+          ...plan,
+          months: monthPlurals(plan.duration),
+          formatedPrice: formatPrice(plan.price),
+        }));
+
+        setPlans(data);
       } catch (err) {
         setLoadingError(true);
       }
@@ -49,49 +55,47 @@ export default function PlanList() {
     );
   }
 
-  function CurrentState() {
-    if (loadingError) return <ErrorState />;
-
-    if (isLoading) return <LoadingState />;
-
-    if (!plans.length) return <EmptyState />;
-
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Título</th>
-            <th className="centered">Duração</th>
-            <th className="centered">Valor p/ Mês</th>
-            <th className="collapsing" />
-          </tr>
-        </thead>
-        <tbody>
-          {plans.map(plan => (
-            <tr key={plan.id}>
-              <td>
-                <div>{plan.title}</div>
-              </td>
-              <td className="fill centered">{monthPlurals(plan.duration)}</td>
-              <td className="fill centered">{formatPrice(plan.price)}</td>
-              <td className="collapsing">
-                <EditButton to={`/plans/${plan.id}/edit`} />
-                <DeleteButton onClick={() => handleDelete(plan)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
-  }
-
   return (
     <Wrapper>
       <TopBar title="Gerenciando planos">
         <RegisterButton to="/plans/register" />
       </TopBar>
       <Container>
-        <CurrentState />
+        {(() => {
+          if (loadingError) return <ErrorState />;
+
+          if (isLoading) return <LoadingState />;
+
+          if (!plans.length) return <EmptyState />;
+
+          return (
+            <Table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th className="centered">Duração</th>
+                  <th className="centered">Valor p/ Mês</th>
+                  <th className="collapsing" />
+                </tr>
+              </thead>
+              <tbody>
+                {plans.map(plan => (
+                  <tr key={plan.id}>
+                    <td>
+                      <div>{plan.title}</div>
+                    </td>
+                    <td className="fill centered">{plan.months}</td>
+                    <td className="fill centered">{plan.formatedPrice}</td>
+                    <td className="collapsing">
+                      <EditButton to={`/plans/${plan.id}/edit`} />
+                      <DeleteButton onClick={() => handleDelete(plan)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          );
+        })()}
       </Container>
     </Wrapper>
   );

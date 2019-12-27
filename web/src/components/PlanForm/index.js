@@ -10,7 +10,7 @@ import ErrorState from '~/components/ErrorState';
 import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
-import { formatPrice } from '~/util/format';
+import { formatPriceWithoutSymbol } from '~/util/format';
 
 import { Wrapper, Container } from './styles';
 
@@ -27,14 +27,14 @@ export default function PlanForm({
   const [duration, setDuration] = useState(null);
 
   const amount = useMemo(() => {
-    return formatPrice((price || 0) * (duration || 0))
-      .replace('R$', '')
-      .trim();
+    if (!price || !duration) return null;
+
+    return formatPriceWithoutSymbol(price * duration);
   }, [duration, price]);
 
   useEffect(() => {
     if (initialData) {
-      setPrice(initialData.price);
+      setPrice(parseFloat(initialData.price).toFixed(2));
       setDuration(initialData.duration);
     }
   }, [initialData]);
@@ -49,7 +49,7 @@ export default function PlanForm({
       .required('A duração é obrigatória')
       .typeError('A duração é obrigatória'),
     price: Yup.number('Valor informado é inválido')
-      .min(1, 'A duração precisa ser maior que 0')
+      .min(1, 'O preço mensal precisa ser maior que 0')
       .required('O preço mensal é obrigatório')
       .typeError('O preço mensal é obrigatório'),
   });

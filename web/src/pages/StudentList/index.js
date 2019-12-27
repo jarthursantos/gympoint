@@ -49,44 +49,6 @@ export default function StudentList() {
     );
   }, [filter, students]);
 
-  function CurrentState() {
-    if (loadingError) return <ErrorState />;
-
-    if (isLoading) return <LoadingState />;
-
-    if (filter.length && !filteredStudents.length)
-      return <EmptyState message="Sua busca não encontrou nada" />;
-
-    if (!students.length) return <EmptyState />;
-
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>E-Mail</th>
-            <th className="centered">Idade</th>
-            <th className="collapsing" />
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStudents.map(student => (
-            <tr key={student.id}>
-              <td>{student.name}</td>
-              <td>
-                <MailButton mail={student.email} />
-              </td>
-              <td className="fill centered">{student.age}</td>
-              <td className="collapsing actions">
-                <EditButton to={`/students/${student.id}/edit`} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
-  }
-
   return (
     <Wrapper>
       <TopBar title="Gerenciando alunos">
@@ -95,7 +57,43 @@ export default function StudentList() {
       </TopBar>
 
       <Container>
-        <CurrentState />
+        {(() => {
+          if (loadingError) return <ErrorState />;
+
+          if (isLoading) return <LoadingState />;
+
+          if (filter.length && !filteredStudents.length)
+            return <EmptyState message="Sua busca não encontrou nada" />;
+
+          if (!students.length) return <EmptyState />;
+
+          return (
+            <Table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>E-Mail</th>
+                  <th className="centered">Idade</th>
+                  <th className="collapsing" />
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStudents.map(student => (
+                  <tr key={student.id}>
+                    <td>{student.name}</td>
+                    <td>
+                      <MailButton mail={student.email} />
+                    </td>
+                    <td className="fill centered">{student.age}</td>
+                    <td className="collapsing actions">
+                      <EditButton to={`/students/${student.id}/edit`} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          );
+        })()}
       </Container>
     </Wrapper>
   );

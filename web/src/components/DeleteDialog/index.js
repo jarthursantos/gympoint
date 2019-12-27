@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ReactLoading from 'react-loading';
 
+import ActivityIndicator from '~/components/ActivityIndicator';
 import Modal from '~/components/Modal';
 import EventManager from '~/services/eventManager';
 
@@ -9,7 +9,7 @@ import { Content, Actions } from './styles';
 const manager = new EventManager();
 
 export const displayDeleteDialog = (message, callback) => {
-  manager.emit('delete', message, callback);
+  manager.emit('deleteCalled', message, callback);
 };
 
 export default function DeleteDialog() {
@@ -19,15 +19,16 @@ export default function DeleteDialog() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    manager.on('delete', (message, eventCallback) => {
+    manager.on('deleteCalled', (message, eventCallback) => {
       setCallback({
         handler: eventCallback,
       });
+
       setContent(message);
       setOpened(true);
     });
 
-    return () => manager.off('delete');
+    return () => manager.off('deleteCalled');
   }, [content]);
 
   function handleClose() {
@@ -39,7 +40,9 @@ export default function DeleteDialog() {
 
   async function handleDelete() {
     setIsLoading(true);
-    await callback.handler();
+
+    const { handler } = callback;
+    if (handler) await handler();
 
     handleClose();
   }
@@ -52,11 +55,7 @@ export default function DeleteDialog() {
           Cancelar
         </button>
         <button className="primary" type="button" onClick={handleDelete}>
-          {isLoading ? (
-            <ReactLoading type="spin" color="#fff" height={20} width={20} />
-          ) : (
-            'Confirmar'
-          )}
+          {isLoading ? <ActivityIndicator /> : 'Confirmar'}
         </button>
       </Actions>
     </Modal>

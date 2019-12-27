@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
 
 import PropTypes from 'prop-types';
+
+import ActivityIndicator from '~/components/ActivityIndicator';
 
 import { Container } from './styles';
 
@@ -10,9 +11,7 @@ export default function TobBar({ title, isLoading, children }) {
     <Container>
       <div>
         <strong>{title}</strong>
-        {isLoading && (
-          <ReactLoading type="spin" color="#666" height={20} width={20} />
-        )}
+        {isLoading && <ActivityIndicator color="#666" />}
       </div>
       <aside>{children}</aside>
     </Container>

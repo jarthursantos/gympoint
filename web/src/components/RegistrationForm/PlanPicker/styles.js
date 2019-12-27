@@ -70,6 +70,7 @@ export const Plan = styled.div`
 
   strong {
     color: #444;
+    font-weight: 500;
   }
 
   div {

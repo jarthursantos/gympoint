@@ -6,6 +6,7 @@ import styled from 'styled-components';
 export const Container = styled(Link)`
   display: flex;
   align-items: center;
+
   padding: 8px 16px;
   font-size: 14px;
   font-weight: bold;

@@ -71,50 +71,6 @@ export default function RegistrationList() {
     );
   }
 
-  function CurrentState() {
-    if (loadingError) return <ErrorState />;
-
-    if (isLoading) return <LoadingState />;
-
-    if (!registrations.length) return <EmptyState />;
-
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Aluno</th>
-            <th className="centered">Plano</th>
-            <th className="centered">Inicio</th>
-            <th className="centered">Término</th>
-            <th className="centered">Ativa</th>
-            <th className="collapsing" />
-          </tr>
-        </thead>
-        <tbody>
-          {registrations.map(registration => (
-            <tr key={registration.id}>
-              <td>{registration.student.name}</td>
-              <td className="fill centered">
-                {registration.plan ? registration.plan.title : '-'}
-              </td>
-              <td className="fill centered">
-                {registration.startDateFormated}
-              </td>
-              <td className="fill centered">{registration.endDateFormated}</td>
-              <td className="fill centered">
-                {registration.active ? 'SIM' : 'NÃO'}
-              </td>
-              <td className="collapsing actions">
-                <EditButton to={`registrations/${registration.id}/edit`} />
-                <DeleteButton onClick={() => handleDelete(registration)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
-  }
-
   return (
     <Wrapper>
       <TopBar title="Gerenciando matrículas">
@@ -122,7 +78,55 @@ export default function RegistrationList() {
       </TopBar>
 
       <Container>
-        <CurrentState />
+        {(() => {
+          if (loadingError) return <ErrorState />;
+
+          if (isLoading) return <LoadingState />;
+
+          if (!registrations.length) return <EmptyState />;
+
+          return (
+            <Table>
+              <thead>
+                <tr>
+                  <th>Aluno</th>
+                  <th className="centered">Plano</th>
+                  <th className="centered">Inicio</th>
+                  <th className="centered">Término</th>
+                  <th className="centered">Ativa</th>
+                  <th className="collapsing" />
+                </tr>
+              </thead>
+              <tbody>
+                {registrations.map(registration => (
+                  <tr key={registration.id}>
+                    <td>{registration.student.name}</td>
+                    <td className="fill centered">
+                      {registration.plan ? registration.plan.title : '-'}
+                    </td>
+                    <td className="fill centered">
+                      {registration.startDateFormated}
+                    </td>
+                    <td className="fill centered">
+                      {registration.endDateFormated}
+                    </td>
+                    <td className="fill centered">
+                      {registration.active ? 'SIM' : 'NÃO'}
+                    </td>
+                    <td className="collapsing actions">
+                      <EditButton
+                        to={`registrations/${registration.id}/edit`}
+                      />
+                      <DeleteButton
+                        onClick={() => handleDelete(registration)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          );
+        })()}
       </Container>
     </Wrapper>
   );

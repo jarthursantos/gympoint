@@ -3,6 +3,12 @@ export const { format: formatPrice } = new Intl.NumberFormat('pt-br', {
   currency: 'BRL',
 });
 
+export function formatPriceWithoutSymbol(num) {
+  return formatPrice(num)
+    .replace('R$', '')
+    .trim();
+}
+
 export function formatInitials(str) {
   let result = '';
   const initials = str.trim().split(' ');

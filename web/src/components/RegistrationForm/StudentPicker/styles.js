@@ -78,6 +78,7 @@ export const Student = styled.div`
 
     strong {
       color: #444;
+      font-weight: 500;
     }
 
     small {

@@ -8,6 +8,10 @@ import history from '~/services/history';
 export default function PlanRegister() {
   const [isLoading, setIsLoading] = useState(false);
 
+  // window.addEventListener('beforeunload', event => {
+  //   event.returnValue = 'You have unfinished changes!';
+  // });
+
   async function handleSubmit(data) {
     setIsLoading(true);
 

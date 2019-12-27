@@ -4,7 +4,6 @@ export const Container = styled.div`
   height: 150px;
   width: 150px;
   position: relative;
-  margin-bottom: 30px;
 
   &:hover {
     .camera-icon {

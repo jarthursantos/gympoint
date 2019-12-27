@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdCameraAlt } from 'react-icons/md';
-import ReactLoading from 'react-loading';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import { useField } from '@rocketseat/unform';
 
+import ActivityIndicator from '~/components/ActivityIndicator';
 import api from '~/services/api';
 import { formatInitials } from '~/util/format';
 
@@ -31,17 +32,28 @@ export default function AvatarInput() {
   }, [ref]); // eslint-disable-line
 
   async function handleChange(e) {
-    const data = new FormData();
-    data.append('file', e.target.files[0]);
-
     setIsLoading(true);
 
-    const response = await api.post('/avatars', data);
+    try {
+      const data = new FormData();
+      data.append('file', e.target.files[0]);
 
-    const { id, url } = response.data;
+      const response = await api.post('/avatars', data);
 
-    setFile(id);
-    setPreview(url);
+      const { id, url } = response.data;
+
+      setFile(id);
+      setPreview(url);
+    } catch (err) {
+      if (err.response) {
+        toast.error(err.response.data.error);
+      } else {
+        toast.error(
+          'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
+        );
+      }
+    }
+
     setIsLoading(false);
   }
 
@@ -65,7 +77,7 @@ export default function AvatarInput() {
       </label>
       <div className="camera-icon">
         {isLoading ? (
-          <ReactLoading type="spin" color="#fff" height={24} width={24} />
+          <ActivityIndicator size={24} />
         ) : (
           <MdCameraAlt size={24} color="#fff" />
         )}
@@ -73,5 +85,3 @@ export default function AvatarInput() {
     </Container>
   );
 }
-
-// TODO: change default image

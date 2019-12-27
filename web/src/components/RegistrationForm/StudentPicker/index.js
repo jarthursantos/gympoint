@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { MdExpandMore, MdError } from 'react-icons/md';
-import ReactLoading from 'react-loading';
 
 import { useField } from '@rocketseat/unform';
 import { differenceInYears, parseISO } from 'date-fns';
 import PropTypes from 'prop-types';
 
+import ActivityIndicator from '~/components/ActivityIndicator';
 import EmptyState from '~/components/EmptyState';
 import Modal from '~/components/Modal';
 import api from '~/services/api';
@@ -31,16 +31,17 @@ export default function StudentPicker({ name }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
-  const [opened, setOpened] = useState(false);
   const [filter, setFilter] = useState('');
-  const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingError, setLoadingError] = useState(false);
-
+  const [opened, setOpened] = useState(false);
   const [selectedListItem, setSelectedListItem] = useState({});
   const [selectedStudent, setSelectedStudent] = useState(defaultValue);
   const [value, setValue] = useState(defaultValue && defaultValue.id);
+
+  const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -106,47 +107,17 @@ export default function StudentPicker({ name }) {
     handleCloseModal();
   }
 
-  function CurrentInputState() {
-    if (loadingError) return <MdError size={24} color="#de3b3b" />;
-
-    if (isLoading)
-      return <ReactLoading type="spin" color="#666" height={24} width={24} />;
-
-    return <MdExpandMore size={24} color="#666" />;
-  }
-
-  function CurrentState() {
-    if (!students.length) return <EmptyState />;
-
-    if (filter.length && !filteredStudents.length)
-      return <EmptyState message="Sua busca não encontrou nada" />;
-
-    return (
-      <StudentList>
-        {filteredStudents.map(student => (
-          <Student
-            key={student.id}
-            selected={student.id === selectedListItem.id}
-            onClick={() => handleSelectListItem(student)}
-          >
-            <div>
-              <strong>{student.name}</strong>
-              <small>{student.email}</small>
-            </div>
-            <span>{student.age} anos</span>
-          </Student>
-        ))}
-      </StudentList>
-    );
-  }
-
   return (
     <>
       <Container onClick={handleOpenModal}>
-        <span>
-          {!selectedStudent ? 'Selecionar aluno' : selectedStudent.name}
-        </span>
-        <CurrentInputState />
+        <span>{selectedStudent && selectedStudent.name}</span>
+        {(() => {
+          if (loadingError) return <MdError size={24} color="#de3b3b" />;
+
+          if (isLoading) return <ActivityIndicator color="#666" size={24} />;
+
+          return <MdExpandMore size={24} color="#666" />;
+        })()}
         <input
           type="hidden"
           ref={ref}
@@ -167,7 +138,30 @@ export default function StudentPicker({ name }) {
             placeholder="Buscar aluno"
           />
           <div className="content">
-            <CurrentState />
+            {(() => {
+              if (!students.length) return <EmptyState />;
+
+              if (filter.length && !filteredStudents.length)
+                return <EmptyState message="Sua busca não encontrou nada" />;
+
+              return (
+                <StudentList>
+                  {filteredStudents.map(student => (
+                    <Student
+                      key={student.id}
+                      selected={student.id === selectedListItem.id}
+                      onClick={() => handleSelectListItem(student)}
+                    >
+                      <div>
+                        <strong>{student.name}</strong>
+                        <small>{student.email}</small>
+                      </div>
+                      <span>{student.age} anos</span>
+                    </Student>
+                  ))}
+                </StudentList>
+              );
+            })()}
           </div>
           <Actions>
             <button type="button" className="cancel" onClick={handleCloseModal}>

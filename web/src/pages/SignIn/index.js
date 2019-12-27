@@ -1,11 +1,11 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Form, Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
 import logo from '~/assets/logo.svg';
+import ActivityIndicator from '~/components/ActivityIndicator';
 import { signInRequest } from '~/store/modules/auth/actions';
 
 const schema = Yup.object().shape({
@@ -42,15 +42,11 @@ export default function SignIn() {
             id="password"
             name="password"
             type="password"
-            placeholder="*************"
+            placeholder="********"
           />
         </label>
         <button type="submit">
-          {loading ? (
-            <ReactLoading type="spin" color="#fff" height={24} width={24} />
-          ) : (
-            'Entrar no Sistema'
-          )}
+          {loading ? <ActivityIndicator size={24} /> : 'Entrar no Sistema'}
         </button>
       </Form>
     </>

@@ -34,7 +34,6 @@ export default function RegistrationRegister() {
       title="Cadastro de matrícula"
       onSubmit={handleSubmit}
       isLoading={isLoading}
-      initialData={{ start_date: new Date() }}
     />
   );
 }

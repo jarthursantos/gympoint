@@ -7,7 +7,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import './config/reactotron';
 
-import AnswerDialog from './components/AnswerDialog';
 import DeleteDialog from './components/DeleteDialog';
 import Routes from './routes';
 import history from './services/history';
@@ -29,14 +28,11 @@ function App() {
             position="top-center"
             autoClose={3000}
           />
-          <AnswerDialog />
           <DeleteDialog />
         </Router>
       </PersistGate>
     </Provider>
   );
 }
-
-// TODO: README.md with "responsive layout has not implemented"
 
 export default App;
