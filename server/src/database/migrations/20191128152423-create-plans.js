@@ -20,13 +20,6 @@ module.exports = {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      created_by: {
-        type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
-      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

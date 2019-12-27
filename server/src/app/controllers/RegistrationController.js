@@ -51,6 +51,7 @@ class RegistrationController {
         [{ model: Student, as: 'student' }, 'email'],
       ],
     });
+
     return res.json(registrations);
   }
 

@@ -1,24 +1,20 @@
 import mongoose from 'mongoose';
 
-const HelpOrderNotificationSchema = mongoose.Schema(
+const FeedbackNotificationSchema = mongoose.Schema(
   {
-    help_order: {
+    user: {
       type: Number,
       required: true,
     },
-    title: {
-      type: String,
+    help_order: {
+      type: Number,
       required: true,
     },
     message: {
       type: String,
       required: true,
     },
-    question: {
-      type: String,
-      required: true,
-    },
-    answered: {
+    read: {
       type: Boolean,
       required: true,
       default: false,
@@ -30,8 +26,6 @@ const HelpOrderNotificationSchema = mongoose.Schema(
 );
 
 export default mongoose.model(
-  'HelpOrderNotification',
-  HelpOrderNotificationSchema
+  'FeedbackNotification',
+  FeedbackNotificationSchema
 );
-
-// TODO: remove redundant information

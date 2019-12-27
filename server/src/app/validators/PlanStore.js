@@ -1,17 +1,18 @@
-const Yup = require('yup');
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
-      title: Yup.string().required(),
-      duration: Yup.number()
-        .integer()
-        .min(1)
-        .required(),
-      price: Yup.number()
-        .min(0.1)
-        .required(),
+      title: Yup.string('title should be a string').required(
+        'title is required'
+      ),
+      duration: Yup.number('duration should be a number')
+        .integer('duration should be a integer')
+        .min(1, 'min duration is 1 month')
+        .required('duration is required'),
+      price: Yup.number('price should be a number').required(
+        'price is required'
+      ),
     });
 
     await schema.validate(req.body, { abortEarly: false });

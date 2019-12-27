@@ -7,7 +7,6 @@ import AnswerController from './app/controllers/AnswerController';
 import CheckinController from './app/controllers/CheckinController';
 import AvatarController from './app/controllers/AvatarController';
 import HelpOrderController from './app/controllers/HelpOrderController';
-import HelpOrderNotificationController from './app/controllers/HelpOrderNotificationController';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
 import SessionController from './app/controllers/SessionController';
@@ -17,7 +16,6 @@ import StudentNotificationController from './app/controllers/StudentNotification
 import UserController from './app/controllers/UserController';
 
 import authMiddleware from './app/middlewares/auth';
-import findPlanMiddleware from './app/middlewares/findPlan';
 
 import validateUserStore from './app/validators/UserStore';
 import validateUserUpdate from './app/validators/UserUpdate';
@@ -83,23 +81,10 @@ routes.post(
 );
 
 routes.get('/plans', PlanController.index);
-routes.get(
-  '/plans/:id',
-  findPlanMiddleware(req => req.params.id, 'plan'),
-  PlanController.show
-);
+routes.get('/plans/:id', PlanController.show);
 routes.post('/plans', validatePlanStore, PlanController.store);
-routes.put(
-  '/plans/:id',
-  validatePlanUpdate,
-  findPlanMiddleware(req => req.params.id, 'plan'),
-  PlanController.update
-);
-routes.delete(
-  '/plans/:id',
-  findPlanMiddleware(req => req.params.id, 'plan'),
-  PlanController.destroy
-);
+routes.put('/plans/:id', validatePlanUpdate, PlanController.update);
+routes.delete('/plans/:id', PlanController.destroy);
 
 routes.get('/registrations/:id', RegistrationController.show);
 routes.get('/registrations', RegistrationController.index);

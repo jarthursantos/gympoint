@@ -1,7 +1,7 @@
 import Student from '../models/Student';
 import AnsweredNotification from '../schemas/AnsweredNotification';
 
-class StudentNotificationController {
+class AnsweredNotificationController {
   async index(req, res) {
     const { student_id } = req.params;
 
@@ -13,9 +13,7 @@ class StudentNotificationController {
 
     const notifications = await AnsweredNotification.find({
       student: student_id,
-    })
-      .sort({ createdAt: 'desc' })
-      .limit(20);
+    }).sort({ createdAt: 'desc' });
 
     return res.json(notifications);
   }
@@ -29,6 +27,15 @@ class StudentNotificationController {
       return res.status(400).json({ error: "student don't exists" });
     }
 
+    const notificationExists = await AnsweredNotification.find({
+      student: student_id,
+      help_order: id,
+    });
+
+    if (!notificationExists) {
+      return res.status(400).json({ error: "notification don't exists" });
+    }
+
     const notification = await AnsweredNotification.findByIdAndUpdate(
       id,
       { read: true },
@@ -39,4 +46,4 @@ class StudentNotificationController {
   }
 }
 
-export default new StudentNotificationController();
+export default new AnsweredNotificationController();

@@ -1,14 +1,15 @@
-const Yup = require('yup');
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      birthdate: Yup.date(),
-      height: Yup.number().min(0.1),
-      weight: Yup.number().min(0.1),
+      name: Yup.string('name should be a string'),
+      email: Yup.string('email should be a string').email(
+        'provided email is invalid'
+      ),
+      birthdate: Yup.date('birthdate should be a date'),
+      height: Yup.number('height should be a number'),
+      weight: Yup.number('weight should be a number'),
     });
 
     await schema.validate(req.body, { abortEarly: false });

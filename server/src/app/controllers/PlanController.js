@@ -2,7 +2,13 @@ import Plan from '../models/Plan';
 
 class PlanController {
   async show(req, res) {
-    return res.json(req.plan);
+    const plan = await Plan.findByPk(req.params.id);
+
+    if (!plan) {
+      return res.status(400).json({ error: "plan don't exists" });
+    }
+
+    return res.json(req.finded.plan);
   }
 
   async index(_req, res) {
@@ -15,7 +21,7 @@ class PlanController {
   }
 
   async store(req, res) {
-    let { id, title, duration, price } = req.body;
+    const { title, duration, price } = req.body;
 
     const planExists = await Plan.findOne({
       where: { title },
@@ -25,25 +31,23 @@ class PlanController {
       return res.status(400).json({ error: 'title already in use' });
     }
 
-    ({ id, title, duration, price } = await Plan.create({
-      title,
-      duration,
-      price,
-      created_by: req.user_id,
-    }));
-
-    return res.json({
-      id,
+    const plan = await Plan.create({
       title,
       duration,
       price,
     });
+
+    return res.json(plan);
   }
 
   async update(req, res) {
-    let { id } = req.params;
+    const { id } = req.params;
 
     const plan = await Plan.findByPk(id);
+
+    if (!plan) {
+      return res.status(400).json({ error: "plan don't exists" });
+    }
 
     let { title, duration, price } = req.body;
 
@@ -57,7 +61,7 @@ class PlanController {
       }
     }
 
-    ({ id, title, duration, price } = await plan.update({
+    ({ title, duration, price } = await plan.update({
       title,
       duration,
       price,
@@ -67,13 +71,13 @@ class PlanController {
   }
 
   async destroy(req, res) {
-    const { id } = req.params;
+    const plan = await Plan.findByPk(req.params.id);
 
-    await Plan.destroy({
-      where: {
-        id,
-      },
-    });
+    if (!plan) {
+      return res.status(400).json({ error: "plan don't exists" });
+    }
+
+    await plan.destroy();
 
     return res.json();
   }

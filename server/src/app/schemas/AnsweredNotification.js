@@ -6,12 +6,12 @@ const AnsweredNotificationSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
-    answer: {
+    help_order: {
       type: Number,
       required: true,
     },
-    message: {
-      type: String,
+    answer: {
+      type: Number,
       required: true,
     },
     read: {

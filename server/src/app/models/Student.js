@@ -1,7 +1,6 @@
 import { Model, DOUBLE, DATE, STRING } from 'sequelize';
 
-// import shortid from 'shortid';
-const shortid = require('shortid');
+import shortid from 'shortid';
 
 class Student extends Model {
   static init(sequelize) {
@@ -24,10 +23,6 @@ class Student extends Model {
     });
 
     return this;
-  }
-
-  static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'created_by', as: 'creator' });
   }
 }
 

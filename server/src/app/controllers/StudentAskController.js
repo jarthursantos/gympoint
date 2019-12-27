@@ -5,8 +5,6 @@ import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
 import Registration from '../models/Registration';
 
-import HelpOrderNotification from '../schemas/HelpOrderNotification';
-
 class StudentAskController {
   async index(req, res) {
     const { id: student_id } = req.params;
@@ -64,41 +62,39 @@ class StudentAskController {
         .json({ error: "student don't have active registration" });
     }
 
-    const { id } = await HelpOrder.create({
-      question,
-      student_id,
-    });
+    const help_order = await HelpOrder.create(
+      {
+        question,
+        student_id,
+      },
+      {
+        include: [
+          {
+            model: User,
+            as: 'replier',
+            attributes: ['name'],
+          },
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['name', 'email', 'alternative_id'],
+          },
+        ],
+      }
+    );
 
-    const help_order = await HelpOrder.findByPk(id, {
-      include: [
-        {
-          model: User,
-          as: 'replier',
-          attributes: ['name'],
-        },
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['name', 'email', 'alternative_id'],
-        },
-      ],
-      attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
-    });
+    // TODO: const short_question = help_order.question.substr(0, 50);
+    // const overflow_limit = short_question.length >= 50;
 
-    const short_question = help_order.question.substr(0, 50);
-    const overflow_limit = short_question.length >= 50;
-
-    HelpOrderNotification.create({
-      help_order: id,
-      title: `${help_order.student.name} solicitou ajuda`,
-      message: `"${short_question}${overflow_limit ? '...' : ''}"`,
-      question,
-    });
+    // HelpOrderNotification.create({
+    //   help_order: id,
+    //   title: `${help_order.student.name} solicitou ajuda`,
+    //   message: `"${short_question}${overflow_limit ? '...' : ''}"`,
+    //   question,
+    // });
 
     return res.json(help_order);
   }
 }
 
 export default new StudentAskController();
-
-// TODO: refact req.body use

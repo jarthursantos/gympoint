@@ -1,19 +1,28 @@
-const Yup = require('yup');
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      old_assword: Yup.string(),
-      password: Yup.string().when('old_assword', (old_assword, field) =>
-        old_assword ? field.required() : field
+      name: Yup.string('name should be a string'),
+      email: Yup.string('email should be a string').email(
+        'provided email is invalid'
       ),
-      confirm_password: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
+      old_assword: Yup.string('old_password should be a string'),
+      password: Yup.string('password should be a string').when(
+        'old_assword',
+        (old_assword, field) =>
+          old_assword ? field.required('old_assword is required') : field
       ),
-      avatar_id: Yup.number().integer(),
+      confirm_password: Yup.string(
+        'confirm_password should be a string'
+      ).when('password', (password, field) =>
+        password
+          ? field.required('password is required').oneOf([Yup.ref('password')])
+          : field
+      ),
+      avatar_id: Yup.number('avatar_id should be a number').integer(
+        'avatar_id should be a integer'
+      ),
     });
 
     await schema.validate(req.body, { abortEarly: false });

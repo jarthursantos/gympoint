@@ -3,13 +3,13 @@ import Avatar from '../models/Avatar';
 
 class UserController {
   async store(req, res) {
-    const userExists = await User.findOne({ where: { email: req.body.email } });
+    const { email, name, avatar_id, password } = req.body;
+
+    const userExists = await User.findOne({ where: { email } });
 
     if (userExists) {
       return res.status(400).json({ error: 'email already in use' });
     }
-
-    const { avatar_id } = req.body;
 
     if (avatar_id) {
       const avatarExists = await Avatar.findByPk(avatar_id);
@@ -19,9 +19,9 @@ class UserController {
       }
     }
 
-    const { id, name, email } = await User.create(req.body);
+    const user = await User.create({ name, email, password, avatar_id });
 
-    return res.json({ id, name, email });
+    return res.json(user);
   }
 
   async update(req, res) {
@@ -56,7 +56,7 @@ class UserController {
       password,
     });
 
-    const updatedUser = await User.findByPk(req.user_id, {
+    const updatedUser = await User.update(req.user_id, {
       include: [
         {
           model: Avatar,
@@ -72,5 +72,3 @@ class UserController {
 }
 
 export default new UserController();
-
-// TODO: refact req.body use
