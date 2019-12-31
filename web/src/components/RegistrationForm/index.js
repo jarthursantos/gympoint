@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { format, addMonths, parseISO } from 'date-fns';
+import { format, addMonths, parseISO, isEqual } from 'date-fns';
 import PropTypes from 'prop-types';
-import * as Yup from 'yup';
 
 import BackButton from '~/components/BackButton';
 import CurrencyInput from '~/components/CurrencyInput';
@@ -14,6 +13,7 @@ import TopBar from '~/components/TopBar';
 import { formatPriceWithoutSymbol } from '~/util/format';
 
 import PlanPicker from './PlanPicker';
+import schema from './schema';
 import StudentPicker from './StudentPicker';
 import { Wrapper, Container, Observation } from './styles';
 
@@ -33,29 +33,43 @@ export default function RegistrationForm({
 
   const endDate = useMemo(() => {
     setShowsObservation(false);
-    const { end_date, plan: currentPlan } = initialData;
+    const {
+      end_date: current_end_date,
+      start_date: current_start_date,
+      plan: current_plan,
+    } = initialData;
 
-    if (selectedPlan) {
-      if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
-        if (startDate)
-          return format(
-            addMonths(startDate, selectedPlan.duration),
-            'dd/MM/yyyy'
-          );
+    if (selectedPlan && startDate) {
+      const plan_changed = current_plan && selectedPlan.id !== current_plan.id;
+      const start_date_changed = !isEqual(current_start_date, startDate);
+
+      if (!current_plan || plan_changed || start_date_changed) {
+        return format(
+          addMonths(startDate, selectedPlan.duration),
+          'dd/MM/yyyy'
+        );
       }
     }
 
-    if (!end_date) return null;
+    if (!current_end_date) return null;
     setShowsObservation(true);
-    return format(parseISO(end_date), 'dd/MM/yyyy');
+
+    return format(parseISO(current_end_date), 'dd/MM/yyyy');
   }, [initialData, selectedPlan, startDate]);
 
-  const totalValue = useMemo(() => {
+  const amountValue = useMemo(() => {
     setShowsObservation(false);
-    const { price, plan: currentPlan } = initialData;
+    const {
+      price,
+      start_date: current_start_date,
+      plan: current_plan,
+    } = initialData;
 
-    if (selectedPlan) {
-      if (!currentPlan || (currentPlan && selectedPlan.id !== currentPlan.id)) {
+    if (selectedPlan && startDate) {
+      const plan_changed = current_plan && selectedPlan.id !== current_plan.id;
+      const start_date_changed = !isEqual(current_start_date, startDate);
+
+      if (!current_plan || plan_changed || start_date_changed) {
         return formatPriceWithoutSymbol(
           selectedPlan.duration * selectedPlan.price
         );
@@ -64,8 +78,9 @@ export default function RegistrationForm({
 
     if (!price) return null;
     setShowsObservation(true);
+
     return formatPriceWithoutSymbol(price);
-  }, [initialData, selectedPlan]);
+  }, [initialData, selectedPlan, startDate]);
 
   useEffect(() => {
     if (!initialData) return;
@@ -73,20 +88,6 @@ export default function RegistrationForm({
     setStartDate(initialData.start_date);
     setSelectedPlan(initialData.plan);
   }, [initialData]);
-
-  const schema = Yup.object().shape({
-    student: Yup.number()
-      .integer('O aluno selecionado é inválido')
-      .typeError('É necessário selecionar um aluno')
-      .required('É necessário selecionar um aluno'),
-    plan: Yup.number()
-      .integer('O plano selecionado é inválido')
-      .typeError('É necessário selecionar um plano')
-      .required('É necessário selecionar um plano'),
-    start_date: Yup.date('A data de nascimento é inválida')
-      .typeError('A data de nascimento é inválida')
-      .required('A data de nascimento é obrigatória'),
-  });
 
   return (
     <Wrapper
@@ -145,7 +146,7 @@ export default function RegistrationForm({
                 <strong>{showsObservation && '* '}Valor Final</strong>
                 <CurrencyInput>
                   <input
-                    value={totalValue || ''}
+                    value={amountValue || ''}
                     type="text"
                     id="amount"
                     disabled
@@ -204,5 +205,3 @@ RegistrationForm.defaultProps = {
   isLoading: false,
   initialData: {},
 };
-
-// TODO: verify if start_date is after of end_date, to apply new politics

@@ -2,13 +2,15 @@ import Plan from '../models/Plan';
 
 class PlanController {
   async show(req, res) {
-    const plan = await Plan.findByPk(req.params.id);
+    const plan = await Plan.findByPk(req.params.id, {
+      attributes: ['id', 'title', 'duration', 'price'],
+    });
 
     if (!plan) {
       return res.status(400).json({ error: "plan don't exists" });
     }
 
-    return res.json(req.finded.plan);
+    return res.json(plan);
   }
 
   async index(_req, res) {
@@ -23,21 +25,26 @@ class PlanController {
   async store(req, res) {
     const { title, duration, price } = req.body;
 
-    const planExists = await Plan.findOne({
+    const titleAlreadyInUse = await Plan.findOne({
       where: { title },
     });
 
-    if (planExists) {
+    if (titleAlreadyInUse) {
       return res.status(400).json({ error: 'title already in use' });
     }
 
-    const plan = await Plan.create({
+    const { id } = await Plan.create({
       title,
       duration,
       price,
     });
 
-    return res.json(plan);
+    return res.json({
+      id,
+      title,
+      duration,
+      price,
+    });
   }
 
   async update(req, res) {

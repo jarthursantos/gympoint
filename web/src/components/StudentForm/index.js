@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import { Input } from '@rocketseat/unform';
 import PropTypes from 'prop-types';
-import * as Yup from 'yup';
 
 import BackButton from '~/components/BackButton';
 import DatePicker from '~/components/DatePicker';
@@ -11,6 +10,7 @@ import LabeledField from '~/components/LabeledField';
 import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
 
+import schema from './schema';
 import { Wrapper, Container } from './styles';
 
 export default function StudentForm({
@@ -29,27 +29,6 @@ export default function StudentForm({
 
     setBirthdate(initialData.birthdate);
   }, [initialData]);
-
-  const schema = Yup.object().shape({
-    name: Yup.string()
-      .max(255, 'O nome deve possuir no máximo 255 caracteres')
-      .required('O nome é obrigatório'),
-    email: Yup.string()
-      .email('O email informado é inválido')
-      .max(255, 'O email deve possuir no máximo 255 caracteres')
-      .required('O email é obrigatório'),
-    height: Yup.number('Valor informado é inválido')
-      .min(1, 'A altura precisa ser maior que 0')
-      .required('A altura é obrigatória')
-      .typeError('A altura é obrigatória'),
-    weight: Yup.number('Valor informado é inválido')
-      .min(1, 'O peso precisa ser maior que 0')
-      .required('O peso é obrigatório')
-      .typeError('O peso é obrigatório'),
-    birthdate: Yup.date('A data de nascimento é inválida').required(
-      'A data de nascimento é obrigatória'
-    ),
-  });
 
   return (
     <Wrapper

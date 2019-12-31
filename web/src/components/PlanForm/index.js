@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { Input } from '@rocketseat/unform';
 import PropTypes from 'prop-types';
-import * as Yup from 'yup';
 
 import BackButton from '~/components/BackButton';
 import CurrencyInput from '~/components/CurrencyInput';
@@ -12,6 +11,7 @@ import SaveButton from '~/components/SaveButton';
 import TopBar from '~/components/TopBar';
 import { formatPriceWithoutSymbol } from '~/util/format';
 
+import schema from './schema';
 import { Wrapper, Container } from './styles';
 
 export default function PlanForm({
@@ -38,21 +38,6 @@ export default function PlanForm({
       setDuration(initialData.duration);
     }
   }, [initialData]);
-
-  const schema = Yup.object().shape({
-    title: Yup.string()
-      .max(255, 'O título deve possuir no máximo 255 caracteres')
-      .required('O título é obrigatório'),
-    duration: Yup.number('Valor informado é inválido')
-      .integer('A duração precisa ser um valor inteiro')
-      .min(1, 'A duração precisa ser maior que 0')
-      .required('A duração é obrigatória')
-      .typeError('A duração é obrigatória'),
-    price: Yup.number('Valor informado é inválido')
-      .min(1, 'O preço mensal precisa ser maior que 0')
-      .required('O preço mensal é obrigatório')
-      .typeError('O preço mensal é obrigatório'),
-  });
 
   return (
     <Wrapper

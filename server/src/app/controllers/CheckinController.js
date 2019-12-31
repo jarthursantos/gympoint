@@ -1,9 +1,9 @@
-import { Op } from 'sequelize';
 import { subDays } from 'date-fns';
+import { Op } from 'sequelize';
 
 import Checkin from '../models/Checkin';
-import Student from '../models/Student';
 import Registration from '../models/Registration';
+import Student from '../models/Student';
 
 class CheckinController {
   async index(req, res) {
@@ -19,6 +19,8 @@ class CheckinController {
       where: {
         student_id,
       },
+      attributes: ['id', 'created_at'],
+      order: [['created_at', 'DESC']],
     });
 
     return res.json(checkins);
@@ -62,9 +64,9 @@ class CheckinController {
         .json({ error: 'checkin student quota has been exceded' });
     }
 
-    const checkin = await Checkin.create({ student_id });
+    const { id, created_at } = await Checkin.create({ student_id });
 
-    return res.json(checkin);
+    return res.json({ id, created_at });
   }
 }
 

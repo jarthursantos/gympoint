@@ -1,12 +1,10 @@
-import HelpOrder from '../models/HelpOrder';
-
-import User from '../models/User';
-import Student from '../models/Student';
-
-import AnsweredNotification from '../schemas/AnsweredNotification';
-
-import HelpOrderAnsweredJob from '../jobs/HelpOrderAnsweredMail';
 import Queue from '../../lib/Queue';
+import HelpOrderAnsweredJob from '../jobs/HelpOrderAnsweredMail';
+import Avatar from '../models/Avatar';
+import HelpOrder from '../models/HelpOrder';
+import Student from '../models/Student';
+import User from '../models/User';
+import AnsweredNotification from '../schemas/AnsweredNotification';
 
 class AnswerController {
   async store(req, res) {
@@ -43,6 +41,13 @@ class AnswerController {
         {
           model: User,
           as: 'replier',
+          include: [
+            {
+              model: Avatar,
+              as: 'avatar',
+              attributes: ['id', 'name', 'path', 'url'],
+            },
+          ],
           attributes: ['name'],
         },
         {

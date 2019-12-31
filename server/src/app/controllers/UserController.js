@@ -1,5 +1,5 @@
-import User from '../models/User';
 import Avatar from '../models/Avatar';
+import User from '../models/User';
 
 class UserController {
   async store(req, res) {
@@ -56,7 +56,7 @@ class UserController {
       password,
     });
 
-    const updatedUser = await User.update(req.user_id, {
+    const updatedUser = await User.findByPk(req.user_id, {
       include: [
         {
           model: Avatar,

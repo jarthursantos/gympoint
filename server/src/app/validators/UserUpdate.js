@@ -7,17 +7,19 @@ export default async (req, res, next) => {
       email: Yup.string('email should be a string').email(
         'provided email is invalid'
       ),
-      old_assword: Yup.string('old_password should be a string'),
-      password: Yup.string('password should be a string').when(
-        'old_assword',
-        (old_assword, field) =>
-          old_assword ? field.required('old_assword is required') : field
+      old_password: Yup.string('password should be a string').when(
+        'password',
+        (password, field) =>
+          password ? field.required('password is required') : field
       ),
+      password: Yup.string('password should be a string'),
       confirm_password: Yup.string(
         'confirm_password should be a string'
       ).when('password', (password, field) =>
         password
-          ? field.required('password is required').oneOf([Yup.ref('password')])
+          ? field
+              .required('confirm_password is required')
+              .oneOf([Yup.ref('password')])
           : field
       ),
       avatar_id: Yup.number('avatar_id should be a number').integer(

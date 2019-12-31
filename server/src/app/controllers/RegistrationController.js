@@ -1,11 +1,10 @@
 import { parseISO, addMonths } from 'date-fns';
 
-import Student from '../models/Student';
+import Queue from '../../lib/Queue';
+import NewRegistrationJob from '../jobs/NewRegistrationMail';
 import Plan from '../models/Plan';
 import Registration from '../models/Registration';
-
-import NewRegistrationJob from '../jobs/NewRegistrationMail';
-import Queue from '../../lib/Queue';
+import Student from '../models/Student';
 
 class RegistrationController {
   async show(req, res) {

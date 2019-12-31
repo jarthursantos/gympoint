@@ -1,10 +1,10 @@
 import './bootstrap';
 
-import Youch from 'youch';
-import path from 'path';
-import express from 'express';
-import 'express-async-errors';
 import cors from 'cors';
+import express from 'express';
+import path from 'path';
+import Youch from 'youch';
+import 'express-async-errors';
 
 import routes from './routes';
 
@@ -20,11 +20,11 @@ class App {
   }
 
   middlewares() {
-    // this.server.use((req, res, next) => {
-    //   console.log(`[${req.method}] ${req.url}`);
+    this.server.use((req, res, next) => {
+      console.log(`[${req.method}] ${req.url}`);
 
-    //   return next();
-    // });
+      return next();
+    });
 
     this.server.use(cors());
     this.server.use(express.json());

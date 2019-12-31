@@ -35,7 +35,7 @@ export default function RegistrationEditor() {
           'Ocorreu um erro ao tentar se comunicar com o servidor, favor tentar novamente mais tarde'
         );
 
-        isLoading(false);
+        setIsLoading(false);
         setLoadingError(true);
       }
     })();
