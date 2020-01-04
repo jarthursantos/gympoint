@@ -65,7 +65,7 @@ class CheckinController {
         .json({ error: 'checkin student quota has been exceded' });
     }
 
-    const { id, createdAt: created_at } = await Checkin.create({ student_id });
+    const { id, created_at } = await Checkin.create({ student_id });
 
     return res.json({ id, created_at });
   }

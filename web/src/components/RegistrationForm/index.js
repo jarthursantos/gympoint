@@ -31,62 +31,59 @@ export default function RegistrationForm({
 
   const [selectedPlan, setSelectedPlan] = useState(null);
 
-  const endDate = useMemo(() => {
-    setShowsObservation(false);
+  const needChangeCalcBase = useMemo(() => {
     const {
-      end_date: current_end_date,
       start_date: current_start_date,
       plan: current_plan,
+      active,
     } = initialData;
 
     if (selectedPlan && startDate) {
       const plan_changed = current_plan && selectedPlan.id !== current_plan.id;
       const start_date_changed = !isEqual(current_start_date, startDate);
 
-      if (!current_plan || plan_changed || start_date_changed) {
-        return format(
-          addMonths(startDate, selectedPlan.duration),
-          'dd/MM/yyyy'
-        );
+      if (!current_plan || plan_changed || start_date_changed || !active) {
+        return true;
       }
+    }
+
+    return false;
+  }, [initialData, selectedPlan, startDate]);
+
+  const endDate = useMemo(() => {
+    setShowsObservation(false);
+    const { end_date: current_end_date } = initialData;
+
+    if (needChangeCalcBase) {
+      return format(addMonths(startDate, selectedPlan.duration), 'dd/MM/yyyy');
     }
 
     if (!current_end_date) return null;
     setShowsObservation(true);
 
     return format(parseISO(current_end_date), 'dd/MM/yyyy');
-  }, [initialData, selectedPlan, startDate]);
+  }, [needChangeCalcBase, initialData, selectedPlan, startDate]);
 
   const amountValue = useMemo(() => {
     setShowsObservation(false);
-    const {
-      price,
-      start_date: current_start_date,
-      plan: current_plan,
-    } = initialData;
+    const { price } = initialData;
 
-    if (selectedPlan && startDate) {
-      const plan_changed = current_plan && selectedPlan.id !== current_plan.id;
-      const start_date_changed = !isEqual(current_start_date, startDate);
-
-      if (!current_plan || plan_changed || start_date_changed) {
-        return formatPriceWithoutSymbol(
-          selectedPlan.duration * selectedPlan.price
-        );
-      }
+    if (needChangeCalcBase) {
+      return formatPriceWithoutSymbol(
+        selectedPlan.duration * selectedPlan.price
+      );
     }
 
     if (!price) return null;
     setShowsObservation(true);
 
     return formatPriceWithoutSymbol(price);
-  }, [initialData, selectedPlan, startDate]);
+  }, [needChangeCalcBase, initialData, selectedPlan]);
 
   useEffect(() => {
     if (!initialData) return;
 
     setStartDate(initialData.start_date);
-    setSelectedPlan(initialData.plan);
   }, [initialData]);
 
   return (
@@ -133,7 +130,7 @@ export default function RegistrationForm({
               </LabeledField>
 
               <LabeledField htmlFor="end_date">
-                <strong>{showsObservation && '* '}Data de Término</strong>
+                <strong>Data de Término{showsObservation && ' *'}</strong>
                 <input
                   value={endDate || ''}
                   type="text"
@@ -143,7 +140,7 @@ export default function RegistrationForm({
               </LabeledField>
 
               <LabeledField htmlFor="amount">
-                <strong>{showsObservation && '* '}Valor Final</strong>
+                <strong>Valor Final{showsObservation && ' *'}</strong>
                 <CurrencyInput>
                   <input
                     value={amountValue || ''}
@@ -174,6 +171,7 @@ RegistrationForm.propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
     price: PropTypes.number,
+    active: PropTypes.bool,
     student: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,

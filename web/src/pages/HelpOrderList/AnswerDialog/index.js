@@ -29,7 +29,7 @@ export default function AnswerDialog({
         <p>{question}</p>
         <strong>Sua Resposta</strong>
         <Form schema={schema} onSubmit={onSubmit}>
-          <Input multiline name="answer" rows="6" />
+          <Input autoFocus multiline name="answer" rows="6" />
           <button type="submit" onClick={() => {}}>
             {isLoading ? <ActivityIndicator /> : 'Responder Aluno'}
           </button>

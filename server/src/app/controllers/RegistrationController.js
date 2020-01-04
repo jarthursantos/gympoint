@@ -182,13 +182,37 @@ class RegistrationController {
       };
     }
 
-    const { price, start_date, end_date } = await registration.update(data);
+    await registration.update(data);
 
-    await Queue.add(NewRegistrationJob.key, {
-      registration: { id, price, start_date, end_date },
+    const updatedRegistration = await Registration.findByPk(id, {
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: [
+            'id',
+            'name',
+            'email',
+            'birthdate',
+            'height',
+            'weight',
+            'alternative_id',
+          ],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration', 'price'],
+        },
+      ],
+      attributes: ['id', 'price', 'start_date', 'end_date'],
     });
 
-    return res.json({ id, price, start_date, end_date });
+    await Queue.add(NewRegistrationJob.key, {
+      registration: updatedRegistration,
+    });
+
+    return res.json(updatedRegistration);
   }
 
   async destroy(req, res) {

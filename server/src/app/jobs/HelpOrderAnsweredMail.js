@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+
 import Mail from '../../lib/Mail';
 
 class HelpOrderAnsweredMail {
@@ -7,31 +8,27 @@ class HelpOrderAnsweredMail {
     return 'HelpOrderAnsweredMail';
   }
 
-  async handle({ data: { help_order } }) {
+  async handle({
+    data: {
+      help_order: { student, replier, question, answer, created_at, answer_at },
+    },
+  }) {
     await Mail.sendMail({
-      to: `${help_order.student.name} <${help_order.student.email}>`,
+      to: `${student.name} <${student.email}>`,
       subject: 'Gympoint: Sua pergunta foi respondida',
-      template: 'help_order_answered',
+      template: 'answered',
       context: {
-        student_name: help_order.student.name,
-        replier_name: help_order.replier.name,
-        question: help_order.question,
-        answer: help_order.answer,
+        student_name: student.name,
+        replier_name: replier.name,
+        question,
+        answer,
 
-        created_at: format(
-          parseISO(help_order.created_at),
-          "dd 'de' MMMM', às' H:mm'h'",
-          {
-            locale: pt,
-          }
-        ),
-        answer_at: format(
-          parseISO(help_order.answer_at),
-          "dd 'de' MMMM', às' H:mm'h'",
-          {
-            locale: pt,
-          }
-        ),
+        created_at: format(parseISO(created_at), "dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+        answer_at: format(parseISO(answer_at), "dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
       },
     });
   }

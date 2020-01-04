@@ -2,7 +2,6 @@ import { Router } from 'express';
 import multer from 'multer';
 
 import AnswerController from './app/controllers/AnswerController';
-import AnsweredNotificationController from './app/controllers/AnsweredNotificationController';
 import AvatarController from './app/controllers/AvatarController';
 import CheckinController from './app/controllers/CheckinController';
 import ConnectionController from './app/controllers/ConnectionController';
@@ -42,15 +41,6 @@ routes.post('/sessions', validateSessionStore, SessionController.store); // Done
 routes.get('/students/:id/checkins', CheckinController.index); // Done
 routes.post('/students/:id/checkins', CheckinController.store); // Done
 
-routes.get(
-  '/students/:student_id/notifications',
-  AnsweredNotificationController.index
-); // Pending
-routes.put(
-  '/students/:student_id/notifications/:id',
-  AnsweredNotificationController.update
-); // Pending
-
 routes.get('/students/:id/help-orders', StudentAskController.index);
 routes.post(
   '/students/:id/help-orders',
@@ -64,9 +54,6 @@ routes.post('/users', validateUserStore, UserController.store); // Done
 routes.put('/users', validateUserUpdate, UserController.update); // Done
 
 routes.get('/help-orders', HelpOrderController.index); // Done
-
-// TODO: routes.get('/notifications', HelpOrderNotificationController.index); // Pending
-// TODO: routes.put('/notifications/:id', HelpOrderNotificationController.update); // Pending
 
 routes.get('/students/:id', StudentController.show); // Done
 routes.get('/students', StudentController.index); // Done

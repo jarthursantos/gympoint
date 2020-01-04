@@ -35,7 +35,7 @@ export const Form = styled(BaseForm)`
     span {
       color: #ee4d64;
       align-self: flex-start;
-      margin: 0 0 10px;
+      margin-top: 8px;
       font-weight: bold;
     }
 
