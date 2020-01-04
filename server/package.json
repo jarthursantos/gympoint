@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "npm-run-all -p dev:*",
-    "dev:queue": "nodemon src/queue.js",
-    "dev:server": "nodemon src/server.js",
+    "start": "npm-run-all -p start:*",
+    "start:queue": "nodemon src/queue.js",
+    "start:server": "nodemon src/server.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
     "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
