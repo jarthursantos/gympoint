@@ -5,6 +5,7 @@ import AnswerController from './app/controllers/AnswerController';
 import AnsweredNotificationController from './app/controllers/AnsweredNotificationController';
 import AvatarController from './app/controllers/AvatarController';
 import CheckinController from './app/controllers/CheckinController';
+import ConnectionController from './app/controllers/ConnectionController';
 import HelpOrderController from './app/controllers/HelpOrderController';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
@@ -14,6 +15,7 @@ import StudentController from './app/controllers/StudentController';
 import UserController from './app/controllers/UserController';
 import authMiddleware from './app/middlewares/auth';
 import validateAnswerStore from './app/validators/AnswerStore';
+import validateConnectionStore from './app/validators/ConnectionStore';
 import validateHelpOrderStore from './app/validators/HelpOrderStore';
 import validatePlanStore from './app/validators/PlanStore';
 import validatePlanUpdate from './app/validators/PlanUpdate';
@@ -29,7 +31,13 @@ import multerConfig from './config/multer';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.use('/sessions', validateSessionStore, SessionController.store); // Done
+routes.post(
+  '/connections',
+  validateConnectionStore,
+  ConnectionController.store
+); // Done
+
+routes.post('/sessions', validateSessionStore, SessionController.store); // Done
 
 routes.get('/students/:id/checkins', CheckinController.index); // Done
 routes.post('/students/:id/checkins', CheckinController.store); // Done

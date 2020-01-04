@@ -1,9 +1,9 @@
 import React from 'react';
+import { MdExitToApp } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import logo from '~/assets/small-logo.svg';
-import Notifications from '~/components/Notifications';
 import { signOut } from '~/store/modules/auth/actions';
 import { formatInitials } from '~/util/format';
 
@@ -38,24 +38,21 @@ export default function Header() {
             </NavLink>
           </nav>
 
-          <aside>
-            <Notifications />
-            <Profile>
-              <div>
-                <NavLink to="/profile">{name}</NavLink>
-                <button type="button" onClick={handleSignOut}>
-                  sair do sistema
-                </button>
-              </div>
-              <NavLink to="/profile" activeClassName="active">
-                {avatar ? (
-                  <img src={avatar.url} alt="Avatar" />
-                ) : (
-                  <div className="name">{formatInitials(name)}</div>
-                )}
-              </NavLink>
-            </Profile>
-          </aside>
+          <Profile>
+            <div>
+              <NavLink to="/profile">{name}</NavLink>
+              <button type="button" onClick={handleSignOut}>
+                <MdExitToApp size={14} /> sair do sistema
+              </button>
+            </div>
+            <NavLink to="/profile" activeClassName="active">
+              {avatar ? (
+                <img src={avatar.url} alt="Avatar" />
+              ) : (
+                <div className="name">{formatInitials(name)}</div>
+              )}
+            </NavLink>
+          </Profile>
         </Content>
       </Container>
     </>

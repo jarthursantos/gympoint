@@ -58,13 +58,14 @@ class CheckinController {
       },
     });
 
-    if (quota.length >= 5) {
+    if (quota.length >= 15) {
+      // TODO: return to 5
       return res
         .status(400)
         .json({ error: 'checkin student quota has been exceded' });
     }
 
-    const { id, created_at } = await Checkin.create({ student_id });
+    const { id, createdAt: created_at } = await Checkin.create({ student_id });
 
     return res.json({ id, created_at });
   }

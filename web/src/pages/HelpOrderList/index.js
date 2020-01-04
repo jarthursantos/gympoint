@@ -82,6 +82,7 @@ export default function HelpOrderList() {
           );
         }
 
+        handleClose();
         setSaving(false);
       });
   }
@@ -137,5 +138,3 @@ export default function HelpOrderList() {
     </>
   );
 }
-
-// TODO: ask to close

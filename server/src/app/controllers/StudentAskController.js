@@ -1,9 +1,10 @@
 import { Op } from 'sequelize';
 
-import User from '../models/User';
+import Avatar from '../models/Avatar';
 import HelpOrder from '../models/HelpOrder';
-import Student from '../models/Student';
 import Registration from '../models/Registration';
+import Student from '../models/Student';
+import User from '../models/User';
 
 class StudentAskController {
   async index(req, res) {
@@ -23,6 +24,13 @@ class StudentAskController {
         {
           model: User,
           as: 'replier',
+          include: [
+            {
+              model: Avatar,
+              as: 'avatar',
+              attributes: ['id', 'name', 'path', 'url'],
+            },
+          ],
           attributes: ['name'],
         },
         {
@@ -32,6 +40,7 @@ class StudentAskController {
         },
       ],
       attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
+      order: [['created_at', 'DESC']],
     });
 
     return res.json(helpOrders);
@@ -72,6 +81,13 @@ class StudentAskController {
           {
             model: User,
             as: 'replier',
+            include: [
+              {
+                model: Avatar,
+                as: 'avatar',
+                attributes: ['id', 'name', 'path', 'url'],
+              },
+            ],
             attributes: ['name'],
           },
           {
@@ -82,17 +98,6 @@ class StudentAskController {
         ],
       }
     );
-
-    // TODO: const short_question = help_order.question.substr(0, 50);
-    // const overflow_limit = short_question.length >= 50;
-
-    // HelpOrderNotification.create({
-    //   help_order: id,
-    //   title: `${help_order.student.name} solicitou ajuda`,
-    //   message: `"${short_question}${overflow_limit ? '...' : ''}"`,
-    //   question,
-    // });
-
     return res.json(help_order);
   }
 }
