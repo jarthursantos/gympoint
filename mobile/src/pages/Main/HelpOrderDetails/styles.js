@@ -59,6 +59,7 @@ export const Avatar = styled.Image`
   width: 36px;
   height: 36px;
   border: 1px solid #eee;
+  background: #ccc;
 `;
 
 export const ReplierHeader = styled(Header)`

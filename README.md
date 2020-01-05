@@ -2,13 +2,29 @@
 
 Gympoint is a multiplatform application that provides a basic management to your Gym, including a mobile application for your students to answer their questions and more.
 
-### Android Screenshots
+## Screenshots
+
+### Android Client Screenshots
 
 <img
-  src="mobile/.github/checkins.jpeg" alt="checkin" width="220" /> <img
-  src="mobile/.github/help_orders.jpeg" alt="checkin" width="220" /> <img
-  src="mobile/.github/create_help_order.jpeg" alt="checkin" width="220" /> <img
-  src="mobile/.github/answer.jpeg" alt="checkin" width="220" />
+  src="mobile/.github/checkins.jpeg" alt="checkin" width="200" /> <img
+  src="mobile/.github/help_orders.jpeg" alt="checkin" width="200" /> <img
+  src="mobile/.github/create_help_order.jpeg" alt="checkin" width="200" /> <img
+  src="mobile/.github/answer.jpeg" alt="checkin" width="200" />
+
+### WEB/Admin Client Screenshots
+
+![Login](web/.github/login.png)
+![Student Filter](web/.github/student_filter.png)
+![Create Student](web/.github/create_student.png)
+![Student Not Found](web/.github/student_not_found.png)
+![Edit Student](web/.github/edit_student.png)
+![Select Student](web/.github/select_student.png)
+![Select Plan](web/.github/select_plan.png)
+![Edit Register](web/.github/edit_register.png)
+![Help Orders](web/.github/help_orders.png)
+![Answer](web/.github/answer.png)
+![Profile](web/.github/profile.png)
 
 ## Getting started
 
@@ -34,6 +50,10 @@ and create a .env file in root folder, copy the content of [.env.example](.env.e
 
 and after
 
+`yarn sequelize db:migrate && yarn sequelize db:seed:all` or use npm from this
+
+and after
+
 `yarn start` or `npm run start`
 
 You can read more about server in this [README.md](/server/README.md)
@@ -49,8 +69,6 @@ After this your can execute
 after
 
 `yarn` or `npm install`
-
-and create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
 
 and after
 
@@ -72,7 +90,7 @@ after
 
 `yarn` or `npm install`
 
-and create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+Open [this file](mobile/src/services/api.js) and change the `YOUR_API_URL` with your api url and port
 
 and after
 

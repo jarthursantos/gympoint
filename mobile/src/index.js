@@ -3,11 +3,12 @@ import {StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 
 import '~/config/ReactotronConfig';
-
 import {PersistGate} from 'redux-persist/integration/react';
 
 import App from '~/App';
 import {store, persistor} from '~/store';
+
+console.disableYellowBox = true; // eslint-disable-line
 
 export default function Index() {
   return (

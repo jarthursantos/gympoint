@@ -2,6 +2,7 @@ import React from 'react';
 
 import {parseISO, formatDistance} from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import PropTypes from 'prop-types';
 
 import {
   Wrapper,
@@ -43,7 +44,13 @@ export default function HelpOrderDetails({navigation}) {
         <Container>
           <ReplierHeader>
             <Replier>
-              <Avatar source={{uri: helpOrder.replier.avatar.url}} />
+              <Avatar
+                source={{
+                  uri: helpOrder.replier.avatar
+                    ? helpOrder.replier.avatar.url
+                    : '',
+                }}
+              />
               <ReplierInfo>
                 <ReplierName>{helpOrder.replier.name}</ReplierName>
                 <ReplyMessage>respondeu sua pergunta</ReplyMessage>
@@ -62,5 +69,11 @@ export default function HelpOrderDetails({navigation}) {
     </Wrapper>
   );
 }
+
+HelpOrderDetails.propTypes = {
+  navigation: PropTypes.shape({
+    getParam: PropTypes.func,
+  }).isRequired,
+};
 
 // TODO: null avatar view

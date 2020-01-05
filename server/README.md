@@ -14,7 +14,11 @@ and, you need a working [postgres](https://www.postgresql.org/) server, again, i
 
 `docker run --name postgres -e POSTGRES_PASSWORD={same_password} -p 5432:{some_post} postgres:11`
 
-create a .env file, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+
+and after
+
+`yarn sequelize db:migrate && yarn sequelize db:seed:all` or use npm from this
 
 after this your can execute:
 

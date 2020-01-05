@@ -1,6 +1,8 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
+import PropTypes from 'prop-types';
+
 import Button from '~/components/Button';
 import {addHelpOrderRequest} from '~/store/modules/helpOrder/actions';
 
@@ -40,3 +42,9 @@ export default function HelpOrderDetails({navigation}) {
     </Wrapper>
   );
 }
+
+HelpOrderDetails.propTypes = {
+  navigation: PropTypes.shape({
+    goBack: PropTypes.func,
+  }).isRequired,
+};
