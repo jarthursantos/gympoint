@@ -18,7 +18,9 @@ after this your can execute:
 
 `cd server`
 
-and
+and create a .env file, copy the content of [.env.example](/server/.env.example) from him and replace all required variables based on your system
+
+and after
 
 `yarn start` or `npm run start`
 

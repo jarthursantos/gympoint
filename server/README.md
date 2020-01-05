@@ -14,8 +14,12 @@ and, you need a working [postgres](https://www.postgresql.org/) server, again, i
 
 `docker run --name postgres -e POSTGRES_PASSWORD={same_password} -p 5432:{some_post} postgres:11`
 
+create a .env file, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+
 after this your can execute:
 
 `yarn start` or `npm run start`
 
 If your use [Insomnia](https://insomnia.rest/), your can find, download and import this [file](insomnia.json) to execute manual tests in this application and read the routes documentation.
+
+\* note: tests are not finished

@@ -58,8 +58,7 @@ class CheckinController {
       },
     });
 
-    if (quota.length >= 15) {
-      // TODO: return to 5
+    if (quota.length >= 5) {
       return res
         .status(400)
         .json({ error: 'checkin student quota has been exceded' });
