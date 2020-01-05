@@ -2,6 +2,14 @@
 
 Gympoint is a multiplatform application that provides a basic management to your Gym, including a mobile application for your students to answer their questions and more.
 
+### Android Screenshots
+
+<img
+  src="mobile/.github/checkins.jpeg" alt="checkin" width="220" /> <img
+  src="mobile/.github/help_orders.jpeg" alt="checkin" width="220" /> <img
+  src="mobile/.github/create_help_order.jpeg" alt="checkin" width="220" /> <img
+  src="mobile/.github/answer.jpeg" alt="checkin" width="220" />
+
 ## Getting started
 
 ### Starting the server
@@ -18,7 +26,11 @@ after this your can execute:
 
 `cd server`
 
-and create a .env file, copy the content of [.env.example](/server/.env.example) from him and replace all required variables based on your system
+after
+
+`yarn` or `npm install`
+
+and create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
 
 and after
 
@@ -34,7 +46,13 @@ After this your can execute
 
 `cd web`
 
-and
+after
+
+`yarn` or `npm install`
+
+and create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+
+and after
 
 `yarn start` or `npm run start`
 
@@ -50,7 +68,13 @@ After this your can execute
 
 `cd mobile`
 
-and
+after
+
+`yarn` or `npm install`
+
+and create a .env file in root folder, copy the content of [.env.example](.env.example) from him and replace all required variables based on your system
+
+and after
 
 `yarn start` or `npm run start`
 

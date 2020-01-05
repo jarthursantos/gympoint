@@ -58,5 +58,3 @@ class AnswerController {
 }
 
 export default new AnswerController();
-
-// TODO: student avaliate a answer
